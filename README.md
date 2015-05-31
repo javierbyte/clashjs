@@ -85,14 +85,16 @@ Let the 'game state' be an object with the array of all user states, and the gam
 
 We can divide the problem in 3 big steps.
 
-* ''AI Runner''. This will take all the user provided functions and the current game state, and execute every function.
+* *AI Runner*. This will take all the user provided functions and the current game state, and execute every function.
 	* This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
-* ''Game Core''. This will take the responses that the AI Runners sends, and apply the game logic on them.
+* *Game Core*. This will take the responses that the AI Runners sends, and apply the game logic on them.
 	* Kill killed players.
 	* Move and turn players.
 	* Collect and count coins.
 	* Generate new coins if necessary.
-* ''Render''. This will take the game state and render it nicely.
+	* Set the paralized turns to players that shooted.
+	* Count if too many inactive turns had passed.
+* *Render*. This will take the game state and render it nicely.
 
 ![](assets/game-blackbox.png)
 <!---
