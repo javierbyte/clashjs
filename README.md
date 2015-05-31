@@ -30,11 +30,6 @@ The game is simple: we will put all the players in a battle arena, and then make
 * A player can collect a coin in the moment it steps over it. A new coin may appear in any moment of the game.
 * If nobody dies or collects a coin in 50 turns, the game will be considered a tie with all the survivors.
 
-## Constraints.
-* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
-* Be safe. A player code should not be able to modify anything other than itself.
-* Be resilient as possible. If a player crashes or stop responding, the show must go on.
-
 ### FAQ
 #### What happens if two players shots each other in the same turn?
 They both die.
@@ -47,3 +42,13 @@ Both of them gets it. There can be a tie.
 
 #### And if a players tries to move out of the grid?
 They will simple do not move.
+
+
+# Game Technical Spec.
+
+![](assets/game-blackbox.png)
+
+## Constraints.
+* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
+* Be safe. A player code should not be able to modify anything other than itself.
+* Be resilient as possible. If a player crashes or stop responding, the show must go on.
