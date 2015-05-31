@@ -5,7 +5,6 @@ This is an experiment. The idea is to create a battle game, where the participan
 The repo doesn't contain any code yet, just work-in-progress specs.
 
 
-
 # Game. Functional(?) Spec.
 
 ## Introduction.
@@ -17,7 +16,7 @@ The game is simple: we will put all the players in a battle arena, and then make
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, west, south or east.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
 	* The current position and direction of the player.
-	* The position of all other players (but not the direction).
+	* The position of all other players.
 	* The position of the coins.
 	* A environment configuration option with:
 		* Grid size.
@@ -44,7 +43,6 @@ Both of them gets it. There can be a tie.
 
 #### And if a players tries to move out of the grid?
 They will simple do not move.
-
 
 
 # Game Technical Spec.
@@ -116,6 +114,36 @@ http://knsv.github.io/mermaid/live_editor/
 -->
 
 
-
 # AI Runner. Technical Spec.
-:D
+
+## Problem.
+The AI runner should execute all the functions that the players provided, with the current user state, all user states, and game enrivonment as arguments.
+
+## Constraints.
+* Prevent the user functions to modify anything except itself.
+* Catch executions errors, and simply return `null` as response to the Game Core.
+
+## Hypothesis.
+We can run the functions as WebWorkers because:
+* They can not access the dom and modify things.
+* Runs in a sandbox. If they crash or stop responding we can detect it.
+* Bonus: We can parallelise the excecution.
+
+The game is designed to make irrelevant the order of execution of the AIs. So we are safe running all this asynchronous.
+
+![](assets/airunner-blackbox.png)
+<!---
+sequenceDiagram
+Game Core->> AI Runner: Game State
+Note left of AI Runner: Starts a countdown<br/>of X seconds.
+AI Runner->> Worker0: Arguments
+AI Runner->> Worker1: Arguments
+Worker1->> AI Runner: Response
+AI Runner->> Worker2: Arguments
+Worker0->> AI Runner: Response
+Worker2->> AI Runner: Response
+Note left of AI Runner: When all the workers<br/>responds, or the<br/>countdown hits 0<br/>return the values<br/>to the Game Core.
+AI Runner->> Game Core: Results
+
+http://knsv.github.io/mermaid/live_editor/
+-->
