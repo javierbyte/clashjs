@@ -4,6 +4,8 @@ This is an experiment. The idea is to create a battle game, where the participan
 
 The repo doesn't contain any code yet, just work-in-progress specs.
 
+
+
 # Game. Functional(?) Spec.
 
 ## Introduction.
@@ -42,6 +44,7 @@ Both of them gets it. There can be a tie.
 
 #### And if a players tries to move out of the grid?
 They will simple do not move.
+
 
 
 # Game Technical Spec.
@@ -111,3 +114,8 @@ Game Core->>AI Runner: Game State
 
 http://knsv.github.io/mermaid/live_editor/
 -->
+
+
+
+# AI Runner. Technical Spec.
+:D
