@@ -21,13 +21,13 @@ The game is simple: we will put all the players in a battle arena, and then make
 		* Grid size.
 		* Number of coins to collect to win.
 * Every turn a player must execute some of the following actions:
-	* Move one step in its current directino.
+	* Move one step in its current direction.
 	* Turn into any of the four directions.
-	* Shot.
-* A player can shot to try to destroy another player. The shots have the following characteristics:
-	* All the shots are executed before the movements in every turn.
-	* A shot have a range of 3 squares.
-	* After a shot, a player will be paralized for the following 3 turns.
+	* Shoot.
+* A player can shoot to try to destroy another player. The shoots have the following characteristics:
+	* The shoots are executed before the movements in every turn.
+	* A shoot have a range of 3 squares.
+	* After a shoot, a player will be paralized for the following 3 turns.
 * A player can collect a coin in the moment it steps over it. A new coin may appear in any moment of the game.
 
 
