@@ -114,7 +114,7 @@ http://knsv.github.io/mermaid/live_editor/
 -->
 
 
-# AI Runner. Technical Spec.
+# AI Runner. Spec.
 
 ## Problem.
 The AI runner should execute all the functions that the players provided, with the current user state, all user states, and game enrivonment as arguments.
@@ -122,6 +122,7 @@ The AI runner should execute all the functions that the players provided, with t
 ## Constraints.
 * Prevent the user functions to modify anything except itself.
 * Catch executions errors, and simply return `null` as response to the Game Core.
+* Detect if any functions gets stuck in an infinite loop, and return `null` as response.
 
 ## Hypothesis.
 We can run the functions as WebWorkers because:
@@ -130,6 +131,9 @@ We can run the functions as WebWorkers because:
 * Bonus: We can parallelise the excecution.
 
 The game is designed to make irrelevant the order of execution of the AIs. So we are safe running all this asynchronous.
+
+## Solution.
+To prevent the functions to take so much time thinking (probably because an infinite loop), we will create an array of `null`s, where we will put the responses of the workers as they arrive. If `X` seconds passes (enough time to think for almost everything, except infinite loops, of couse) then we will pass the `null`ified response of that worker, and the Game Core will kill that player.
 
 ![](assets/airunner-blackbox.png)
 <!---
