@@ -29,8 +29,18 @@ The game is simple: we will put all the players in a battle arena, and then make
 	* A shoot have a range of 3 squares.
 	* After a shoot, a player will be paralized for the following 3 turns.
 * A player can collect a coin in the moment it steps over it. A new coin may appear in any moment of the game.
-
+* If nobody dies or collects a coin in 50 turns, the game will be considered a tie will all the survivors.
 
 ## Constraints.
 * Be safe. A player code should not be able to modify anything other than itself.
-* Be resilient as possible. If a Player crashes or stop responding, the show must go on.
+* Be resilient as possible. If a player crashes or stop responding, the show must go on.
+
+### FAQ
+#### What happens if two players shots each other in the same turn?
+Both dies.
+
+#### What happens if two player try to move to the square?
+The will both move to that square. Players can overlap. I hope one of them to be smart enough to kill the other ASAP.
+
+#### And if a players tries to move out of the grid?
+They will simple do not move.
