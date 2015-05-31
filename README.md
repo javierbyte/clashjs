@@ -70,7 +70,8 @@ Let the 'user state' be an object with a user information like the following:
 Let the 'game environment' be a configuration object like the following:
 
 	{
-		gridSize: [<number>, <number>]
+		gridSize: [<number>, <number>],
+		coinPositions: <array of [<number>, <number>] arrays>
 	}
 
 Let the 'game state' be an object with the array of all user states, and the game environment.
@@ -80,17 +81,25 @@ Let the 'game state' be an object with the array of all user states, and the gam
 		environment: <game environment>
 	}
 
-
+### Architecture.
 
 We can divide the problem in 3 big steps.
-* AI Runner. This will take all the user provided functions and the current game state.
+
+* ''AI Runner''. This will take all the user provided functions and the current game state, and execute every function.
+	* This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
+* ''Game Core''. This will take the responses that the AI Runners sends, and apply the game logic on them.
+	* Kill killed players.
+	* Move and turn players.
+	* Collect and count coins.
+	* Generate new coins if necessary.
+* ''Render''. This will take the game state and render it nicely.
 
 ![](assets/game-blackbox.png)
 <!---
 sequenceDiagram
 AI Runner->> Game Core: Array of objects
 Note left of Game Core: The AI runners sends <br/> the results of <br/>executing the code <br/> of every player<br/>on the current game<br/>state.
-Game Core->> Render: Render state
+Game Core->> Render: Game state
 Note left of Render: The core applies the<br/>results to the game,<br/>computes the new<br/>state, and sends<br/>it to the render.
 Note left of Game Core: The Core sends the<br/>new game state to<br/>the AI runner<br/>to execute all<br/>functions again.
 Game Core->>AI Runner: Game State
