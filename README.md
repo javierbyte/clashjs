@@ -1,6 +1,6 @@
 # ClashJS
 
-![](spec_assets/screnshot.png)
+![](spec_assets/screenshot.png)
 
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
 
@@ -60,21 +60,21 @@ We should make an app that can take functions provided by the users, execute the
 Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
 
     {
-      name: 'javierbyte',
+      info: {
+        name: 'javierbyte'
+      },
       ai: function(player, otherPlayers, gameEnvironment) {
         // think...
         return 'move';
       }
     }
 
-Let the *user state* be an object with a user information like the following:
+Let the *player state* be an object with a player information like the following:
 
     {
-      xPos: <number>,
-      yPos: <number>,
-      direction: <number>, // 0: north, 1: east, 2: south, 3: west
-      coinsCollected: <number>,
-      paralizedTurns: <number>
+      position: `[<number>, <number>]`,
+      direction: `<number>`, // 0: north, 1: east, 2: south, 3: west
+      ammo: `<number>`
     }
 
 Let the *game environment* (`gameEnvironment`) be a configuration object like the following:
@@ -161,12 +161,30 @@ AI Runner->> Game Core: Results
 http://knsv.github.io/mermaid/live_editor/
 -->
 
+# PlayerClass.
+
+This javascript class will recive a `playerDefinition`.
+
+## Arguments:
+  * `playerDefinition`.
+
+## Methods:
+  * `getInfo`. Will return the player info.
+  * `execute`. Will receive the following arguments:
+    * `playerState`. The current player state/.
+    * `enemiesPosition`. An array of the other players positions. Example: `[[2,3], [5, 6]]`.
+    * `gameEnvironment`. The game environment object.
+
+## Example:
+
+  this.ClashJS = new ClashJS();
+
 # CashJS Core.
 
 This is a javascript class that will receive the initial world environment, the player functions, and will calculate the game state.
 
 ## Arguments:
-  * `Players`. An array of *player definition* objects.
+  * `playerDefinitionArray`. An array of *player definition* objects.
 
 ## Methods:
   * `getState`. Will return the current game state.

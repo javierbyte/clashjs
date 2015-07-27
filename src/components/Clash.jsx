@@ -19,11 +19,7 @@ var Clash = React.createClass({
   },
 
   nextStep() {
-    this.deepSetState({
-      players: [{
-        position: [2, 5]
-      }]
-    });
+    this.replaceState(this.ClashJS.nextStep());
   },
 
   render() {

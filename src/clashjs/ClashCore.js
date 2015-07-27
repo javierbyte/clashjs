@@ -1,10 +1,6 @@
 class ClashJS {
-  constructor(options) {
-    this.options = options;
-  }
-
-  getState() {
-    return {
+  constructor(playerDefinitionArray) {
+    this._gameState = {
       world: {
         gridSize: 13,
         ammoPosition: []
@@ -29,6 +25,16 @@ class ClashJS {
         ammo: 3
       }]
     };
+  }
+
+  getState() {
+    return this._gameState;
+  }
+
+  nextStep() {
+    this._gameState.players[0].position[0]--;
+    this._gameState.players[0].direction--;
+    return this._gameState;
   }
 }
 
