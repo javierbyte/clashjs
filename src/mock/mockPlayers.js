@@ -1,3 +1,9 @@
+var randomMove = () => {
+  var movements = ['north', 'east', 'south', 'west'];
+
+  return Math.random() > 0.33 ? 'move' : movements[Math.floor(Math.random() * movements.length)];
+};
+
 module.exports = [{
   info: {
     name: 'javierbyte',
@@ -5,7 +11,7 @@ module.exports = [{
     color: '#FF5722'
   },
   ai: () => {
-    return 'move';
+    return randomMove();
   }
 }, {
   info: {
@@ -14,7 +20,7 @@ module.exports = [{
     color: '#CDDC39'
   },
   ai: () => {
-    return 'south';
+    return randomMove();
   }
 }, {
   info: {
@@ -23,6 +29,15 @@ module.exports = [{
     color: '#03A9F4'
   },
   ai: () => {
-    return 'move';
+    return randomMove();
+  }
+}, {
+  info: {
+    name: 'ericku',
+    style: 3,
+    color: '#fff'
+  },
+  ai: () => {
+    return randomMove();
   }
 }];

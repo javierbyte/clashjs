@@ -1,4 +1,5 @@
 var PlayerClass = require('./PlayerClass.js');
+var executeMovementHelper = require('./executeMovementHelper.js');
 
 class ClashJS {
   constructor(playerDefinitionArray) {
@@ -20,6 +21,8 @@ class ClashJS {
         color: playerInstance.getInfo().color
       };
     });
+
+    this._currentPlayer = 0;
   }
 
   getState() {
@@ -29,16 +32,27 @@ class ClashJS {
     };
   }
 
+  nextPly() {
+    this._savePlayerAction(
+      this._currentPlayer,
+      this._playerInstances[this._currentPlayer].execute(
+        this._playerStates[this._currentPlayer],
+        this._playerStates.slice(this._currentPlayer, 1),
+        this._gameEnvironment
+      )
+    );
+
+    this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
+
+    return {
+      gameEnvironment: this._gameEnvironment,
+      playerStates: this._playerStates
+    };
+  }
+
   nextStep() {
-    this._playerInstances.forEach((playerInstance, playerInstanceIndex) => {
-      this._savePlayerAction(
-        playerInstanceIndex,
-        playerInstance.execute(
-          this._playerStates[playerInstanceIndex],
-          this._playerStates,
-          this._gameEnvironment
-        )
-      );
+    this._playerInstances.forEach(() => {
+      this.nextPly();
     });
 
     return {
@@ -47,8 +61,13 @@ class ClashJS {
     };
   }
 
-  _savePlayerAction(playerIndex, action) {
-    console.warn(playerIndex, action);
+  _savePlayerAction(playerIndex, playerAction) {
+    this._playerStates = executeMovementHelper(
+      playerIndex,
+      playerAction,
+      this._playerStates,
+      this._gameEnvironment
+    );
   }
 }
 

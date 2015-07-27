@@ -20,6 +20,12 @@ var Clash = React.createClass({
     return this.ClashJS.getState();
   },
 
+  componentDidMount() {
+    window.setInterval(() => {
+      this.replaceState(this.ClashJS.nextPly());
+    }, 40);
+  },
+
   nextStep() {
     this.replaceState(this.ClashJS.nextStep());
   },
