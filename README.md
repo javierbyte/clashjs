@@ -4,18 +4,15 @@
 
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
 
-The repo doesn't contain any code yet, just work-in-progress specs.
-
-
-# Game. Functional(?) Spec.
+# Game. Functional Spec.
 
 ## Introduction.
-Games and coding are fun! I want to make a game where we can confront AI vs AI.
+Games and coding are fun! So I want to make a game where we can confront AI vs AI in javascript.
 
-The game is simple: we will put all the players in a battle arena, and then make them fight to death. We will put a coin in the arena, and the players should try to collect it. The last player alive wins!
+The game is simple: we will put all the players in a battle arena, and then make them fight to death. Where will be ammo in the arena so they can shoot each other. The last player alive wins!
 
 ### Game Rules.
-* Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, west, south or east.
+* Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, east, south or west.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
   * The current position and direction of the player.
   * The position of all other players.
@@ -60,7 +57,7 @@ The AI function will receive [`playerState`](#player-state), `enemiesStates` (ar
   * `north`, `east`, `south` or `west`: To turn to that direction.
   * `shoot`. To shoot if the user has enough ammo.
 
-Any other response, trying to move outside the world size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op. 3 no-op in a row and you are dead.
+Any other response, trying to move outside the arena size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op. 3 no-op in a row and you are dead.
 
 ### Player State.
 Let the *player state* (`playerState`) be an object with a player information like the following:
@@ -184,3 +181,6 @@ This class will receive all the player definitions, generate the game states, an
   * `getState`. Will return the current [`gameState`](#game-state).
   * `nextStep`. Will execute a step for every player (all individual plys). Will return the game state.
   * `nextPly`. Will execute the AI for the player in turn. Will return the game state.
+
+# Render.
+React.

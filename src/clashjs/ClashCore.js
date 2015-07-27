@@ -4,7 +4,7 @@ var executeMovementHelper = require('./executeMovementHelper.js');
 class ClashJS {
   constructor(playerDefinitionArray) {
     this._gameEnvironment = {
-      gridSize: 15,
+      gridSize: 13,
       ammoPosition: []
     };
 
