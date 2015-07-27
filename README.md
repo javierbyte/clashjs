@@ -23,9 +23,9 @@ The game is simple: we will put all the players in a battle arena, and then make
   * A environment configuration option with:
     * Grid size.
 * Every turn a player must execute some of the following actions:
-  * Move one step in its current direction.
-  * Turn into any of the four directions.
-  * Shoot.
+  * Move one step in its current direction. (`move`).
+  * Turn into any of the four directions. (`north`, `east`, `south`, `west`).
+  * Shoot. (`shoot`).
 * A player can shoot to try to destroy another player. The shoots have the following characteristics:
   * A shoot have a range of 3 squares.
 * A player can collect ammo in the moment it steps over it. A new coin may appear in any moment of the game.
@@ -55,6 +55,13 @@ Let the *player definition* (`playerDefinition`) be an object with the player in
         return 'move';
       }
     }
+
+The AI function will receive [`playerState`](#player-state), `enemiesPositions`, and [`gameEnvironment`](#game-environment) as arguments, and must return one of the following strings:
+  * `move`: To move one tile in the current direction.
+  * `north`, `east`, `south` or `west`: To turn to that direction.
+  * `shoot`. To shoot if the user has enough ammo.
+
+Any other response, trying to move outside the world size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op. 3 no-op in a row and you are dead.
 
 ### Player State.
 Let the *player state* (`playerState`) be an object with a player information like the following:
