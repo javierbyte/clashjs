@@ -1,5 +1,7 @@
 # ClashJS
 
+![](spec_assets/screnshot.png)
+
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
 
 The repo doesn't contain any code yet, just work-in-progress specs.
@@ -10,14 +12,14 @@ The repo doesn't contain any code yet, just work-in-progress specs.
 ## Introduction.
 Games and coding are fun! I want to make a game where we can confront AI vs AI.
 
-The game is simple: we will put all the players in a battle arena, and then make them fight to death. We will put a coin in the arena, and the players should try to collect it. The last player alive, or the first to collect 10 coins, wins!
+The game is simple: we will put all the players in a battle arena, and then make them fight to death. We will put a coin in the arena, and the players should try to collect it. The last player alive wins!
 
 ### Game characteristics.
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, west, south or east.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
   * The current position and direction of the player.
   * The position of all other players.
-  * The position of the coins.
+  * The position of the ammo.
   * A environment configuration option with:
     * Grid size.
 * Every turn a player must execute some of the following actions:
@@ -25,10 +27,8 @@ The game is simple: we will put all the players in a battle arena, and then make
   * Turn into any of the four directions.
   * Shoot.
 * A player can shoot to try to destroy another player. The shoots have the following characteristics:
-  * The shoots are executed before the movements in every turn.
   * A shoot have a range of 3 squares.
-  * After a shoot, a player will be paralized for the following 3 turns.
-* A player can collect a coin in the moment it steps over it. A new coin may appear in any moment of the game.
+* A player can collect ammo in the moment it steps over it. A new coin may appear in any moment of the game.
 * If nobody dies or collects a coin in 50 turns, the game will be considered a tie with all the survivors.
 
 ### FAQ
@@ -57,39 +57,39 @@ We should make an app that can take functions provided by the users, execute the
 
 ## Hypothesis.
 
-Let the *player definition* be an object with the player info and its AI function.
+Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
 
-  {
-    name: 'javierbyte',
-    ai: function(player, otherPlayers, env) {
-      // think...
-      return 'move';
+    {
+      name: 'javierbyte',
+      ai: function(player, otherPlayers, gameEnvironment) {
+        // think...
+        return 'move';
+      }
     }
-  }
 
 Let the *user state* be an object with a user information like the following:
 
-  {
-    xPos: <number>,
-    yPos: <number>,
-    direction: <number>, // 0: north, 1: east, 2: south, 3: west
-    coinsCollected: <number>,
-    paralizedTurns: <number>
-  }
+    {
+      xPos: <number>,
+      yPos: <number>,
+      direction: <number>, // 0: north, 1: east, 2: south, 3: west
+      coinsCollected: <number>,
+      paralizedTurns: <number>
+    }
 
-Let the *game environment* be a configuration object like the following:
+Let the *game environment* (`gameEnvironment`) be a configuration object like the following:
 
-  {
-    gridSize: [<number>, <number>],
-    ammoPosition: <array of [<number>, <number>] arrays>
-  }
+    {
+      gridSize: [<number>, <number>],
+      ammoPosition: <array of [<number>, <number>] arrays>
+    }
 
 Let the *game state* be an object with the array of all user states, and the game environment.
 
-  {
-    userStates: <array of user states>,
-    environment: <game environment>
-  }
+    {
+      userStates: <array of user states>,
+      environment: <game environment>
+    }
 
 ### Architecture.
 
@@ -109,7 +109,7 @@ We can divide the problem in 3 big steps.
 
 They will interact as follows:
 
-![](assets/game-blackbox.png)
+![](spec_assets/game-blackbox.png)
 <!---
 sequenceDiagram
 AI Runner->> Game Core: Array of objects
@@ -144,7 +144,7 @@ The game is designed to make irrelevant the order of execution of the AIs. So we
 ## Solution.
 To prevent the functions to take so much time thinking (probably because an infinite loop), we will create an array of `null`s, where we will put the responses of the workers as they arrive. If `X` seconds passes (enough time to think for almost everything, except infinite loops, of couse) then we will pass the `null`ified response of that worker, and the Game Core will kill that player.
 
-![](assets/airunner-blackbox.png)
+![](spec_assets/airunner-blackbox.png)
 <!---
 sequenceDiagram
 Game Core->> AI Runner: Game State
@@ -166,12 +166,12 @@ http://knsv.github.io/mermaid/live_editor/
 This is a javascript class that will receive the initial world environment, the player functions, and will calculate the game state.
 
 ## Arguments:
-  * Players. An array of *player definition* objects.
+  * `Players`. An array of *player definition* objects.
 
 ## Methods:
-  * getState. Will return the current game state.
-  * nextStep. Will execute a step for every player (all individual plys).
-  * _nextPly. Will execute a step for the next player. (A ply).
+  * `getState`. Will return the current game state.
+  * `nextStep`. Will execute a step for every player (all individual plys).
+  * `_nextPly`. Will execute a step for the next player. (A ply).
 
 ## Example:
 
