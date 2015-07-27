@@ -31,20 +31,6 @@ The game is simple: we will put all the players in a battle arena, and then make
 * A player can collect ammo in the moment it steps over it. A new coin may appear in any moment of the game.
 * If nobody dies or collects a coin in 50 turns, the game will be considered a tie with all the survivors.
 
-### FAQ
-#### What happens if two players shots each other in the same turn?
-They both die.
-
-#### What happens if two player try to move to the same square?
-The will both move to that square. Players can overlap. I hope one of them to be smart enough to kill the other ASAP.
-
-##### And if there is a coin..?
-Both of them gets it. There can be a tie.
-
-#### And if a players tries to move out of the grid?
-They will simple do not move.
-
-
 # Game Technical Spec.
 
 ## Problem.
@@ -175,20 +161,16 @@ This javascript class will recive a `playerDefinition` and return a player insta
 ## Methods:
   * `getInfo`. Will return the player info.
   * `execute`. Will receive the following arguments:
-    * [`playerDefinition`](#player-state). The current player state.
+    * [`playerState`](#player-state). The current player state.
     * `enemiesPosition`. An array of the other players positions. Example: `[[2,3], [5, 6]]`.
     * [`gameEnvironment`](#game-environment). The game environment object.
-
-## Example:
-
-  this.ClashJS = new ClashJS();
 
 # CashJS Core.
 
 This is a javascript class that will receive the initial world environment, the player functions, and will calculate the game state.
 
 ## Arguments:
-  * `playerDefinitionArray`. An array of [`playerDefinition`](#player-state) objects.
+  * `playerDefinitionArray`. An array of [`playerDefinition`](#player-definition) objects.
 
 ## Methods:
   * `getState`. Will return the current [`gameState`](#game-state).
