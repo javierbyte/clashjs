@@ -50,13 +50,13 @@ Let the *player definition* (`playerDefinition`) be an object with the player in
       info: {
         name: 'javierbyte'
       },
-      ai: function(playerState, enemiesPosition, gameEnvironment) {
+      ai: function(playerState, enemiesStates, gameEnvironment) {
         // think...
         return 'move';
       }
     }
 
-The AI function will receive [`playerState`](#player-state), `enemiesPositions`, and [`gameEnvironment`](#game-environment) as arguments, and must return one of the following strings:
+The AI function will receive [`playerState`](#player-state), `enemiesStates` (array of all the other players `playerState`s), and [`gameEnvironment`](#game-environment) as arguments, and must return one of the following strings:
   * `move`: To move one tile in the current direction.
   * `north`, `east`, `south` or `west`: To turn to that direction.
   * `shoot`. To shoot if the user has enough ammo.
@@ -158,27 +158,29 @@ AI Runner->> Game Core: Results
 http://knsv.github.io/mermaid/live_editor/
 -->
 
-# PlayerClass.
+# Game Core.
+
+## Player Class.
 
 This javascript class will recive a `playerDefinition` and return a player instance.
 
-## Arguments:
+### Arguments:
   * [`playerDefinition`](#player-definition).
 
-## Methods:
+### Methods:
   * `getInfo`. Will return the player info.
   * `execute`. Will receive the following arguments:
     * [`playerState`](#player-state). The current player state.
-    * `enemiesPosition`. An array of the other players positions. Example: `[[2,3], [5, 6]]`.
+    * `enemiesStates`. An array all the other players `playerState`s.
     * [`gameEnvironment`](#game-environment). The game environment object.
 
-# CashJS Core.
+## CashJS Class.
 
-This is a javascript class that will receive the initial world environment, the player functions, and will calculate the game state.
+This class will receive all the player definitions, generate the game states, and execute the players AIs.
 
-## Arguments:
+### Arguments:
   * `playerDefinitionArray`. An array of [`playerDefinition`](#player-definition) objects.
 
-## Methods:
+### Methods:
   * `getState`. Will return the current [`gameState`](#game-state).
   * `nextStep`. Will execute a step for every player (all individual plys).
