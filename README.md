@@ -1,4 +1,4 @@
-# Unnamed js AI game.
+# ClashJS
 
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
 
@@ -15,19 +15,19 @@ The game is simple: we will put all the players in a battle arena, and then make
 ### Game characteristics.
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, west, south or east.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
-	* The current position and direction of the player.
-	* The position of all other players.
-	* The position of the coins.
-	* A environment configuration option with:
-		* Grid size.
+  * The current position and direction of the player.
+  * The position of all other players.
+  * The position of the coins.
+  * A environment configuration option with:
+    * Grid size.
 * Every turn a player must execute some of the following actions:
-	* Move one step in its current direction.
-	* Turn into any of the four directions.
-	* Shoot.
+  * Move one step in its current direction.
+  * Turn into any of the four directions.
+  * Shoot.
 * A player can shoot to try to destroy another player. The shoots have the following characteristics:
-	* The shoots are executed before the movements in every turn.
-	* A shoot have a range of 3 squares.
-	* After a shoot, a player will be paralized for the following 3 turns.
+  * The shoots are executed before the movements in every turn.
+  * A shoot have a range of 3 squares.
+  * After a shoot, a player will be paralized for the following 3 turns.
 * A player can collect a coin in the moment it steps over it. A new coin may appear in any moment of the game.
 * If nobody dies or collects a coin in 50 turns, the game will be considered a tie with all the survivors.
 
@@ -57,45 +57,54 @@ We should make an app that can take functions provided by the users, execute the
 
 ## Hypothesis.
 
+Let the *player definition* be an object with the player info and its AI function.
+
+  {
+    name: 'javierbyte',
+    ai: function(player, otherPlayers, env) {
+      // think...
+      return 'move';
+    }
+  }
 
 Let the *user state* be an object with a user information like the following:
 
-	{
-		xPos: <number>,
-		yPos: <number>,
-		direction: <number>, // 0: north, 1: east, 2: south, 3: west
-		coinsCollected: <number>,
-		paralizedTurns: <number>
-	}
+  {
+    xPos: <number>,
+    yPos: <number>,
+    direction: <number>, // 0: north, 1: east, 2: south, 3: west
+    coinsCollected: <number>,
+    paralizedTurns: <number>
+  }
 
 Let the *game environment* be a configuration object like the following:
 
-	{
-		gridSize: [<number>, <number>],
-		coinPositions: <array of [<number>, <number>] arrays>
-	}
+  {
+    gridSize: [<number>, <number>],
+    ammoPosition: <array of [<number>, <number>] arrays>
+  }
 
 Let the *game state* be an object with the array of all user states, and the game environment.
 
-	{
-		userStates: <array of user states>,
-		environment: <game environment>
-	}
+  {
+    userStates: <array of user states>,
+    environment: <game environment>
+  }
 
 ### Architecture.
 
 We can divide the problem in 3 big steps.
 
 * **AI Runner**. This will take all the user provided functions and the current game state, and execute every function.
-	* This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
+  * This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
 * **Game Core**. This will take the responses that the AI Runners sends, and apply the game logic on them.
-	* Kill killed players.
-	* Move and turn players.
-	* Collect and count coins.
-	* Generate new coins if necessary.
-	* Set the paralized turns to players that shooted.
-	* Count if too many inactive turns had passed.
-	* Stop the game when it ends.
+  * Kill killed players.
+  * Move and turn players.
+  * Collect and count coins.
+  * Generate new coins if necessary.
+  * Set the paralized turns to players that shooted.
+  * Count if too many inactive turns had passed.
+  * Stop the game when it ends.
 * **Render**. This will take the game state and render it nicely.
 
 They will interact as follows:
@@ -151,3 +160,19 @@ AI Runner->> Game Core: Results
 
 http://knsv.github.io/mermaid/live_editor/
 -->
+
+# CashJS Core.
+
+This is a javascript class that will receive the initial world environment, the player functions, and will calculate the game state.
+
+## Arguments:
+  * Players. An array of *player definition* objects.
+
+## Methods:
+  * getState. Will return the current game state.
+  * nextStep. Will execute a step for every player (all individual plys).
+  * _nextPly. Will execute a step for the next player. (A ply).
+
+## Example:
+
+  this.ClashJS = new ClashJS();
