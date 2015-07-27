@@ -14,7 +14,7 @@ Games and coding are fun! I want to make a game where we can confront AI vs AI.
 
 The game is simple: we will put all the players in a battle arena, and then make them fight to death. We will put a coin in the arena, and the players should try to collect it. The last player alive wins!
 
-### Game characteristics.
+### Game Rules.
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, west, south or east.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
   * The current position and direction of the player.
@@ -50,7 +50,7 @@ Let the *player definition* (`playerDefinition`) be an object with the player in
       info: {
         name: 'javierbyte'
       },
-      ai: function(player, otherPlayers, gameEnvironment) {
+      ai: function(playerState, enemiesPosition, gameEnvironment) {
         // think...
         return 'move';
       }

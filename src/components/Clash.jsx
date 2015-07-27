@@ -8,13 +8,15 @@ var deepSetState = require('../mixins/deepSetState.js');
 
 var ClashJS = require('../clashjs/ClashCore.js');
 
+var MOCKPLAYERS = require('../mock/mockPlayers.js');
+
 var Clash = React.createClass({
   mixins: [
     deepSetState
   ],
 
   getInitialState() {
-    this.ClashJS = new ClashJS();
+    this.ClashJS = new ClashJS(MOCKPLAYERS);
     return this.ClashJS.getState();
   },
 

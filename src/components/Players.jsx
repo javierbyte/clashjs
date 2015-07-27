@@ -16,7 +16,7 @@ var Ammos = React.createClass({
     var ammoRender = _.map(players, (playerData, playerIndex) => {
       return (
         <div key={playerIndex} className='clash-player' style={{
-          WebkitMaskImage: 'url(/static/rockets/rocket' + playerData.style + '.png)',
+          WebkitMaskImage: 'url(/static/rockets/rocket' + (playerData.style || 0) + '.png)',
           WebkitMaskSize: 'contain',
           WebkitMaskPosition: 'center',
           WebkitMaskRepeat: 'no-repeat',

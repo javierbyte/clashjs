@@ -1,29 +1,25 @@
+var PlayerClass = require('./PlayerClass.js');
+
 class ClashJS {
-  constructor() {
+  constructor(playerDefinitionArray) {
     this._gameEnvironment = {
-      gridSize: 13,
+      gridSize: 15,
       ammoPosition: []
     };
 
-    this._playerStates = [{
-      style: 0,
-      color: '#FF5722',
-      position: [3, 5],
-      direction: 0,
-      ammo: 3
-    }, {
-      style: 1,
-      color: '#CDDC39',
-      position: [6, 5],
-      direction: 1,
-      ammo: 3
-    }, {
-      style: 2,
-      color: '#03A9F4',
-      position: [8, 8],
-      direction: 2,
-      ammo: 3
-    }];
+    this._playerInstances = playerDefinitionArray.map((playerDefinition) => {
+      return new PlayerClass(playerDefinition);
+    });
+
+    this._playerStates = this._playerInstances.map((playerInstance, index) => {
+      return {
+        style: index,
+        position: [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)],
+        direction: Math.floor(Math.random() * 4),
+        ammo: 0,
+        color: playerInstance.getInfo().color
+      };
+    });
   }
 
   getState() {
