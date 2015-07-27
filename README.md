@@ -77,8 +77,8 @@ Let the *game environment* (`gameEnvironment`) be a configuration object like th
 Let the *game state* (`gameState`) be an object with the array of all user states, and the game environment.
 
     {
-      userStates: <array of `userState`>,
-      environment: <`gameEnvironment`>
+      playerStates: <array of `playerStates`>,
+      gameEnvironment: <`gameEnvironment`>
     }
 
 ### Architecture.
@@ -175,8 +175,3 @@ This is a javascript class that will receive the initial world environment, the 
 ## Methods:
   * `getState`. Will return the current [`gameState`](#game-state).
   * `nextStep`. Will execute a step for every player (all individual plys).
-  * `_nextPly`. Will execute a step for the next player. (A ply).
-
-## Example:
-
-  this.ClashJS = new ClashJS();

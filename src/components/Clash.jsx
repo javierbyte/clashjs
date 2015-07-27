@@ -23,18 +23,18 @@ var Clash = React.createClass({
   },
 
   render() {
-    var {world, players} = this.state;
+    var {gameEnvironment, playerStates} = this.state;
 
     return (
       <div className='clash' onClick={this.nextStep}>
         <Tiles
-          gridSize={world.gridSize} />
+          gridSize={gameEnvironment.gridSize} />
         <Ammos
-          gridSize={world.gridSize}
-          ammoPosition={world.ammoPosition} />
+          gridSize={gameEnvironment.gridSize}
+          ammoPosition={gameEnvironment.ammoPosition} />
         <Players
-          gridSize={world.gridSize}
-          players={players} />
+          gridSize={gameEnvironment.gridSize}
+          players={playerStates} />
       </div>
     );
   }
