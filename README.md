@@ -19,17 +19,16 @@ The game is simple: we will put all the players in a battle arena, and then make
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
   * The current position and direction of the player.
   * The position of all other players.
-  * The position of the ammo.
   * A environment configuration option with:
     * Grid size.
+    * The position of the ammo.
 * Every turn a player must execute some of the following actions:
   * Move one step in its current direction. (`move`).
   * Turn into any of the four directions. (`north`, `east`, `south`, `west`).
   * Shoot. (`shoot`).
-* A player can shoot to try to destroy another player. The shoots have the following characteristics:
-  * A shoot have a range of 3 squares.
-* A player can collect ammo in the moment it steps over it. A new coin may appear in any moment of the game.
-* If nobody dies or collects a coin in 50 turns, the game will be considered a tie with all the survivors.
+* A player can shoot to try to destroy another player.
+* A player can collect ammo in the moment it steps over it. A new ammo may appear in any moment of the game.
+* If nobody dies in 50 turns, the game will be considered a tie with all the survivors.
 
 # Game Technical Spec.
 
@@ -183,4 +182,5 @@ This class will receive all the player definitions, generate the game states, an
 
 ### Methods:
   * `getState`. Will return the current [`gameState`](#game-state).
-  * `nextStep`. Will execute a step for every player (all individual plys).
+  * `nextStep`. Will execute a step for every player (all individual plys). Will return the game state.
+  * `nextPly`. Will execute the AI for the player in turn. Will return the game state.

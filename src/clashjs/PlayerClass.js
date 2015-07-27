@@ -7,6 +7,10 @@ class PlayerClass {
   getInfo() {
     return this._playerInfo;
   }
+
+  execute() {
+    return this._playerAI();
+  }
 }
 
 module.exports = PlayerClass;

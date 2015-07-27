@@ -11,9 +11,9 @@ class ClashJS {
       return new PlayerClass(playerDefinition);
     });
 
-    this._playerStates = this._playerInstances.map((playerInstance, index) => {
+    this._playerStates = this._playerInstances.map((playerInstance, playerInstanceIndex) => {
       return {
-        style: index,
+        style: playerInstanceIndex,
         position: [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)],
         direction: Math.floor(Math.random() * 4),
         ammo: 0,
@@ -30,10 +30,25 @@ class ClashJS {
   }
 
   nextStep() {
+    this._playerInstances.forEach((playerInstance, playerInstanceIndex) => {
+      this._savePlayerAction(
+        playerInstanceIndex,
+        playerInstance.execute(
+          this._playerStates[playerInstanceIndex],
+          this._playerStates,
+          this._gameEnvironment
+        )
+      );
+    });
+
     return {
       gameEnvironment: this._gameEnvironment,
       playerStates: this._playerStates
     };
+  }
+
+  _savePlayerAction(playerIndex, action) {
+    console.warn(playerIndex, action);
   }
 }
 

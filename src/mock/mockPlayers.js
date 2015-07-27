@@ -14,7 +14,7 @@ module.exports = [{
     color: '#CDDC39'
   },
   ai: () => {
-    return 'turnLeft';
+    return 'south';
   }
 }, {
   info: {
