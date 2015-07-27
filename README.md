@@ -57,6 +57,7 @@ We should make an app that can take functions provided by the users, execute the
 
 ## Hypothesis.
 
+### Player Definition.
 Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
 
     {
@@ -69,7 +70,8 @@ Let the *player definition* (`playerDefinition`) be an object with the player in
       }
     }
 
-Let the *player state* be an object with a player information like the following:
+### Player State.
+Let the *player state* (`playerState`) be an object with a player information like the following:
 
     {
       position: `[<number>, <number>]`,
@@ -77,6 +79,7 @@ Let the *player state* be an object with a player information like the following
       ammo: `<number>`
     }
 
+### Game Environment.
 Let the *game environment* (`gameEnvironment`) be a configuration object like the following:
 
     {
@@ -84,11 +87,12 @@ Let the *game environment* (`gameEnvironment`) be a configuration object like th
       ammoPosition: <array of [<number>, <number>] arrays>
     }
 
-Let the *game state* be an object with the array of all user states, and the game environment.
+### Game State.
+Let the *game state* (`gameState`) be an object with the array of all user states, and the game environment.
 
     {
-      userStates: <array of user states>,
-      environment: <game environment>
+      userStates: <array of `userState`>,
+      environment: <`gameEnvironment`>
     }
 
 ### Architecture.
@@ -163,10 +167,10 @@ http://knsv.github.io/mermaid/live_editor/
 
 # PlayerClass.
 
-This javascript class will recive a `playerDefinition`.
+This javascript class will recive a `playerDefinition` and return a player instance.
 
 ## Arguments:
-  * `playerDefinition`.
+  * [`playerDefinition`](#Player-Definition).
 
 ## Methods:
   * `getInfo`. Will return the player info.
