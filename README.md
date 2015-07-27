@@ -170,14 +170,14 @@ http://knsv.github.io/mermaid/live_editor/
 This javascript class will recive a `playerDefinition` and return a player instance.
 
 ## Arguments:
-  * [`playerDefinition`](#Player-Definition).
+  * [`playerDefinition`](#player-definition).
 
 ## Methods:
   * `getInfo`. Will return the player info.
   * `execute`. Will receive the following arguments:
-    * `playerState`. The current player state/.
+    * [`playerDefinition`](#player-state). The current player state.
     * `enemiesPosition`. An array of the other players positions. Example: `[[2,3], [5, 6]]`.
-    * `gameEnvironment`. The game environment object.
+    * [`gameEnvironment`](#game-environment). The game environment object.
 
 ## Example:
 
@@ -188,10 +188,10 @@ This javascript class will recive a `playerDefinition` and return a player insta
 This is a javascript class that will receive the initial world environment, the player functions, and will calculate the game state.
 
 ## Arguments:
-  * `playerDefinitionArray`. An array of *player definition* objects.
+  * `playerDefinitionArray`. An array of [`playerDefinition`](#player-state) objects.
 
 ## Methods:
-  * `getState`. Will return the current game state.
+  * `getState`. Will return the current [`gameState`](#game-state).
   * `nextStep`. Will execute a step for every player (all individual plys).
   * `_nextPly`. Will execute a step for the next player. (A ply).
 
