@@ -4,11 +4,13 @@ var executeMovementHelper = require('./executeMovementHelper.js');
 var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 class ClashJS {
-  constructor(playerDefinitionArray) {
+  constructor(playerDefinitionArray, evtCallback) {
     this._gameEnvironment = {
-      gridSize: 13,
+      gridSize: 11,
       ammoPosition: []
     };
+
+    this._evtCallback = evtCallback;
 
     this._playerInstances = playerDefinitionArray.map((playerDefinition) => {
       return new PlayerClass(playerDefinition);
@@ -19,7 +21,8 @@ class ClashJS {
         style: playerInstance.getInfo().style,
         position: [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)],
         direction: DIRECTIONS[Math.floor(Math.random() * 4)],
-        ammo: 0
+        ammo: 0,
+        isAlive: true
       };
     });
 
@@ -55,17 +58,21 @@ class ClashJS {
   }
 
   nextPly() {
-    var otherPlayers = this._playerStates.slice();
-    otherPlayers.splice(this._currentPlayer, 1);
+    var otherPlayers = this._playerStates.filter((currentEnemyFilter, index) => {
+      if (index === this._currentPlayer) return false;
+      return currentEnemyFilter.isAlive;
+    });
 
-    this._savePlayerAction(
-      this._currentPlayer,
-      this._playerInstances[this._currentPlayer].execute(
-        this._playerStates[this._currentPlayer],
-        otherPlayers,
-        this._gameEnvironment
-      )
-    );
+    if (this._playerStates[this._currentPlayer].isAlive) {
+      this._savePlayerAction(
+        this._currentPlayer,
+        this._playerInstances[this._currentPlayer].execute(
+          this._playerStates[this._currentPlayer],
+          otherPlayers,
+          this._gameEnvironment
+        )
+      );
+    }
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 
@@ -95,7 +102,8 @@ class ClashJS {
       playerIndex,
       playerAction,
       this._playerStates,
-      this._gameEnvironment
+      this._gameEnvironment,
+      this._evtCallback
     );
   }
 }

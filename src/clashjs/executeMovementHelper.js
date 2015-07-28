@@ -1,3 +1,4 @@
+var utils = require('../lib/utils.js');
 var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 var safeMovement = (value, size) => {
@@ -6,44 +7,71 @@ var safeMovement = (value, size) => {
   return value;
 };
 
-var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment) => {
+var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, evtCallback) => {
+  var currentPlayerState = playerStates[playerIndex];
+
   if (DIRECTIONS.indexOf(playerAction) !== -1) {
-    playerStates[playerIndex].direction = playerAction;
+    currentPlayerState.direction = playerAction;
     return playerStates;
   }
 
   if (playerAction === 'move') {
-    switch (playerStates[playerIndex].direction) {
+    switch (currentPlayerState.direction) {
       case DIRECTIONS[0]:
-        playerStates[playerIndex].position[0]--;
+        currentPlayerState.position[0]--;
         break;
       case DIRECTIONS[1]:
-        playerStates[playerIndex].position[1]++;
+        currentPlayerState.position[1]++;
         break;
       case DIRECTIONS[2]:
-        playerStates[playerIndex].position[0]++;
+        currentPlayerState.position[0]++;
         break;
       case DIRECTIONS[3]:
-        playerStates[playerIndex].position[1]--;
+        currentPlayerState.position[1]--;
         break;
       default:
         break;
     }
 
     // prevent the player to go over the world
-    playerStates[playerIndex].position[0] = safeMovement(playerStates[playerIndex].position[0], gameEnvironment.gridSize);
-    playerStates[playerIndex].position[1] = safeMovement(playerStates[playerIndex].position[1], gameEnvironment.gridSize);
+    currentPlayerState.position[0] = safeMovement(currentPlayerState.position[0], gameEnvironment.gridSize);
+    currentPlayerState.position[1] = safeMovement(currentPlayerState.position[1], gameEnvironment.gridSize);
 
     // check if the player collected ammo
     gameEnvironment.ammoPosition.forEach((el, index) => {
-      if (el[0] === playerStates[playerIndex].position[0] && el[1] === playerStates[playerIndex].position[1]) {
+      if (el[0] === currentPlayerState.position[0] && el[1] === currentPlayerState.position[1]) {
         gameEnvironment.ammoPosition.splice(index, 1);
-        playerStates[playerIndex].ammo += 1;
+        currentPlayerState.ammo += 1;
       }
     });
+  }
+
+  if (playerAction === 'shoot') {
+    let kills = [];
+    evtCallback('SHOOT', {
+      shooter: playerIndex,
+      origin: currentPlayerState.position,
+      direction: currentPlayerState.direction
+    });
+
+    playerStates.forEach((enemyObject, enemyIndex) => {
+      if (enemyObject.isAlive && utils.isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction)) {
+        kills.push(enemyIndex);
+        enemyObject.isAlive = false;
+      }
+    });
+
+    if (kills.length) {
+      evtCallback('KILL', {
+        killer: playerIndex,
+        killed: kills
+      });
+    }
+
   }
 
   return playerStates;
 };
 
 module.exports = clashCoreUtils;
+

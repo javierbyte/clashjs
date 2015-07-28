@@ -67,6 +67,15 @@
         text-align: center;
       }
 
+      .clash-shoot {
+        position: absolute;
+        height: 1em;
+        width: 100em;
+        margin-top: .5em;
+        margin-left: .5em;
+        transform-origin: top left;
+      }
+
       .clash-layer {
         position: absolute;
         top: 0;
@@ -82,6 +91,20 @@
         padding: 1em;
       }
 
+      .animation-shot {
+        animation: shotKeyFrame .3s;
+      }
+      @keyframes shotKeyFrame {
+        0%  {
+          background: #f00;
+        }
+        50% {
+          background: #ff0;
+        },
+        100% {
+          background: transparent;
+        }
+      }
 
       .animation-glow {
         animation: glowKeyFrame 1s infinite alternate;

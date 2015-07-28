@@ -41,6 +41,8 @@ var Players = React.createClass({
     var tileSize = 100 / gridSize;
 
     var playerRender = _.map(playerStates, (playerData, playerIndex) => {
+      if (!playerData.isAlive) return null;
+
       var playerInfo = playerInstances[playerIndex].getInfo();
 
       return (

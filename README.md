@@ -65,7 +65,8 @@ Let the *player state* (`playerState`) be an object with a player information li
     {
       position: `[<number>, <number>]`,
       direction: `<string>`, // One of 'north', 'east', 'south' or 'west'
-      ammo: `<number>`
+      ammo: `<number>`,
+      isAlive: `<bool>`
     }
 
 ### Game Environment.
@@ -162,12 +163,13 @@ This javascript class will recive a `playerDefinition` and return a player insta
 
 ### Arguments:
   * [`playerDefinition`](#player-definition).
+  * [`evtCallback`] A callback that will receive the arguments `evt` and `data`.
 
 ### Methods:
   * `getInfo`. Will return the player info.
   * `execute`. Will receive the following arguments:
     * [`playerState`](#player-state). The current player state.
-    * `enemiesStates`. An array all the other players `playerState`s.
+    * `enemiesStates`. An array all the other live players `playerState`s.
     * [`gameEnvironment`](#game-environment). The game environment object.
 
 ## CashJS Class.
