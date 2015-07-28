@@ -30,6 +30,7 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment) 
         break;
     }
 
+    // prevent the player to go over the world
     playerStates[playerIndex].position[0] = safeMovement(playerStates[playerIndex].position[0], gameEnvironment.gridSize);
     playerStates[playerIndex].position[1] = safeMovement(playerStates[playerIndex].position[1], gameEnvironment.gridSize);
 

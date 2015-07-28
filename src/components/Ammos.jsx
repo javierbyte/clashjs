@@ -25,7 +25,7 @@ var Ammos = React.createClass({
     });
 
     return (
-      <div className='clash-layer'>
+      <div className='clash-layer animation-glow'>
         {ammoRender}
       </div>
     );

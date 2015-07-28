@@ -6,7 +6,7 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 class ClashJS {
   constructor(playerDefinitionArray) {
     this._gameEnvironment = {
-      gridSize: 9,
+      gridSize: 13,
       ammoPosition: []
     };
 
@@ -14,9 +14,9 @@ class ClashJS {
       return new PlayerClass(playerDefinition);
     });
 
-    this._playerStates = this._playerInstances.map((playerInstance, playerInstanceIndex) => {
+    this._playerStates = this._playerInstances.map((playerInstance) => {
       return {
-        style: playerInstanceIndex,
+        style: playerInstance.getInfo().style,
         position: [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)],
         direction: DIRECTIONS[Math.floor(Math.random() * 4)],
         ammo: 0
@@ -49,7 +49,8 @@ class ClashJS {
   getState() {
     return {
       gameEnvironment: this._gameEnvironment,
-      playerStates: this._playerStates
+      playerStates: this._playerStates,
+      playerInstances: this._playerInstances
     };
   }
 
@@ -72,7 +73,8 @@ class ClashJS {
 
     return {
       gameEnvironment: this._gameEnvironment,
-      playerStates: this._playerStates
+      playerStates: this._playerStates,
+      playerInstances: this._playerInstances
     };
   }
 
@@ -83,7 +85,8 @@ class ClashJS {
 
     return {
       gameEnvironment: this._gameEnvironment,
-      playerStates: this._playerStates
+      playerStates: this._playerStates,
+      playerInstances: this._playerInstances
     };
   }
 

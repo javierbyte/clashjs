@@ -1,14 +1,17 @@
 var React = require('react');
+var _ = require('lodash');
 
 var Tiles = require('./Tiles.jsx');
 var Ammos = require('./Ammos.jsx');
 var Players = require('./Players.jsx');
+var Stats = require('./Stats.jsx');
 
 var deepSetState = require('../mixins/deepSetState.js');
 
 var ClashJS = require('../clashjs/ClashCore.js');
 
-var MOCKPLAYERS = require('../mock/mockPlayers.js');
+var playerObjects = require('../Players.js');
+var playerArray = _.map(playerObjects, el => el);
 
 var Clash = React.createClass({
   mixins: [
@@ -16,7 +19,7 @@ var Clash = React.createClass({
   ],
 
   getInitialState() {
-    this.ClashJS = new ClashJS(MOCKPLAYERS);
+    this.ClashJS = new ClashJS(playerArray);
     return this.ClashJS.getState();
   },
 
@@ -31,18 +34,23 @@ var Clash = React.createClass({
   },
 
   render() {
-    var {gameEnvironment, playerStates} = this.state;
+    var {gameEnvironment, playerStates, playerInstances} = this.state;
 
     return (
       <div className='clash' onClick={this.nextStep}>
         <Tiles
           gridSize={gameEnvironment.gridSize} />
+        <Players
+          gridSize={gameEnvironment.gridSize}
+          playerInstances={playerInstances}
+          playerStates={playerStates} />
         <Ammos
           gridSize={gameEnvironment.gridSize}
           ammoPosition={gameEnvironment.ammoPosition} />
-        <Players
-          gridSize={gameEnvironment.gridSize}
-          players={playerStates} />
+
+        <Stats
+          playerInstances={playerInstances}
+          playerStates={playerStates} />
       </div>
     );
   }

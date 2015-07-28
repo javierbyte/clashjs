@@ -12,6 +12,16 @@
       body {
         background: url('/static/bg.jpg') no-repeat center #2C3E50;
         background-size: cover;
+        color: #fff;
+        font: 1em/1.618 Graphik;
+        font-weight: 200;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      b {
+        font-weight: 500;
       }
 
       .clash {
@@ -30,17 +40,31 @@
 
       .clash-ammo {
         position: absolute;
-        background: url('/static/diamond.png') no-repeat center / 90%;
+        background: url('/static/star.png') no-repeat center / 90%;
+        transition: transform 2s linear;
+      }
+      .clash-ammo:hover {
+        transform: rotate(360deg);
       }
 
       .clash-player {
-        transition: transform .4s;
         position: absolute;
         top: 0;
         left: 0;
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
+        transition: transform .4s;
+      }
+      .clash-player-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform .4s;
+      }
+      .clash-player-name {
+        top: -2em;
+        text-align: center;
       }
 
       .clash-layer {
@@ -49,6 +73,26 @@
         left: 0;
         width: 100vmin;
         height: 100vmin;
+      }
+
+      .stats {
+        position: fixed;
+        top: 0;
+        right: 0;
+        padding: 1em;
+      }
+
+
+      .animation-glow {
+        animation: glowKeyFrame 1s infinite alternate;
+      }
+      @keyframes glowKeyFrame {
+        0%  {
+          -webkit-filter: saturate(0);
+        }
+        100% {
+          -webkit-filter: saturate(1);
+        }
       }
     </style>
   </head>
