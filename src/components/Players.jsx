@@ -1,6 +1,8 @@
 var React = require('react');
 var _ = require('lodash');
 
+var DIRECTIONS = ['north', 'east', 'south', 'west'];
+
 var Ammos = React.createClass({
 
   propTypes: {
@@ -8,7 +10,32 @@ var Ammos = React.createClass({
     players: React.PropTypes.array
   },
 
+  getInitialState() {
+    var {players} = this.props;
+
+    return {
+      playerDirections: players.map(el => DIRECTIONS.indexOf(el.direction))
+    };
+  },
+
+  componentWillReceiveProps(nextProps) {
+    var playerDirections = this.state.playerDirections;
+    var newPlayerDirections = nextProps.players.map(el => DIRECTIONS.indexOf(el.direction));
+
+    this.setState({
+      playerDirections: newPlayerDirections.map((el, index) => {
+        var diff = ((el + 4) % 4) - ((playerDirections[index] + 4) % 4);
+        console.warn(diff);
+        if (diff === 3) diff = -1;
+        if (diff === -3) diff = 1;
+
+        return playerDirections[index] + diff;
+      })
+    });
+  },
+
   render() {
+    var {playerDirections} = this.state;
     var {gridSize, players} = this.props;
 
     var tileSize = 100 / gridSize;
@@ -23,7 +50,7 @@ var Ammos = React.createClass({
             'translateY(' + tileSize * playerData.position[0] + 'vmin) ' +
             'translateX(' + tileSize * playerData.position[1] + 'vmin)' +
             'scale(1.25) ' +
-            'rotate(' + (90 * playerData.direction) + 'deg) '
+            'rotate(' + (90 * playerDirections[playerIndex]) + 'deg) '
         }} />
       );
     });

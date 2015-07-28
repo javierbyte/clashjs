@@ -64,7 +64,7 @@ Let the *player state* (`playerState`) be an object with a player information li
 
     {
       position: `[<number>, <number>]`,
-      direction: `<number>`, // 0: north, 1: east, 2: south, 3: west
+      direction: `<string>`, // One of 'north', 'east', 'south' or 'west'
       ammo: `<number>`
     }
 

@@ -1,4 +1,4 @@
-var directions = ['north', 'east', 'south', 'west'];
+var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 var safeMovement = (value, size) => {
   if (value < 0) return 0;
@@ -7,25 +7,23 @@ var safeMovement = (value, size) => {
 };
 
 var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment) => {
-  // console.warn('Saving actions:', playerIndex, playerAction);
-
-  if (directions.indexOf(playerAction) !== -1) {
-    playerStates[playerIndex].direction = directions.indexOf(playerAction);
+  if (DIRECTIONS.indexOf(playerAction) !== -1) {
+    playerStates[playerIndex].direction = playerAction;
     return playerStates;
   }
 
   if (playerAction === 'move') {
     switch (playerStates[playerIndex].direction) {
-      case 0:
+      case DIRECTIONS[0]:
         playerStates[playerIndex].position[0]--;
         break;
-      case 1:
+      case DIRECTIONS[1]:
         playerStates[playerIndex].position[1]++;
         break;
-      case 2:
+      case DIRECTIONS[2]:
         playerStates[playerIndex].position[0]++;
         break;
-      case 3:
+      case DIRECTIONS[3]:
         playerStates[playerIndex].position[1]--;
         break;
       default:
@@ -34,6 +32,14 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment) 
 
     playerStates[playerIndex].position[0] = safeMovement(playerStates[playerIndex].position[0], gameEnvironment.gridSize);
     playerStates[playerIndex].position[1] = safeMovement(playerStates[playerIndex].position[1], gameEnvironment.gridSize);
+
+    // check if the player collected ammo
+    gameEnvironment.ammoPosition.forEach((el, index) => {
+      if (el[0] === playerStates[playerIndex].position[0] && el[1] === playerStates[playerIndex].position[1]) {
+        gameEnvironment.ammoPosition.splice(index, 1);
+        playerStates[playerIndex].ammo += 1;
+      }
+    });
   }
 
   return playerStates;

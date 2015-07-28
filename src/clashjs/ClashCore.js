@@ -1,10 +1,12 @@
 var PlayerClass = require('./PlayerClass.js');
 var executeMovementHelper = require('./executeMovementHelper.js');
 
+var DIRECTIONS = ['north', 'east', 'south', 'west'];
+
 class ClashJS {
   constructor(playerDefinitionArray) {
     this._gameEnvironment = {
-      gridSize: 13,
+      gridSize: 9,
       ammoPosition: []
     };
 
@@ -16,22 +18,32 @@ class ClashJS {
       return {
         style: playerInstanceIndex,
         position: [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)],
-        direction: Math.floor(Math.random() * 4),
-        ammo: 0,
-        color: playerInstance.getInfo().color
+        direction: DIRECTIONS[Math.floor(Math.random() * 4)],
+        ammo: 0
       };
     });
 
     this._currentPlayer = 0;
 
     this._createAmmo();
+    this._createAmmo();
+    this._createAmmo();
   }
 
   _createAmmo() {
-    this._gameEnvironment.ammoPosition.push([
+    var newAmmoPosition = [
       Math.floor(Math.random() * this._gameEnvironment.gridSize),
       Math.floor(Math.random() * this._gameEnvironment.gridSize)
-    ]);
+    ];
+
+    if (this._gameEnvironment.ammoPosition.some(el => {
+      return el[0] === newAmmoPosition[0] && el[1] === newAmmoPosition[1];
+    })) {
+      this._createAmmo();
+      return;
+    }
+
+    this._gameEnvironment.ammoPosition.push(newAmmoPosition);
   }
 
   getState() {
@@ -42,16 +54,21 @@ class ClashJS {
   }
 
   nextPly() {
+    var otherPlayers = this._playerStates.slice();
+    otherPlayers.splice(this._currentPlayer, 1);
+
     this._savePlayerAction(
       this._currentPlayer,
       this._playerInstances[this._currentPlayer].execute(
         this._playerStates[this._currentPlayer],
-        this._playerStates.slice(this._currentPlayer, 1),
+        otherPlayers,
         this._gameEnvironment
       )
     );
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
+
+    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length) this._createAmmo();
 
     return {
       gameEnvironment: this._gameEnvironment,
