@@ -7,8 +7,7 @@ var randomMove = () => {
 module.exports = [{
   info: {
     name: 'javierbyte',
-    style: 0,
-    color: '#FF5722'
+    style: 0
   },
   ai: () => {
     return randomMove();
@@ -16,8 +15,7 @@ module.exports = [{
 }, {
   info: {
     name: 'manuelmhtr',
-    style: 1,
-    color: '#CDDC39'
+    style: 1
   },
   ai: () => {
     return randomMove();
@@ -25,8 +23,7 @@ module.exports = [{
 }, {
   info: {
     name: 'codingpains',
-    style: 2,
-    color: '#03A9F4'
+    style: 2
   },
   ai: () => {
     return randomMove();
@@ -34,8 +31,7 @@ module.exports = [{
 }, {
   info: {
     name: 'ericku',
-    style: 3,
-    color: '#fff'
+    style: 3
   },
   ai: () => {
     return randomMove();

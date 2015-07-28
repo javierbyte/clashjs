@@ -23,7 +23,7 @@ var Clash = React.createClass({
   componentDidMount() {
     window.setInterval(() => {
       this.replaceState(this.ClashJS.nextPly());
-    }, 40);
+    }, 100);
   },
 
   nextStep() {

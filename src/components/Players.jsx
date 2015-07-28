@@ -13,26 +13,24 @@ var Ammos = React.createClass({
 
     var tileSize = 100 / gridSize;
 
-    var ammoRender = _.map(players, (playerData, playerIndex) => {
+    var playerRender = _.map(players, (playerData, playerIndex) => {
       return (
         <div key={playerIndex} className='clash-player' style={{
-          WebkitMaskImage: 'url(/static/rockets/rocket' + (playerData.style || 0) + '.png)',
-          WebkitMaskSize: 'contain',
-          WebkitMaskPosition: 'center',
-          WebkitMaskRepeat: 'no-repeat',
-          backgroundColor: playerData.color || '#FFF',
-          top: (tileSize * playerData.position[0]) + 'vmin',
-          left: (tileSize * playerData.position[1]) + 'vmin',
+          backgroundImage: 'url(/static/rockets/rocket' + (playerData.style || 0) + '.png)',
           width: tileSize + 'vmin',
           height: tileSize + 'vmin',
-          transform: 'scale(1.25) rotate(' + (90 * playerData.direction) + 'deg)'
+          transform:
+            'translateY(' + tileSize * playerData.position[0] + 'vmin) ' +
+            'translateX(' + tileSize * playerData.position[1] + 'vmin)' +
+            'scale(1.25) ' +
+            'rotate(' + (90 * playerData.direction) + 'deg) '
         }} />
       );
     });
 
     return (
       <div className='clash-layer'>
-        {ammoRender}
+        {playerRender}
       </div>
     );
   }

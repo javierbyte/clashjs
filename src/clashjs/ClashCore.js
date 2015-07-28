@@ -23,6 +23,15 @@ class ClashJS {
     });
 
     this._currentPlayer = 0;
+
+    this._createAmmo();
+  }
+
+  _createAmmo() {
+    this._gameEnvironment.ammoPosition.push([
+      Math.floor(Math.random() * this._gameEnvironment.gridSize),
+      Math.floor(Math.random() * this._gameEnvironment.gridSize)
+    ]);
   }
 
   getState() {
