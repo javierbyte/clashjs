@@ -5,6 +5,11 @@ var randomMove = () => {
   return Math.random() > 0.33 ? 'move' : movements[Math.floor(Math.random() * movements.length)];
 };
 
+var safeRandomMove = () => {
+  return Math.random() > 0.33 ? 'move' : DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+};
+
+
 var getDirection = (start, end) => {
   var diffVertical = Math.abs(start[0] - end[0]);
   var diffHorizontal = Math.abs(start[1] - end[1]);
@@ -44,5 +49,6 @@ module.exports = {
   randomMove,
   getDirection,
   isVisible,
-  canKill
+  canKill,
+  safeRandomMove
 };

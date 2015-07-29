@@ -1,8 +1,8 @@
 var utils = require('../lib/utils.js');
 
-var five = {
+var HITLER = {
   info: {
-    name: 'five',
+    name: 'HITLER',
     style: 4
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
@@ -21,4 +21,4 @@ var five = {
   }
 };
 
-module.exports = five;
+module.exports = HITLER;

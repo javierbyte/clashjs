@@ -9,7 +9,7 @@ var ericku = {
     if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
       return 'shoot';
     }
-    return utils.randomMove();
+    return utils.safeRandomMove();
   }
 };
 

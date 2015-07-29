@@ -12,7 +12,7 @@ var deepSetState = require('../mixins/deepSetState.js');
 var ClashJS = require('../clashjs/ClashCore.js');
 
 var playerObjects = require('../Players.js');
-var playerArray = _.map(playerObjects, el => el);
+var playerArray = _.map(playerObjects, el => el).slice(0, 6);
 
 var Clash = React.createClass({
   mixins: [
@@ -23,7 +23,8 @@ var Clash = React.createClass({
     this.ClashJS = new ClashJS(playerArray, this.handleEvent);
     return {
       clashjs: this.ClashJS.getState(),
-      shoots: []
+      shoots: [],
+      speed: 200
     };
   },
 
@@ -50,13 +51,14 @@ var Clash = React.createClass({
     }, () => {
       window.setTimeout(() => {
         this.componentDidMount();
-      }, 50);
+      }, this.state.speed);
     });
   },
 
-  nextStep() {
+  handleClick() {
     this.setState({
-      clashjs: this.ClashJS.nextStep()
+      clashjs: this.ClashJS.nextStep(),
+      speed: Math.max(parseInt(this.state.speed * .8, 10), 1)
     });
   },
 
@@ -65,7 +67,7 @@ var Clash = React.createClass({
     var {gameEnvironment, playerStates, playerInstances} = clashjs;
 
     return (
-      <div className='clash' onClick={this.nextStep}>
+      <div className='clash' onClick={this.handleClick}>
         <Tiles
           gridSize={gameEnvironment.gridSize} />
         <Shoots

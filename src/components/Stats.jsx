@@ -18,7 +18,10 @@ var Stats = React.createClass({
           var playerState = playerStates[index];
 
           return (
-            <div key={index}>
+            <div key={index} style={{
+              textDecoration: playerState.isAlive ? 'none' : 'line-through',
+              color: playerState.isAlive ? '#FFF' : '#A00'
+            }}>
               {playerInfo.name}
               {' '}
               <b>{playerState.ammo}</b>

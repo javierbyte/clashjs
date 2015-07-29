@@ -6,6 +6,10 @@ var manuelmhtr = {
     style: 3
   },
   ai: (playerState, enemiesState, gameEnvironment) => {
+    if (playerState.ammo) {
+      return 'shoot';
+    }
+
     return utils.randomMove();
   }
 };
