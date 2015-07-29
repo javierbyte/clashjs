@@ -34,8 +34,15 @@ var isVisible = (originalPosition, finalPosition, direction) => {
   }
 }
 
+var canKill = (currentPlayerState, enemiesStates) => {
+  return enemiesStates.some((enemyObject, enemyIndex) => {
+    return (enemyObject.isAlive && isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction));
+  });
+}
+
 module.exports = {
   randomMove,
   getDirection,
-  isVisible
+  isVisible,
+  canKill
 };

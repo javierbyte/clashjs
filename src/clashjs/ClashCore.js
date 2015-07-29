@@ -21,7 +21,7 @@ class ClashJS {
         style: playerInstance.getInfo().style,
         position: [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)],
         direction: DIRECTIONS[Math.floor(Math.random() * 4)],
-        ammo: 0,
+        ammo: 10,
         isAlive: true
       };
     });

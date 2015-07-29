@@ -5,7 +5,18 @@ var five = {
     name: 'five',
     style: 4
   },
-  ai: () => {
+  ai: (playerState, enemiesStates, gameEnvironment) => {
+    var directionToAmmo;
+
+    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+      return 'shoot';
+    }
+    if (gameEnvironment.ammoPosition.length) {
+      directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+
+      if (directionToAmmo !== playerState.direction) return directionToAmmo;
+      return 'move';
+    }
     return utils.randomMove();
   }
 };

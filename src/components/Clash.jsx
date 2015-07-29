@@ -50,7 +50,7 @@ var Clash = React.createClass({
     }, () => {
       window.setTimeout(() => {
         this.componentDidMount();
-      }, 100);
+      }, 50);
     });
   },
 

@@ -46,7 +46,9 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, 
     });
   }
 
-  if (playerAction === 'shoot') {
+  if (playerAction === 'shoot' && currentPlayerState.ammo > 0) {
+    currentPlayerState.ammo -= 1;
+
     let kills = [];
     evtCallback('SHOOT', {
       shooter: playerIndex,

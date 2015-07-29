@@ -5,7 +5,10 @@ var ericku = {
     name: 'ericku',
     style: 1
   },
-  ai: () => {
+  ai: (playerState, enemiesStates) => {
+    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+      return 'shoot';
+    }
     return utils.randomMove();
   }
 };
