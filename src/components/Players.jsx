@@ -56,7 +56,7 @@ var Players = React.createClass({
           <div className='clash-player' style={{
             width: tileSize + 'vmin',
             height: tileSize + 'vmin',
-            backgroundImage: 'url(/static/rockets/rocket' + (playerData.style || 0) + '.png)',
+            backgroundImage: 'url(static/rockets/rocket' + (playerData.style || 0) + '.png)',
             transform: 'scale(1.25) ' +
             'rotate(' + (90 * playerDirections[playerIndex]) + 'deg) '}}>
           </div>

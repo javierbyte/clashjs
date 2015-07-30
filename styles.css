@@ -5,7 +5,7 @@
 }
 
 body {
-  background: url('/static/bg.jpg') no-repeat center #2C3E50;
+  background: url('static/bg.jpg') no-repeat center #2C3E50;
   background-size: cover;
   color: #fff;
   font: 1em/1.618 Graphik;
@@ -35,7 +35,7 @@ b {
 
 .clash-ammo {
   position: absolute;
-  background: url('/static/star.png') no-repeat center / 90%;
+  background: url('static/star.png') no-repeat center / 90%;
 }
 .clash-ammo:hover {
   transform: rotate(360deg);
