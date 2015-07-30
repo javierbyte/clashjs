@@ -1,8 +1,21 @@
-# ClashJS
+# [ClashJS](http://javierbyte.github.io/clashjs/)
 
-![](spec_assets/screenshot.jpg)
+[![](spec_assets/screenshot.jpg)](http://javierbyte.github.io/clashjs/)
 
-This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
+[Demo Online](http://javierbyte.github.io/clashjs/)
+
+This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight! You can play by adding your own AI to the game!
+
+# How to participate.
+Just add yourself to
+
+    /src/Players.js
+
+And add your player in
+
+    /src/players/YOU.js
+
+Read the [game definitions](#game-definitions) to learn how to create your player. Have fun!
 
 # Game. Functional Spec.
 
@@ -37,7 +50,7 @@ We should make an app that can take functions provided by the users, execute the
 * Be safe. A player code should not be able to modify anything other than itself.
 * Be resilient as possible. If a player crashes or stop responding, the show must go on.
 
-## Hypothesis.
+## Game Definitions.
 
 ### Player Definition.
 Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
