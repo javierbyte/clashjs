@@ -27,8 +27,8 @@ The game is simple: we will put all the players in a battle arena, and then make
 ### Game Rules.
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, east, south or west.
 * The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
-  * The current position and direction of the player.
-  * The position of all other players.
+  * The state of the player.
+  * The state of all other players.
   * A environment configuration option with:
     * Grid size.
     * The position of the ammo.
@@ -38,7 +38,6 @@ The game is simple: we will put all the players in a battle arena, and then make
   * Shoot. (`shoot`).
 * A player can shoot to try to destroy another player.
 * A player can collect ammo in the moment it steps over it. A new ammo may appear in any moment of the game.
-* If nobody dies in 50 turns, the game will be considered a tie with all the survivors.
 
 ## Game Definitions.
 
@@ -47,7 +46,8 @@ Let the *player definition* (`playerDefinition`) be an object with the player in
 
     {
       info: {
-        name: 'javierbyte'
+        name: 'javierbyte',
+        style: 2 // one of the 6 styles (0 to 5)
       },
       ai: function(playerState, enemiesStates, gameEnvironment) {
         // think...
@@ -60,7 +60,7 @@ The AI function will receive [`playerState`](#player-state), `enemiesStates` (ar
   * `north`, `east`, `south` or `west`: To turn to that direction.
   * `shoot`. To shoot if the user has enough ammo.
 
-Any other response, trying to move outside the arena size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op. 3 no-op in a row and you are dead.
+Any other response, trying to move outside the arena size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op.
 
 ### Player State.
 Let the *player state* (`playerState`) be an object with a player information like the following:
