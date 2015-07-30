@@ -40,16 +40,6 @@ The game is simple: we will put all the players in a battle arena, and then make
 * A player can collect ammo in the moment it steps over it. A new ammo may appear in any moment of the game.
 * If nobody dies in 50 turns, the game will be considered a tie with all the survivors.
 
-# Game Technical Spec.
-
-## Problem.
-We should make an app that can take functions provided by the users, execute them, and render the game as specified in the functional spec.
-
-## Constraints.
-* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
-* Be safe. A player code should not be able to modify anything other than itself.
-* Be resilient as possible. If a player crashes or stop responding, the show must go on.
-
 ## Game Definitions.
 
 ### Player Definition.
@@ -97,6 +87,18 @@ Let the *game state* (`gameState`) be an object with the array of all user state
       playerStates: <array of `playerStates`>,
       gameEnvironment: <`gameEnvironment`>
     }
+
+# Game Technical Spec.
+
+## Problem.
+We should make an app that can take functions provided by the users, execute them, and render the game as specified in the functional spec.
+
+## Constraints.
+* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
+* Be safe. A player code should not be able to modify anything other than itself.
+* Be resilient as possible. If a player crashes or stop responding, the show must go on.
+
+## How this was made.
 
 ### Architecture.
 
