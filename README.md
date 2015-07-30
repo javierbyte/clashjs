@@ -1,6 +1,6 @@
 # ClashJS
 
-![](spec_assets/screenshot.png)
+![](spec_assets/screenshot.jpg)
 
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight!
 

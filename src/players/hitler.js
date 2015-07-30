@@ -11,6 +11,7 @@ var HITLER = {
     if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
       return 'shoot';
     }
+
     if (gameEnvironment.ammoPosition.length) {
       directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
 

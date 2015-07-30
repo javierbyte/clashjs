@@ -9,6 +9,10 @@ var safeRandomMove = () => {
   return Math.random() > 0.33 ? 'move' : DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
 };
 
+var turn = (currentPosition, howMuchTurn) => {
+  var currentPositionIndex = DIRECTIONS.indexOf(currentPosition);
+  return DIRECTIONS[(currentPositionIndex + howMuchTurn) % 4];
+};
 
 var getDirection = (start, end) => {
   var diffVertical = Math.abs(start[0] - end[0]);
@@ -57,5 +61,6 @@ module.exports = {
   isVisible,
   canKill,
   safeRandomMove,
-  fastGetDirection
+  fastGetDirection,
+  turn
 };

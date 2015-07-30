@@ -8,6 +8,8 @@ var javierbyte = {
   ai: (playerState, enemiesState, gameEnvironment) => {
     var directionToAmmo;
 
+    if (Math.random() > 0.9) return 'shoot';
+
     if (gameEnvironment.ammoPosition.length) {
       directionToAmmo = utils.getDirection(
         playerState.position,

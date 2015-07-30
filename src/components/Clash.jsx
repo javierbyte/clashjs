@@ -14,8 +14,6 @@ var ClashJS = require('../clashjs/ClashCore.js');
 var playerObjects = require('../Players.js');
 var playerArray = _.shuffle(_.map(playerObjects, el => el));
 
-const shootLifeSpan = 10 * 1000;
-
 var Clash = React.createClass({
   mixins: [
     deepSetState
@@ -26,7 +24,8 @@ var Clash = React.createClass({
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 200
+      speed: 150,
+      winners: playerArray.map(() => 0)
     };
   },
 
@@ -34,11 +33,42 @@ var Clash = React.createClass({
     this.nextTurn();
   },
 
+  newGame() {
+    this.ClashJS.getState().playerStates.forEach((player, index) => {
+      if (player.isAlive) {
+        let newWinners = this.state.winners;
+        newWinners[index]++;
+
+        this.setState({
+          winners: newWinners
+        });
+      }
+    });
+
+    window.setTimeout(() => {
+      this.ClashJS = new ClashJS(playerArray, this.handleEvent);
+      this.setState({
+        clashjs: this.ClashJS.getState(),
+        shoots: [],
+        speed: 150
+      }, this.nextTurn);
+    }, 1000);
+  },
+
   nextTurn() {
+    var alivePlayerCount = this.ClashJS.getState().playerStates.reduce((result, el) => {
+      return el.isAlive ? (result + 1) : result;
+    }, 0);
+
+    if (alivePlayerCount < 2) {
+      this.newGame();
+      return;
+    }
+
     window.setTimeout(() => {
       this.setState({
         clashjs: this.ClashJS.nextPly(),
-        speed: this.state.speed > 50 ? this.state.speed - 1 : 50
+        speed: this.state.speed > 15 ? parseInt(this.state.speed * 0.98, 10) : 15
       }, this.nextTurn);
     }, this.state.speed);
   },
@@ -47,8 +77,7 @@ var Clash = React.createClass({
     console.warn(evt, data, this.state.shoots);
 
     if (evt === 'SHOOT') {
-      let currentTime = new Date().getTime();
-      let newShoots = this.state.shoots.slice();
+      let newShoots = this.state.shoots;
 
       newShoots.push({
         direction: data.direction,
@@ -57,9 +86,7 @@ var Clash = React.createClass({
       });
 
       this.setState({
-        shoots: newShoots.filter((el) => {
-          return el.time + shootLifeSpan > currentTime;
-        })
+        shoots: newShoots
       });
     }
   },
@@ -72,7 +99,7 @@ var Clash = React.createClass({
   },
 
   render() {
-    var {clashjs, shoots} = this.state;
+    var {clashjs, shoots, winners} = this.state;
     var {gameEnvironment, playerStates, playerInstances} = clashjs;
 
     return (
@@ -92,7 +119,8 @@ var Clash = React.createClass({
 
         <Stats
           playerInstances={playerInstances}
-          playerStates={playerStates} />
+          playerStates={playerStates}
+          winners={winners} />
 
       </div>
     );

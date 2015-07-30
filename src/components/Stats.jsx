@@ -5,11 +5,12 @@ var Stats = React.createClass({
 
   propTypes: {
     playerInstances: React.PropTypes.array.isRequired,
-    playerStates: React.PropTypes.array.isRequired
+    playerStates: React.PropTypes.array.isRequired,
+    winners: React.PropTypes.array.isRequired
   },
 
   render() {
-    var {playerInstances, playerStates} = this.props;
+    var {playerInstances, playerStates, winners} = this.props;
 
     return (
       <div className='stats'>
@@ -24,7 +25,7 @@ var Stats = React.createClass({
             }}>
               {playerInfo.name}
               {' '}
-              <b>{playerState.ammo}</b>
+              <b>{winners[index]}</b>
             </div>
           );
         })}
