@@ -8,7 +8,7 @@ body {
   background: url('static/bg.jpg') no-repeat center #2C3E50;
   background-size: cover;
   color: #fff;
-  font: 1em/1.618 Graphik;
+  font: 1em/1.618 Graphik, sans-serif;
   font-weight: 200;
   width: 100vw;
   height: 100vh;
@@ -17,6 +17,18 @@ body {
 
 b {
   font-weight: 500;
+}
+
+.instructions {
+  position: fixed;
+  font-size: .8em;
+  bottom: 0;
+  left: 0;
+  padding: 1em;
+  color: #eee;
+}
+.instructions a {
+  color: #fff;
 }
 
 .clash {
