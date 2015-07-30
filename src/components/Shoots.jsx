@@ -12,7 +12,7 @@ var Shoots = React.createClass({
   },
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.shoots.length !== this.props.shoots.length
+    return nextProps.shoots.length !== this.props.shoots.length;
   },
 
   componentDidUpdate() {
@@ -24,14 +24,14 @@ var Shoots = React.createClass({
 
     var tileSize = 100 / gridSize;
 
-    var shootsRender = _.map(shoots, (el, index) => {
+    var shootsRender = _.map(shoots, (el) => {
       return (
-        <div key={index} className='clash-shoot animation-shot' style={{
+        <div key={shoots.time} className='clash-shoot animation-shot' style={{
           top: tileSize * el.origin[0] + 'vmin',
           left: tileSize * el.origin[1] + 'vmin',
           transform:
-            'translatex(' + (tileSize/2) + 'vmin) ' +
-            'translatey(' + (tileSize/2) + 'vmin) ' +
+            'translatex(' + (tileSize / 2) + 'vmin) ' +
+            'translatey(' + (tileSize / 2) + 'vmin) ' +
             'rotate(' + ((DIRECTIONS.indexOf(el.direction) - 1) * (90) ) + 'deg) '
           }} />
       );

@@ -41,7 +41,6 @@
       .clash-ammo {
         position: absolute;
         background: url('/static/star.png') no-repeat center / 90%;
-        transition: transform 2s linear;
       }
       .clash-ammo:hover {
         transform: rotate(360deg);
@@ -54,7 +53,7 @@
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
-        transition: transform .4s;
+        transition: transform .3s;
       }
       .clash-player-container {
         position: absolute;
@@ -69,11 +68,8 @@
 
       .clash-shoot {
         position: absolute;
-        height: 1em;
         width: 100em;
-        margin-top: .5em;
-        margin-left: .5em;
-        transform-origin: top left;
+        transform-origin: center left;
       }
 
       .clash-layer {
@@ -92,17 +88,18 @@
       }
 
       .animation-shot {
-        animation: shotKeyFrame .25s;
+        animation: shotKeyFrame .3s;
       }
       @keyframes shotKeyFrame {
         0%  {
           background: #f00;
+          margin-top: -.05em;
+          height: .1em;
         }
-        50% {
-          background: #ff0;
-        },
         100% {
-          background: transparent;
+          background: #ff0;
+          height: .7em;
+          margin-top: -.35em;
         }
       }
 

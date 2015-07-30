@@ -2,7 +2,7 @@ var utils = require('../lib/utils.js');
 
 var MUSOLINI = {
   info: {
-    name: 'el horror',
+    name: 'El Horror',
     style: 5
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
@@ -12,7 +12,7 @@ var MUSOLINI = {
       return 'shoot';
     }
     if (gameEnvironment.ammoPosition.length) {
-      directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+      directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
 
       if (directionToAmmo !== playerState.direction) return directionToAmmo;
       return 'move';

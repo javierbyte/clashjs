@@ -4,5 +4,5 @@ module.exports = {
   manuelmhtr: require('./players/manuelmhtr.js'),
   ericku: require('./players/ericku.js'),
   hitler: require('./players/hitler.js'),
-  musolini: require('./players/musolini.js')
+  horror: require('./players/horror.js')
 };

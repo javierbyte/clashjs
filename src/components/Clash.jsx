@@ -12,7 +12,9 @@ var deepSetState = require('../mixins/deepSetState.js');
 var ClashJS = require('../clashjs/ClashCore.js');
 
 var playerObjects = require('../Players.js');
-var playerArray = _.map(playerObjects, el => el).slice(0, 6);
+var playerArray = _.shuffle(_.map(playerObjects, el => el));
+
+const shootLifeSpan = 10 * 1000;
 
 var Clash = React.createClass({
   mixins: [
@@ -28,11 +30,26 @@ var Clash = React.createClass({
     };
   },
 
+  componentDidMount() {
+    this.nextTurn();
+  },
+
+  nextTurn() {
+    window.setTimeout(() => {
+      this.setState({
+        clashjs: this.ClashJS.nextPly(),
+        speed: this.state.speed > 50 ? this.state.speed - 1 : 50
+      }, this.nextTurn);
+    }, this.state.speed);
+  },
+
   handleEvent(evt, data) {
     console.warn(evt, data, this.state.shoots);
 
     if (evt === 'SHOOT') {
+      let currentTime = new Date().getTime();
       let newShoots = this.state.shoots.slice();
+
       newShoots.push({
         direction: data.direction,
         origin: data.origin.slice(),
@@ -40,25 +57,17 @@ var Clash = React.createClass({
       });
 
       this.setState({
-        shoots: newShoots
-      })
+        shoots: newShoots.filter((el) => {
+          return el.time + shootLifeSpan > currentTime;
+        })
+      });
     }
-  },
-
-  componentDidMount() {
-    this.setState({
-      clashjs: this.ClashJS.nextPly()
-    }, () => {
-      window.setTimeout(() => {
-        this.componentDidMount();
-      }, this.state.speed);
-    });
   },
 
   handleClick() {
     this.setState({
       clashjs: this.ClashJS.nextStep(),
-      speed: Math.max(parseInt(this.state.speed * .8, 10), 1)
+      speed: Math.max(parseInt(this.state.speed * 0.75, 10), 1)
     });
   },
 
@@ -73,13 +82,13 @@ var Clash = React.createClass({
         <Shoots
           shoots={shoots.slice()}
           gridSize={gameEnvironment.gridSize} />
+        <Ammos
+          gridSize={gameEnvironment.gridSize}
+          ammoPosition={gameEnvironment.ammoPosition} />
         <Players
           gridSize={gameEnvironment.gridSize}
           playerInstances={playerInstances}
           playerStates={playerStates} />
-        <Ammos
-          gridSize={gameEnvironment.gridSize}
-          ammoPosition={gameEnvironment.ammoPosition} />
 
         <Stats
           playerInstances={playerInstances}

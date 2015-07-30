@@ -6,7 +6,7 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 class ClashJS {
   constructor(playerDefinitionArray, evtCallback) {
     this._gameEnvironment = {
-      gridSize: 11,
+      gridSize: 13,
       ammoPosition: []
     };
 

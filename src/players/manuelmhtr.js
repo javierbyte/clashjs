@@ -5,7 +5,7 @@ var manuelmhtr = {
     name: 'manuelmhtr',
     style: 3
   },
-  ai: (playerState, enemiesState, gameEnvironment) => {
+  ai: (playerState) => {
     if (playerState.ammo) {
       return 'shoot';
     }
