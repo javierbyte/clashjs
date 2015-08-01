@@ -6,6 +6,15 @@
 
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight! You can play by adding your own AI to the game!
 
+# How to run the demo.
+
+Clone the repo and then
+
+  npm install
+  npm run start
+
+Then go to `http://localhost:3000`.
+
 # How to participate.
 Just add yourself to
 
