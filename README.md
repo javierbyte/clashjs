@@ -16,13 +16,15 @@ Clone the repo and then
 Then go to `http://localhost:3000`.
 
 # How to participate.
-Just add yourself to
+Add your player as specificed in [player definition](#player-definition) in
+
+    /src/players/YOU.js
+
+And then require yourself in
 
     /src/Players.js
 
-And add your player in
-
-    /src/players/YOU.js
+And run the demo again. Have fun!
 
 Read the [game definitions](#game-definitions) to learn how to create your player. Have fun!
 
