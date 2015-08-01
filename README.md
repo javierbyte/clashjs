@@ -10,8 +10,8 @@ This is an experiment. The idea is to create a battle game, where the participan
 
 Clone the repo and then
 
-  npm install
-  npm run start
+    npm install
+    npm run start
 
 Then go to `http://localhost:3000`.
 
