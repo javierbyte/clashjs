@@ -13,23 +13,33 @@ var Stats = React.createClass({
     var {playerInstances, playerStates, winners} = this.props;
 
     return (
-      <div className='stats'>
+      <table className='stats'>
+        <thead>
+          <td>
+            <b>Results:</b>
+          </td>
+        </thead>
+        <tbody>
         {_.map(playerInstances, (el, index) => {
           var playerInfo = el.getInfo();
           var playerState = playerStates[index];
 
           return (
-            <div key={index} style={{
+            <tr key={index} style={{
               textDecoration: playerState.isAlive ? 'none' : 'line-through',
               color: playerState.isAlive ? '#FFF' : '#A00'
             }}>
-              {playerInfo.name}
-              {' '}
-              <b>{winners[index]}</b>
-            </div>
+              <td>
+                {playerInfo.name}
+              </td>
+              <td className='stats-results'>
+                {winners[index]}
+              </td>
+            </tr>
           );
         })}
-      </div>
+        </tbody>
+      </table>
     );
   }
 
