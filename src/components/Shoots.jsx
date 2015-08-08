@@ -20,9 +20,9 @@ var Shoots = React.createClass({
 
     var tileSize = 100 / gridSize;
 
-    var shootsRender = _.map(shoots, (el) => {
+    var shootsRender = _.map(shoots, (el, index) => {
       return (
-        <div key={shoots.time} className='clash-shoot animation-shot' style={{
+        <div key={index} className='clash-shoot animation-shot' style={{
           top: tileSize * el.origin[0] + 'vmin',
           left: tileSize * el.origin[1] + 'vmin',
           transform:

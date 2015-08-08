@@ -2,7 +2,7 @@ var webpack = require('webpack');
 
 module.exports = {
   entry: [
-    'webpack-dev-server/client?http://0.0.0.0:3000', // WebpackDevServer host and port
+    'webpack-dev-server/client?http://0.0.0.0:8080', // WebpackDevServer host and port
     './src/Index.jsx'
   ],
   devtool: process.env.WEBPACK_DEVTOOL || 'source-map',
