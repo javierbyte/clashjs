@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "ClashJS, JS AI battle game",
   "scripts": {
-    "start": "node server.js",
-    "lint": "eslint src"
+    "build": "webpack --progress --profile --colors",
+    "dev": "webpack-dev-server --progress --profile --colors --hot"
   },
   "repository": {
     "type": "git",

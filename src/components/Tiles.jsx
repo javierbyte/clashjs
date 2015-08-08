@@ -2,12 +2,12 @@ var React = require('react/addons');
 
 var Tiles = React.createClass({
 
-  mixins: [
-    React.addons.PureRenderMixin
-  ],
-
   propTypes: {
     gridSize: React.PropTypes.number.isRequired
+  },
+
+  shouldComponentUpdate() {
+    return false;
   },
 
   render() {

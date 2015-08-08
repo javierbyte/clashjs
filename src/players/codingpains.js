@@ -2,7 +2,7 @@ var utils = require('../lib/utils.js');
 
 var codingpains = {
   info: {
-    name: 'codingpains',
+    name: 'Codingpains',
     style: 0
   },
   ai: (playerState, enemiesState, gameEnvironment) => {

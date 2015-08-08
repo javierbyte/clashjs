@@ -11,9 +11,9 @@ This is an experiment. The idea is to create a battle game, where the participan
 Clone the repo and then
 
     npm install
-    npm run start
+    npm run dev
 
-Then go to `http://localhost:3000`.
+Then go to `http://localhost:8080`.
 
 # How to participate.
 Add your player as specificed in [player definition](#player-definition) in

@@ -15,10 +15,6 @@ var Shoots = React.createClass({
     return nextProps.shoots.length !== this.props.shoots.length;
   },
 
-  componentDidUpdate() {
-    console.warn(this.props.shoots);
-  },
-
   render() {
     var {shoots, gridSize} = this.props;
 

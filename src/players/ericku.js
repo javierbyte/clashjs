@@ -2,7 +2,7 @@ var utils = require('../lib/utils.js');
 
 var ericku = {
   info: {
-    name: 'ericku',
+    name: 'Ericku',
     style: 1
   },
   ai: (playerState, enemiesStates) => {

@@ -50,7 +50,7 @@ b {
 
 .clash-ammo {
   position: absolute;
-  background: url('static/star.png') no-repeat center / 90%;
+  background: url('static/star.png') no-repeat center / 80%;
 }
 .clash-ammo:hover {
   transform: rotate(360deg);

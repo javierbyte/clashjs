@@ -74,7 +74,7 @@ var Clash = React.createClass({
   },
 
   handleEvent(evt, data) {
-    console.warn(evt, data, this.state.shoots);
+    // console.warn(evt, data, this.state.shoots);
 
     if (evt === 'SHOOT') {
       let newShoots = this.state.shoots;

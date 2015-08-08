@@ -2,7 +2,7 @@ var utils = require('../lib/utils.js');
 
 var HITLER = {
   info: {
-    name: 'HITLER',
+    name: 'Hitler',
     style: 4
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {

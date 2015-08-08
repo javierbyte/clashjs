@@ -2,7 +2,7 @@ var utils = require('../lib/utils.js');
 
 var manuelmhtr = {
   info: {
-    name: 'manuelmhtr',
+    name: 'Manuelmhtr',
     style: 3
   },
   ai: (playerState) => {
