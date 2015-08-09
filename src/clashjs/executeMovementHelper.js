@@ -69,7 +69,6 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, 
         killed: kills
       });
     }
-
   }
 
   return playerStates;

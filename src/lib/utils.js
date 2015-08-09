@@ -24,6 +24,13 @@ var getDirection = (start, end) => {
   return (start[1] - end[1] > 0) ? 'west' : 'east';
 };
 
+var getDistance = (start, end) => {
+  var diffVertical = Math.abs(start[0] - end[0]);
+  var diffHorizontal = Math.abs(start[1] - end[1]);
+
+  return diffHorizontal + diffVertical;
+};
+
 var fastGetDirection = (start, end) => {
   var diffVertical = Math.abs(start[0] - end[0]);
   // var diffHorizontal = Math.abs(start[1] - end[1]);
@@ -62,5 +69,6 @@ module.exports = {
   canKill,
   safeRandomMove,
   fastGetDirection,
-  turn
+  turn,
+  getDistance
 };

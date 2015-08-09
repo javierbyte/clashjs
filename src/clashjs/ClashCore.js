@@ -29,8 +29,6 @@ class ClashJS {
     this._currentPlayer = 0;
 
     this._createAmmo();
-    this._createAmmo();
-    this._createAmmo();
   }
 
   _createAmmo() {
@@ -76,7 +74,7 @@ class ClashJS {
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 
-    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length) this._createAmmo();
+    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 2) this._createAmmo();
 
     return {
       gameEnvironment: this._gameEnvironment,
