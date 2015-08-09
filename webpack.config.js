@@ -8,7 +8,8 @@ module.exports = {
   devtool: process.env.WEBPACK_DEVTOOL || 'source-map',
   output: {
     filename: 'bundle.js',
-    publicPath: '/dist/'
+    path: 'dist',
+    publicPath: '/dist'
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
