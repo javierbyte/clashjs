@@ -33,7 +33,7 @@ var Stats = React.createClass({
                 {playerInfo.name}
               </td>
               <td className='stats-results'>
-                {winners[index]} ({rates[index] * 100}%)
+                {winners[index]} ({Math.round(rates[index] * 100)}%)
               </td>
             </tr>
           );
