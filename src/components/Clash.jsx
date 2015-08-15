@@ -24,8 +24,9 @@ var Clash = React.createClass({
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 150,
-      winners: playerArray.map(() => 0)
+      speed: 50,
+      winners: playerArray.map(() => 0),
+      rates: playerArray.map(() => 0)
     };
   },
 
@@ -37,10 +38,24 @@ var Clash = React.createClass({
     this.ClashJS.getState().playerStates.forEach((player, index) => {
       if (player.isAlive) {
         let newWinners = this.state.winners;
+        let newRates = this.state.rates;
+        let total = 0;
+
         newWinners[index]++;
 
+        total = _.reduce(newWinners, (tot, n) => tot + n);
+
+        newRates = _.map(newWinners, (wins, index) => {
+          if (!wins) return 0;
+          if (!total) return 0;
+          return wins / total;
+        });
+
+        console.log('Stats');
+        console.log(total, newWinners, newRates);
         this.setState({
-          winners: newWinners
+          winners: newWinners,
+          rates: newRates
         });
       }
     });
@@ -50,7 +65,7 @@ var Clash = React.createClass({
       this.setState({
         clashjs: this.ClashJS.getState(),
         shoots: [],
-        speed: 150
+        speed: 50
       }, this.nextTurn);
     }, 1000);
   },
@@ -99,7 +114,7 @@ var Clash = React.createClass({
   },
 
   render() {
-    var {clashjs, shoots, winners} = this.state;
+    var {clashjs, shoots, winners, rates} = this.state;
     var {gameEnvironment, playerStates, playerInstances} = clashjs;
 
     return (
@@ -120,7 +135,8 @@ var Clash = React.createClass({
         <Stats
           playerInstances={playerInstances}
           playerStates={playerStates}
-          winners={winners} />
+          winners={winners}
+          rates={rates} />
 
       </div>
     );
