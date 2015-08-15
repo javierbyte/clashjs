@@ -11,6 +11,11 @@ var Stats = React.createClass({
 
   render() {
     var {playerInstances, playerStates, winners} = this.props;
+    var stats = _.map(playerInstances, (el, index) => ({
+        wins: winners[index],
+        rate: winners[index] ? Math.round(winners[index] / (winners.reduce((prev, cur) => prev + cur))) : 0
+      })
+    );
 
     return (
       <table className='stats'>
@@ -33,7 +38,7 @@ var Stats = React.createClass({
                 {playerInfo.name}
               </td>
               <td className='stats-results'>
-                {winners[index]}
+                {stats[index].wins} ({stats[index].rate * 100} %)
               </td>
             </tr>
           );
