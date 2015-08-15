@@ -37,10 +37,16 @@ var Clash = React.createClass({
     this.ClashJS.getState().playerStates.forEach((player, index) => {
       if (player.isAlive) {
         let newWinners = this.state.winners;
+        let stats = [];
+        let total = 0;
+
         newWinners[index]++;
 
+        total = newWinners.reduce((prev, cur) => prev + cur);
+
+        stats = _.map(newWinners, (el, index) => ({wins: el, rate: total ? el / total : 0}));
         this.setState({
-          winners: newWinners
+          winners: stats
         });
       }
     });
