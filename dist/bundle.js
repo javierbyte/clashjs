@@ -27808,8 +27808,11 @@
 	    return {
 	      clashjs: this.ClashJS.getState(),
 	      shoots: [],
-	      speed: 150,
+	      speed: 50,
 	      winners: playerArray.map(function () {
+	        return 0;
+	      }),
+	      rates: playerArray.map(function () {
 	        return 0;
 	      })
 	    };
@@ -27824,12 +27827,30 @@
 	
 	    this.ClashJS.getState().playerStates.forEach(function (player, index) {
 	      if (player.isAlive) {
-	        var newWinners = _this.state.winners;
-	        newWinners[index]++;
+	        (function () {
+	          var newWinners = _this.state.winners;
+	          var newRates = _this.state.rates;
+	          var total = 0;
 	
-	        _this.setState({
-	          winners: newWinners
-	        });
+	          newWinners[index]++;
+	
+	          total = _.reduce(newWinners, function (tot, n) {
+	            return tot + n;
+	          });
+	
+	          newRates = _.map(newWinners, function (wins, index) {
+	            if (!wins) return 0;
+	            if (!total) return 0;
+	            return wins / total;
+	          });
+	
+	          console.log('Stats');
+	          console.log(total, newWinners, newRates);
+	          _this.setState({
+	            winners: newWinners,
+	            rates: newRates
+	          });
+	        })();
 	      }
 	    });
 	
@@ -27838,7 +27859,7 @@
 	      _this.setState({
 	        clashjs: _this.ClashJS.getState(),
 	        shoots: [],
-	        speed: 150
+	        speed: 50
 	      }, _this.nextTurn);
 	    }, 1000);
 	  },
@@ -27893,6 +27914,7 @@
 	    var clashjs = _state.clashjs;
 	    var shoots = _state.shoots;
 	    var winners = _state.winners;
+	    var rates = _state.rates;
 	    var gameEnvironment = clashjs.gameEnvironment;
 	    var playerStates = clashjs.playerStates;
 	    var playerInstances = clashjs.playerInstances;
@@ -27915,7 +27937,8 @@
 	      React.createElement(Stats, {
 	        playerInstances: playerInstances,
 	        playerStates: playerStates,
-	        winners: winners })
+	        winners: winners,
+	        rates: rates })
 	    );
 	  }
 	
@@ -27946,6 +27969,7 @@
 	    var playerInstances = _props.playerInstances;
 	    var playerStates = _props.playerStates;
 	    var winners = _props.winners;
+	    var rates = _props.rates;
 	
 	    return React.createElement(
 	      'table',
@@ -27984,7 +28008,10 @@
 	            React.createElement(
 	              'td',
 	              { className: 'stats-results' },
-	              winners[index]
+	              winners[index],
+	              ' (',
+	              Math.round(rates[index] * 100),
+	              '%)'
 	            )
 	          );
 	        })
@@ -42804,7 +42831,7 @@
 	
 	      this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 	
-	      if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 2) this._createAmmo();
+	      if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 2 && Math.random() > 0.95) this._createAmmo();
 	
 	      return {
 	        gameEnvironment: this._gameEnvironment,
