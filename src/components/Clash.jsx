@@ -14,6 +14,8 @@ var ClashJS = require('../clashjs/ClashCore.js');
 var playerObjects = require('../Players.js');
 var playerArray = _.shuffle(_.map(playerObjects, el => el));
 
+var sudeenDeathCount = 0;
+
 var Clash = React.createClass({
   mixins: [
     deepSetState
@@ -51,8 +53,6 @@ var Clash = React.createClass({
           return wins / total;
         });
 
-        console.log('Stats');
-        console.log(total, newWinners, newRates);
         this.setState({
           winners: newWinners,
           rates: newRates
@@ -61,6 +61,7 @@ var Clash = React.createClass({
     });
 
     window.setTimeout(() => {
+      sudeenDeathCount = 0;
       this.ClashJS = new ClashJS(playerArray, this.handleEvent);
       this.setState({
         clashjs: this.ClashJS.getState(),
@@ -74,6 +75,15 @@ var Clash = React.createClass({
     var alivePlayerCount = this.ClashJS.getState().playerStates.reduce((result, el) => {
       return el.isAlive ? (result + 1) : result;
     }, 0);
+
+    if (alivePlayerCount < 3) {
+      sudeenDeathCount++;
+      if (sudeenDeathCount > 500) {
+        console.error('You guys are just dancing, 500 turns with no winner, call this one a draw.');
+        this.ClashJS.getState().playerStates.forEach((el) => el.isAlive = false);
+        return this.newGame();
+      }
+    }
 
     if (alivePlayerCount < 2) {
       this.newGame();
