@@ -8,6 +8,10 @@ class PlayerClass {
     return this._playerInfo;
   }
 
+  getName() {
+    return this._playerInfo.name;
+  }
+
   execute(playerState, enemiesStates, gameEnvironment) {
     return this._playerAI(playerState, enemiesStates, gameEnvironment);
   }

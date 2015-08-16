@@ -6,6 +6,7 @@ var Ammos = require('./Ammos.jsx');
 var Players = require('./Players.jsx');
 var Stats = require('./Stats.jsx');
 var Shoots = require('./Shoots.jsx');
+var Notifications = require('./Notifications.jsx');
 
 var deepSetState = require('../mixins/deepSetState.js');
 
@@ -28,7 +29,8 @@ var Clash = React.createClass({
       shoots: [],
       speed: 50,
       winners: playerArray.map(() => 0),
-      rates: playerArray.map(() => 0)
+      rates: playerArray.map(() => 0),
+      kills: null
     };
   },
 
@@ -66,7 +68,8 @@ var Clash = React.createClass({
       this.setState({
         clashjs: this.ClashJS.getState(),
         shoots: [],
-        speed: 50
+        speed: 50,
+        kills: null
       }, this.nextTurn);
     }, 1000);
   },
@@ -114,6 +117,19 @@ var Clash = React.createClass({
         shoots: newShoots
       });
     }
+
+    if (evt === 'KILL') {
+      let players = this.ClashJS.getState().playerInstances;
+      let notification = [
+        players[data.killer].getName(),
+        'killed',
+        _.map(data.killed, (index) => players[index].getName()).join(',')
+      ].join(' ')
+
+      this.setState({
+        kills: notification
+      });
+    }
   },
 
   handleClick() {
@@ -124,7 +140,7 @@ var Clash = React.createClass({
   },
 
   render() {
-    var {clashjs, shoots, winners, rates} = this.state;
+    var {clashjs, shoots, winners, rates, kills} = this.state;
     var {gameEnvironment, playerStates, playerInstances} = clashjs;
 
     return (
@@ -141,7 +157,9 @@ var Clash = React.createClass({
           gridSize={gameEnvironment.gridSize}
           playerInstances={playerInstances}
           playerStates={playerStates} />
-
+        <Notifications
+          kills={kills}
+        />
         <Stats
           playerInstances={playerInstances}
           playerStates={playerStates}
