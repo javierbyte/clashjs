@@ -106,6 +106,13 @@ b {
 .stats td {
   padding: 0 .5em;
 }
+.notifications {
+  position: fixed;
+  color: #ffffff;
+  font-size: 1.6em;
+  top:10%;
+  z-index: 9000;
+}
 
 .animation-shot {
   animation: shotKeyFrame .3s;
