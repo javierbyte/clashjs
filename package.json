@@ -13,9 +13,9 @@
   "keywords": [
     "ai",
     "game",
-    "space",
     "react",
-    "reactjs"
+    "reactjs",
+    "space"
   ],
   "author": "javierbyte <hi@javierbyte.com> (http://github.com/javierbyte)",
   "license": "MIT",
@@ -33,6 +33,8 @@
     "webpack-dev-server": "^1.8.2"
   },
   "dependencies": {
+    "eslint": "^1.1.0",
+    "eslint-plugin-react": "^2.7.1",
     "lodash": "^3.10.0",
     "react": "^0.13.0"
   }

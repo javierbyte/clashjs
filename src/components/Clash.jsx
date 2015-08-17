@@ -28,7 +28,7 @@ var Clash = React.createClass({
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 50,
+      speed: 250,
       winners: playerArray.map(() => 0),
       rates: playerArray.map(() => 0),
       kills: null
@@ -70,7 +70,7 @@ var Clash = React.createClass({
       this.setState({
         clashjs: this.ClashJS.getState(),
         shoots: [],
-        speed: 50,
+        speed: 250,
         kills: null
       }, this.nextTurn);
     }, 1000);
