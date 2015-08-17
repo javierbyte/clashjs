@@ -1,3 +1,4 @@
+var music = require('./../lib/sound-effects').music;
 var PlayerClass = require('./PlayerClass.js');
 var executeMovementHelper = require('./executeMovementHelper.js');
 
@@ -27,7 +28,9 @@ class ClashJS {
     });
 
     this._currentPlayer = 0;
-
+    this._musicTheme = music.theme0;
+    this._musicTheme.loop = true;
+    this._musicTheme.play();
     this._createAmmo();
   }
 
