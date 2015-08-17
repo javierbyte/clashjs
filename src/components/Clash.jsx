@@ -116,19 +116,24 @@ var Clash = React.createClass({
       this.setState({
         shoots: newShoots
       });
+
+      setTimeout(() => this.ClashJS.getState().playerInstances[data.shooter].playLaser(), 10);
     }
 
     if (evt === 'KILL') {
       let players = this.ClashJS.getState().playerInstances;
+      let killed = _.map(data.killed, (index) => players[index]);
       let notification = [
         players[data.killer].getName(),
         'killed',
-        _.map(data.killed, (index) => players[index].getName()).join(',')
+        _.map(killed, (player) => player.getName()).join(',')
       ].join(' ')
 
       this.setState({
         kills: notification
       });
+
+      _.forEach(killed, (player) => setTimeout(player.playExplosion,100));
     }
   },
 

@@ -1,3 +1,5 @@
+var fx = require('./../lib/sound-effects');
+
 class PlayerClass {
   constructor(options) {
     this._playerInfo = options.info;
@@ -10,6 +12,15 @@ class PlayerClass {
 
   getName() {
     return this._playerInfo.name;
+  }
+
+  playLaser() {
+    fx.lasers['laser' + this.getInfo().style].play();
+  }
+
+  playExplosion() {
+    var i = Math.round(Math.random() * 10) % 3;
+    fx.explosions['explode' + i].play();
   }
 
   execute(playerState, enemiesStates, gameEnvironment) {
