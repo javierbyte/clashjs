@@ -1,6 +1,6 @@
 var React = require('react');
 var _ = require('lodash');
-
+var fx = require('./../lib/sound-effects');
 var Tiles = require('./Tiles.jsx');
 var Ammos = require('./Ammos.jsx');
 var Players = require('./Players.jsx');
@@ -16,6 +16,7 @@ var playerObjects = require('../Players.js');
 var playerArray = _.shuffle(_.map(playerObjects, el => el));
 
 var sudeenDeathCount = 0;
+var killsStack = [];
 
 var Clash = React.createClass({
   mixins: [
@@ -39,6 +40,7 @@ var Clash = React.createClass({
   },
 
   newGame() {
+    killsStack = [];
     this.ClashJS.getState().playerStates.forEach((player, index) => {
       if (player.isAlive) {
         let newWinners = this.state.winners;
@@ -103,10 +105,9 @@ var Clash = React.createClass({
 
   handleEvent(evt, data) {
     // console.warn(evt, data, this.state.shoots);
-
     if (evt === 'SHOOT') {
       let newShoots = this.state.shoots;
-
+      let players = this.ClashJS.getState().playerInstances;
       newShoots.push({
         direction: data.direction,
         origin: data.origin.slice(),
@@ -117,24 +118,10 @@ var Clash = React.createClass({
         shoots: newShoots
       });
 
-      setTimeout(() => this.ClashJS.getState().playerInstances[data.shooter].playLaser(), 10);
+      players[data.shooter].playLaser();
     }
 
-    if (evt === 'KILL') {
-      let players = this.ClashJS.getState().playerInstances;
-      let killed = _.map(data.killed, (index) => players[index]);
-      let notification = [
-        players[data.killer].getName(),
-        'killed',
-        _.map(killed, (player) => player.getName()).join(',')
-      ].join(' ')
-
-      this.setState({
-        kills: notification
-      });
-
-      _.forEach(killed, (player) => setTimeout(player.playExplosion,100));
-    }
+    if (evt === 'KILL') this._handleKill(data);
   },
 
   handleClick() {
@@ -142,6 +129,71 @@ var Clash = React.createClass({
       clashjs: this.ClashJS.nextStep(),
       speed: Math.max(parseInt(this.state.speed * 0.75, 10), 1)
     });
+  },
+
+  _handleKill(data) {
+    let players = this.ClashJS.getState().playerInstances;
+    let killer = players[data.killer];
+    let killed = _.map(data.killed, (index) => {
+      killsStack.push(data.killer);
+      killer.kills++;
+      players[index].deaths++;
+      return players[index];
+    });
+    let notification = [
+      killer.getName(),
+      'killed',
+      _.map(killed, (player) => player.getName()).join(',')
+    ].join(' ');
+
+    // _.forEach(killed, (player) => setTimeout(player.playExplosion,150));
+
+    this.setState({
+      kills: notification
+    });
+
+    setTimeout(()=> this.handleStreak(data.killer, killer, killed), 100);
+
+  },
+
+  handleStreak(index, killer, killed) {
+    let streakCount = _.filter(killsStack, (player) => player === index).length;
+    if (killsStack.length === 1) {
+      setTimeout(fx.streak.firstBlood.play(), 50);
+    }
+
+    switch (killed.length) {
+      case 2:
+        setTimeout(fx.streak.doubleKill.play(), 100);
+        break;
+      case 3:
+        setTimeout(fx.streak.tripleKill.play(), 100);
+        break;
+      case 4:
+        setTimeout(fx.streak.monsterKill.play(), 100);
+        break
+    }
+
+    switch(streakCount) {
+      case 1:
+      case 2:
+        break;
+      case 3:
+        setTimeout(fx.streak.killingSpree.play(), 300);
+        break;
+      case 4:
+        setTimeout(fx.streak.dominating.play(), 300);
+        break;
+      case 5:
+        setTimeout(fx.streak.rampage.play(), 300);
+        break;
+      case 6:
+        setTimeout(fx.streak.godLike.play(), 300);
+        break;
+      default:
+        setTimeout(fx.streak.ownage.play(), 300);
+    }
+
   },
 
   render() {
@@ -163,8 +215,7 @@ var Clash = React.createClass({
           playerInstances={playerInstances}
           playerStates={playerStates} />
         <Notifications
-          kills={kills}
-        />
+          kills={kills} />
         <Stats
           playerInstances={playerInstances}
           playerStates={playerStates}

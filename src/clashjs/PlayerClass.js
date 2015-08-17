@@ -4,10 +4,20 @@ class PlayerClass {
   constructor(options) {
     this._playerInfo = options.info;
     this._playerAI = options.ai;
+    this._playerStats = {
+      kills: 0,
+      deaths: 0,
+      ratio: 0
+    }
   }
 
   getInfo() {
     return this._playerInfo;
+  }
+
+  getStats() {
+    this._playerStats.ratio = this._playerStats.kills / this._playerStats.deaths;
+    return this._playerStats;
   }
 
   getName() {

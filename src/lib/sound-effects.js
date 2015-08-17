@@ -16,6 +16,18 @@ module.exports.explosions = {
   explode2: new Audio('/static/sounds/explosions/explode2.wav')
 };
 
+module.exports.streak = {
+  firstBlood: new Audio('/static/sounds/streak/first-blood.mp3'),
+  doubleKill: new Audio('/static/sounds/streak/double-kill.mp3'),
+  tripleKill: new Audio('/static/sounds/streak/triple-kill.mp3'),
+  monsterKill: new Audio('/static/sounds/streak/monster-kill.mp3'),
+  killingSpree: new Audio('/static/sounds/streak/killing-spree.mp3'),
+  dominating: new Audio('/static/sounds/streak/dominating.mp3'),
+  rampage: new Audio('/static/sounds/streak/rampage.mp3'),
+  godLike: new Audio('/static/sounds/streak/god-like.mp3'),
+  ownage: new Audio('/static/sounds/streak/ownage.mp3'),
+};
+
 module.exports.music = {
   theme0: new Audio('/static/sounds/music/flight.ogg')
 }
