@@ -14,4 +14,8 @@ module.exports.explosions = {
   explode0: new Audio('/static/sounds/explosions/explode0.wav'),
   explode1: new Audio('/static/sounds/explosions/explode1.wav'),
   explode2: new Audio('/static/sounds/explosions/explode2.wav')
+};
+
+module.exports.music = {
+  theme0: new Audio('/static/sounds/music/flight.ogg')
 }
