@@ -25,7 +25,8 @@ class PlayerClass {
   }
 
   playLaser() {
-    fx.lasers['laser' + this.getInfo().style].play();
+    var index = this.getInfo().style % Object.keys(fx.lasers).length;
+    fx.lasers['laser' + index].play();
   }
 
   playExplosion() {
