@@ -5,14 +5,15 @@ var Stats = React.createClass({
 
   propTypes: {
     stats: React.PropTypes.object.isRequired,
-    playerStates: React.PropTypes.array.isRequired
+    rounds: React.PropTypes.number.isRequired,
+    total: React.PropTypes.number.isRequired
   },
 
   render() {
-    var {stats, playerStates} = this.props;
+    var {stats, rounds, total} = this.props;
     return (
       <div className='stats'>
-        <h3>Results</h3>
+        <h3>Results on round {rounds} of {total}</h3>
         <table>
           <thead>
             <td></td>
