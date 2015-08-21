@@ -131,7 +131,6 @@ class ClashJS {
         } else {
           stats.kdr = stats.kills;
         }
-        console.log(player.getName(), stats.kills, stats.deaths, stats.kdr);
       });
     }
     if (action === 'WIN') {

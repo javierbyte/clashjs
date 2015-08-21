@@ -31,7 +31,7 @@ var Clash = React.createClass({
       speed: 100,
       winners: playerArray.map(() => 0),
       rates: playerArray.map(() => 0),
-      kills: null
+      kills: []
     };
   },
 
@@ -72,7 +72,7 @@ var Clash = React.createClass({
         clashjs: this.ClashJS.getState(),
         shoots: [],
         speed: 100,
-        kills: null
+        kills: []
       }, this.nextTurn);
     }, 1000);
   },
@@ -95,7 +95,6 @@ var Clash = React.createClass({
     }
 
     if (alivePlayerCount < 2 && rounds < totalRounds) return this.newGame();
-
     window.setTimeout(() => {
       this.setState({
         clashjs: this.ClashJS.nextPly(),
@@ -133,6 +132,7 @@ var Clash = React.createClass({
 
   _handleKill(data) {
     let players = this.ClashJS.getState().playerInstances;
+    let kills = this.state.kills;
     let killer = players[data.killer];
     let killed = _.map(data.killed, (index) => {
       killsStack.push(data.killer);
@@ -146,10 +146,9 @@ var Clash = React.createClass({
       _.map(killed, (player) => player.getName()).join(',')
     ].join(' ');
 
-    // _.forEach(killed, (player) => setTimeout(player.playExplosion,150));
-
+    kills.push({date: new Date, text: notification});
     this.setState({
-      kills: notification
+      kills: kills
     });
 
     setTimeout(()=> this.handleStreak(data.killer, killer, killed), 100);
@@ -158,6 +157,9 @@ var Clash = React.createClass({
 
   handleStreak(index, killer, killed) {
     let streakCount = _.filter(killsStack, (player) => player === index).length;
+    let multiKill = '';
+    let spreeMessage = '';
+    let kills = this.state.kills;
     if (killsStack.length === 1) {
       setTimeout(fx.streak.firstBlood.play(), 50);
     }
@@ -165,35 +167,46 @@ var Clash = React.createClass({
     switch (killed.length) {
       case 2:
         setTimeout(fx.streak.doubleKill.play(), 100);
+        multiKill = killer.getName() + ' got a double kill!';
         break;
       case 3:
         setTimeout(fx.streak.tripleKill.play(), 100);
+        multiKill = killer.getName() + ' got a Triple Kill!';
         break;
       case 4:
         setTimeout(fx.streak.monsterKill.play(), 100);
-        break
+        multiKill = killer.getName() + ' is a MONSTER KILLER!';
+        break;
     }
-
+    kills.push({date: new Date, text: multiKill});
     switch(streakCount) {
       case 1:
       case 2:
         break;
       case 3:
         setTimeout(fx.streak.killingSpree.play(), 300);
+        spreeMessage = killer.getName() + ' is on a killing spree!';
         break;
       case 4:
         setTimeout(fx.streak.dominating.play(), 300);
+        spreeMessage = killer.getName() + ' is dominating!';
         break;
       case 5:
         setTimeout(fx.streak.rampage.play(), 300);
+        spreeMessage = killer.getName() + ' is on a rampage of kills!';
         break;
       case 6:
         setTimeout(fx.streak.godLike.play(), 300);
+        spreeMessage = killer.getName() + ' is Godlike!';
         break;
       default:
+        spreeMessage = 'Somebody stop that bastard ' + killer.getName();
         setTimeout(fx.streak.ownage.play(), 300);
     }
-
+    kills.push({date: new Date, text: spreeMessage});
+    this.setState({
+      kills: kills
+    });
   },
 
   render() {
