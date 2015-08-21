@@ -10,7 +10,9 @@ var Stats = React.createClass({
   },
 
   render() {
-    var {stats, rounds, total} = this.props;
+    let {stats, rounds, total} = this.props;
+    stats = _.map(stats, (playerStats) => playerStats);
+    stats = _.sortBy(stats, (playerStats) => playerStats.wins * -1);
     return (
       <div className='stats'>
         <h3 className="stats-title">Results on round {rounds} of {total}</h3>
