@@ -4,42 +4,39 @@ var _ = require('lodash');
 var Stats = React.createClass({
 
   propTypes: {
-    playerInstances: React.PropTypes.array.isRequired,
-    playerStates: React.PropTypes.array.isRequired,
-    winners: React.PropTypes.array.isRequired
+    stats: React.PropTypes.object.isRequired,
+    playerStates: React.PropTypes.array.isRequired
   },
 
   render() {
-    var {playerInstances, playerStates, winners, rates} = this.props;
-
+    var {stats, playerStates} = this.props;
     return (
-      <table className='stats'>
-        <thead>
-          <td>
-            <b>Results:</b>
-          </td>
-        </thead>
-        <tbody>
-        {_.map(playerInstances, (el, index) => {
-          var playerInfo = el.getInfo();
-          var playerState = playerStates[index];
-
-          return (
-            <tr key={index} style={{
-              textDecoration: playerState.isAlive ? 'none' : 'line-through',
-              color: playerState.isAlive ? '#FFF' : '#A00'
-            }}>
-              <td>
-                {playerInfo.name}
-              </td>
-              <td className='stats-results'>
-                {winners[index]} ({Math.round(rates[index] * 100)}%)
-              </td>
-            </tr>
-          );
-        })}
-        </tbody>
-      </table>
+      <div className='stats'>
+        <h3>Results</h3>
+        <table>
+          <thead>
+            <td></td>
+            <td>Wins</td>
+            <td>Win Rate</td>
+            <td>K/D/R</td>
+          </thead>
+          <tbody>
+          {_.map(stats, (playerStats, index) => {
+            return (
+              <tr key={index} style={{
+                textDecoration: playerStats.isAlive ? 'none' : 'line-through',
+                color: playerStats.isAlive ? '#FFF' : '#555'
+              }}>
+                <td>{playerStats.name}</td>
+                <td className='stats-results'>{playerStats.wins}</td>
+                <td className='stats-results'>{playerStats.winrate}%</td>
+                <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
+              </tr>
+            );
+          })}
+          </tbody>
+        </table>
+      </div>
     );
   }
 

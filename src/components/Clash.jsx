@@ -24,11 +24,11 @@ var Clash = React.createClass({
   ],
 
   getInitialState() {
-    this.ClashJS = new ClashJS(playerArray, this.handleEvent);
+    this.ClashJS = new ClashJS(playerArray, {}, this.handleEvent);
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 250,
+      speed: 100,
       winners: playerArray.map(() => 0),
       rates: playerArray.map(() => 0),
       kills: null
@@ -41,6 +41,7 @@ var Clash = React.createClass({
 
   newGame() {
     killsStack = [];
+    let stats = this.ClashJS._gameStats;
     this.ClashJS.getState().playerStates.forEach((player, index) => {
       if (player.isAlive) {
         let newWinners = this.state.winners;
@@ -66,11 +67,11 @@ var Clash = React.createClass({
 
     window.setTimeout(() => {
       sudeenDeathCount = 0;
-      this.ClashJS = new ClashJS(playerArray, this.handleEvent);
+      this.ClashJS.setupGame();
       this.setState({
         clashjs: this.ClashJS.getState(),
         shoots: [],
-        speed: 250,
+        speed: 100,
         kills: null
       }, this.nextTurn);
     }, 1000);
@@ -104,7 +105,6 @@ var Clash = React.createClass({
   },
 
   handleEvent(evt, data) {
-    // console.warn(evt, data, this.state.shoots);
     if (evt === 'SHOOT') {
       let newShoots = this.state.shoots;
       let players = this.ClashJS.getState().playerInstances;
@@ -198,8 +198,10 @@ var Clash = React.createClass({
 
   render() {
     var {clashjs, shoots, winners, rates, kills} = this.state;
-    var {gameEnvironment, playerStates, playerInstances} = clashjs;
-
+    var {gameEnvironment, gameStats, playerStates, playerInstances} = clashjs;
+    _.forEach(playerInstances, function(player, index) {
+      gameStats[player.getId()].isAlive = playerStates[index].isAlive;
+    });
     return (
       <div className='clash' onClick={this.handleClick}>
         <Tiles
@@ -217,11 +219,8 @@ var Clash = React.createClass({
         <Notifications
           kills={kills} />
         <Stats
-          playerInstances={playerInstances}
           playerStates={playerStates}
-          winners={winners}
-          rates={rates} />
-
+          stats={gameStats} />
       </div>
     );
   }

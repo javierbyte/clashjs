@@ -94,6 +94,7 @@ b {
 }
 
 .stats {
+  background: #000000;
   position: fixed;
   top: 0;
   right: 0;
