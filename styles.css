@@ -114,6 +114,7 @@ b {
 .stats td {
   padding: 0 .5em;
   font-family: 'Share Tech Mono', ;
+  font-size: 1.4em;
 }
 
 .player-dead td {
