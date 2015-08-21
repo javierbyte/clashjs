@@ -77,6 +77,7 @@ b {
 .clash-player-name {
   top: -2em;
   text-align: center;
+  font-family: 'Share Tech Mono', ;
 }
 
 .clash-shoot {
@@ -101,18 +102,38 @@ b {
   padding: 1em;
   font-size: .9em;
 }
+
+.stats-title {
+  font-family: 'Audiowide', cursive;
+  text-align: center;
+}
+
 .stats-results {
   text-align: right;
 }
 .stats td {
   padding: 0 .5em;
+  font-family: 'Share Tech Mono', ;
 }
+
+.player-dead td {
+  color: #55555;
+}
+
+.player-dead .player-name {
+  text-decoration: line-through;
+}
+
 .notifications {
   position: fixed;
+  padding: 5px;
+  background: #000;
   color: #ffffff;
-  font-size: 1.6em;
+  font-size: 1.1em;
+  font-family: 'Press Start 2P', cursive;
   top:10%;
   z-index: 9000;
+  opacity: 0.5;
 }
 
 .animation-shot {

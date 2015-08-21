@@ -13,22 +13,21 @@ var Stats = React.createClass({
     var {stats, rounds, total} = this.props;
     return (
       <div className='stats'>
-        <h3>Results on round {rounds} of {total}</h3>
+        <h3 className="stats-title">Results on round {rounds} of {total}</h3>
         <table>
           <thead>
             <td></td>
+            <td></td>
             <td>Wins</td>
-            <td>Win Rate</td>
+            <td>Rate</td>
             <td>K/D/R</td>
           </thead>
           <tbody>
           {_.map(stats, (playerStats, index) => {
             return (
-              <tr key={index} style={{
-                textDecoration: playerStats.isAlive ? 'none' : 'line-through',
-                color: playerStats.isAlive ? '#FFF' : '#555'
-              }}>
-                <td>{playerStats.name}</td>
+              <tr key={index} className={playerStats.isAlive ? '' : 'player-dead'}>
+                <td>{playerStats.isAlive ? '' : "💀"}</td>
+                <td className='player-name'>{playerStats.name}</td>
                 <td className='stats-results'>{playerStats.wins}</td>
                 <td className='stats-results'>{playerStats.winrate}%</td>
                 <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
