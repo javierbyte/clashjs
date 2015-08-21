@@ -7,7 +7,8 @@ var safeMovement = (value, size) => {
   return value;
 };
 
-var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, evtCallback) => {
+var clashCoreUtils = (data) => {
+  var {playerIndex, playerAction, playerStates, playerInstances, gameEnvironment, evtCallback, coreCallback} = data;
   var currentPlayerState = playerStates[playerIndex];
 
   if (DIRECTIONS.indexOf(playerAction) !== -1) {
@@ -50,6 +51,7 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, 
     currentPlayerState.ammo -= 1;
 
     let kills = [];
+    let survivors = [];
     evtCallback('SHOOT', {
       shooter: playerIndex,
       origin: currentPlayerState.position,
@@ -64,10 +66,28 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, 
     });
 
     if (kills.length) {
-      evtCallback('KILL', {
+      survivors = _.filter(playerStates, (player) => player.isAlive);
+      setTimeout(coreCallback('KILL', {
+        killer: playerInstances[playerIndex],
+        killed: _.map(kills, (index) => playerInstances[index])
+      }),0);
+      setTimeout(evtCallback('KILL', {
         killer: playerIndex,
         killed: kills
-      });
+      }),0);
+    }
+
+    if (!survivors.length) {
+      setTimeout(coreCallback('DRAW'), 0);
+      setTimeout(evtCallback('DRAW'), 0);
+    }
+    if (survivors.length === 1) {
+      setTimeout(coreCallback('WIN', {
+        winner: playerInstances[playerIndex]
+      }), 0);
+      setTimeout(evtCallback('WIN', {
+        winner: playerInstances[playerIndex]
+      }), 0);
     }
   }
 
@@ -75,4 +95,3 @@ var clashCoreUtils = (playerIndex, playerAction, playerStates, gameEnvironment, 
 };
 
 module.exports = clashCoreUtils;
-
