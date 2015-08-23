@@ -33,7 +33,8 @@ class ClashJS {
 
   setupGame() {
     this._rounds++;
-    this._playerStates = this._playerInstances.map((playerInstance, index) => {
+    this._playerInstances = _.shuffle(this._playerInstances);
+    this._playerStates = this._playerInstances.map((playerInstance) => {
       let gridSize = this._gameEnvironment.gridSize;
 
       return {
@@ -46,10 +47,6 @@ class ClashJS {
     });
 
     this._currentPlayer = 0;
-    // this._musicTheme = music.theme0;
-    // this._musicTheme.loop = true;
-    // this._musicTheme.volume = 0.5;
-    // this._musicTheme.play();
     this._createAmmo();
   }
 
