@@ -58,16 +58,6 @@ var Clash = React.createClass({
       return el.isAlive ? (result + 1) : result;
     }, 0);
     if (alivePlayerCount < 2) return false;
-    if (alivePlayerCount <= 3) {
-      sudeenDeathCount++;
-      if (sudeenDeathCount > 500) {
-        console.error('You guys are just dancing, 500 turns with no winner, call this one a draw.');
-        playerStates.forEach((el) => el.isAlive = false);
-        if (rounds < totalRounds) {
-          return this.newGame();
-        }
-      }
-    }
 
     window.setTimeout(() => {
       this.setState({
@@ -94,22 +84,15 @@ var Clash = React.createClass({
 
       players[data.shooter].playLaser();
     }
-    if (evt === 'WIN') {
-      console.log('Win, new game');
+    if (evt === 'WIN') return this.newGame();
+    if (evt === 'DRAW') {
+      this.setState({
+        kills: [{date: new Date, text: 'Stalemate!'}]
+      });
       return this.newGame();
     }
     if (evt === 'KILL') return this._handleKill(data);
-    if (evt === 'END') {
-      console.log('END THE GAME');
-      return this.endGame();
-    }
-  },
-
-  handleClick() {
-    this.setState({
-      clashjs: this.ClashJS.nextStep(),
-      speed: Math.max(parseInt(this.state.speed * 0.75, 10), 1)
-    });
+    if (evt === 'END') return this.endGame();
   },
 
   _handleKill(data) {
