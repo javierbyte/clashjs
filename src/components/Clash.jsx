@@ -29,8 +29,6 @@ var Clash = React.createClass({
       clashjs: this.ClashJS.getState(),
       shoots: [],
       speed: 100,
-      winners: playerArray.map(() => 0),
-      rates: playerArray.map(() => 0),
       kills: []
     };
   },
@@ -41,29 +39,6 @@ var Clash = React.createClass({
 
   newGame() {
     killsStack = [];
-    let stats = this.ClashJS._gameStats;
-    this.ClashJS.getState().playerStates.forEach((player, index) => {
-      if (player.isAlive) {
-        let newWinners = this.state.winners;
-        let newRates = this.state.rates;
-        let total = 0;
-
-        newWinners[index]++;
-
-        total = _.reduce(newWinners, (tot, n) => tot + n);
-
-        newRates = _.map(newWinners, (wins, index) => {
-          if (!wins) return 0;
-          if (!total) return 0;
-          return wins / total;
-        });
-
-        this.setState({
-          winners: newWinners,
-          rates: newRates
-        });
-      }
-    });
 
     window.setTimeout(() => {
       sudeenDeathCount = 0;
@@ -82,8 +57,8 @@ var Clash = React.createClass({
     var alivePlayerCount = playerStates.reduce((result, el) => {
       return el.isAlive ? (result + 1) : result;
     }, 0);
-
-    if (alivePlayerCount < 3) {
+    if (alivePlayerCount < 2) return false;
+    if (alivePlayerCount <= 3) {
       sudeenDeathCount++;
       if (sudeenDeathCount > 500) {
         console.error('You guys are just dancing, 500 turns with no winner, call this one a draw.');
@@ -94,13 +69,13 @@ var Clash = React.createClass({
       }
     }
 
-    if (alivePlayerCount < 2 && rounds < totalRounds) return this.newGame();
     window.setTimeout(() => {
       this.setState({
         clashjs: this.ClashJS.nextPly(),
         speed: this.state.speed > 15 ? parseInt(this.state.speed * 0.98, 10) : 15
       }, this.nextTurn);
     }, this.state.speed);
+
   },
 
   handleEvent(evt, data) {
@@ -119,8 +94,15 @@ var Clash = React.createClass({
 
       players[data.shooter].playLaser();
     }
-
-    if (evt === 'KILL') this._handleKill(data);
+    if (evt === 'WIN') {
+      console.log('Win, new game');
+      return this.newGame();
+    }
+    if (evt === 'KILL') return this._handleKill(data);
+    if (evt === 'END') {
+      console.log('END THE GAME');
+      return this.endGame();
+    }
   },
 
   handleClick() {
@@ -152,7 +134,16 @@ var Clash = React.createClass({
     });
 
     setTimeout(()=> this.handleStreak(data.killer, killer, killed), 100);
+  },
 
+  endGame() {
+    this.setState({
+      clashjs: null,
+      shoots: [],
+      speed: 0,
+      kills: []
+    })
+    return 'finish';
   },
 
   handleStreak(index, killer, killed) {
@@ -210,7 +201,7 @@ var Clash = React.createClass({
   },
 
   render() {
-    var {clashjs, shoots, winners, rates, kills} = this.state;
+    var {clashjs, shoots, kills} = this.state;
     var {gameEnvironment, gameStats, playerStates, playerInstances, rounds, totalRounds} = clashjs;
     _.forEach(playerInstances, function(player, index) {
       gameStats[player.getId()].isAlive = playerStates[index].isAlive;

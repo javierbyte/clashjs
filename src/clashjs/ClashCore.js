@@ -6,10 +6,6 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 class ClashJS {
   constructor(playerDefinitionArray, currentStats, evtCallback) {
-    this._gameEnvironment = {
-      gridSize: 13,
-      ammoPosition: []
-    };
     this._totalRounds = playerDefinitionArray.length * 10;
     this._rounds = 0;
     this._gameStats = currentStats || {};
@@ -32,11 +28,14 @@ class ClashJS {
   }
 
   setupGame() {
+    this._gameEnvironment = {
+      gridSize: 13,
+      ammoPosition: []
+    };
     this._rounds++;
     this._playerInstances = _.shuffle(this._playerInstances);
     this._playerStates = this._playerInstances.map((playerInstance) => {
       let gridSize = this._gameEnvironment.gridSize;
-
       return {
         style: playerInstance.getInfo().style,
         position: [Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)],
@@ -136,6 +135,10 @@ class ClashJS {
         let {wins, winrate} = playerStats;
         playerStats.winrate = Math.round(wins * 100 / this._rounds);
       });
+
+      if (this._rounds >= this._totalRounds) {
+        this._evtCallback('END');
+      }
     }
   }
 
