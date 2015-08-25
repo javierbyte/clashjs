@@ -10,7 +10,8 @@ class ClashJS {
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = evtCallback;
-
+    this._alivePlayerCount = 0;
+    this._sudeenDeathCount = 0;
     this._playerInstances = playerDefinitionArray.map((playerDefinition) => {
       let player = new PlayerClass(playerDefinition);
       this._gameStats[player.getId()] = {
@@ -33,6 +34,7 @@ class ClashJS {
       ammoPosition: []
     };
     this._rounds++;
+    this._sudeenDeathCount = 0;
     this._playerInstances = _.shuffle(this._playerInstances);
     this._playerStates = this._playerInstances.map((playerInstance) => {
       let gridSize = this._gameEnvironment.gridSize;
@@ -77,6 +79,14 @@ class ClashJS {
   }
 
   nextPly() {
+    if (this._sudeenDeathCount > 500) {
+      this._handleCoreAction('DRAW');
+      return this._evtCallback('DRAW');
+    }
+    if (this._alivePlayerCount <= 3) {
+      this._sudeenDeathCount++;
+    }
+
     var otherPlayers = this._playerStates.filter((currentEnemyFilter, index) => {
       if (index === this._currentPlayer) return false;
       return currentEnemyFilter.isAlive;
@@ -100,18 +110,6 @@ class ClashJS {
     return this.getState();
   }
 
-  nextStep() {
-    this._playerInstances.forEach(() => {
-      this.nextPly();
-    });
-
-    return {
-      gameEnvironment: this._gameEnvironment,
-      gameStats: this._gameStats,
-      playerStates: this._playerStates,
-      playerInstances: this._playerInstances
-    };
-  }
 
   _handleCoreAction(action, data) {
     if (action === 'KILL') {
@@ -136,9 +134,14 @@ class ClashJS {
         playerStats.winrate = Math.round(wins * 100 / this._rounds);
       });
 
-      if (this._rounds >= this._totalRounds) {
-        this._evtCallback('END');
-      }
+      if (this._rounds >= this._totalRounds) return this._evtCallback('END');
+    }
+    if (action === 'DRAW') {
+      _.forEach(this._gameStats, (playerStats, key) => {
+        let {wins, winrate} = playerStats;
+        playerStats.winrate = Math.round(wins * 100 / this._rounds);
+      });
+      if (this._rounds >= this._totalRounds) return this._evtCallback('END');
     }
   }
 
