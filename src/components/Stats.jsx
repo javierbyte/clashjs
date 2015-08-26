@@ -15,7 +15,7 @@ var Stats = React.createClass({
     stats = _.sortBy(stats, (playerStats) => playerStats.wins * -1);
     return (
       <div className='stats'>
-        <h3 className="stats-title">Results on round {rounds} of {total}</h3>
+        <div className="stats-title">Results on round {rounds} of {total}</div>
         <table>
           <thead>
             <td></td>
