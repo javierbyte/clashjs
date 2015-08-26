@@ -5,5 +5,6 @@ module.exports = {
   ericku: require('./players/ericku.js'),
   siegfried: require('./players/siegfried.js'),
   horror: require('./players/horror.js'),
+  elperron: require('./players/elperron.js'),
   yuno: require('./players/yuno.js')
 };

@@ -9,12 +9,12 @@ var safeRandomMove = () => {
   return Math.random() > 0.33 ? 'move' : DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
 };
 
-var turn = (currentPosition, howMuchTurn) => {
+var turn = (currentPosition = [], howMuchTurn) => {
   var currentPositionIndex = DIRECTIONS.indexOf(currentPosition);
   return DIRECTIONS[(currentPositionIndex + howMuchTurn) % 4];
 };
 
-var getDirection = (start, end) => {
+var getDirection = (start = [], end = []) => {
   var diffVertical = Math.abs(start[0] - end[0]);
   var diffHorizontal = Math.abs(start[1] - end[1]);
 
@@ -24,14 +24,14 @@ var getDirection = (start, end) => {
   return (start[1] - end[1] > 0) ? 'west' : 'east';
 };
 
-var getDistance = (start, end) => {
+var getDistance = (start = [], end = []) => {
   var diffVertical = Math.abs(start[0] - end[0]);
   var diffHorizontal = Math.abs(start[1] - end[1]);
 
   return diffHorizontal + diffVertical;
 };
 
-var fastGetDirection = (start, end) => {
+var fastGetDirection = (start = [], end = []) => {
   var diffVertical = Math.abs(start[0] - end[0]);
   // var diffHorizontal = Math.abs(start[1] - end[1]);
 
@@ -41,7 +41,7 @@ var fastGetDirection = (start, end) => {
   return (start[1] - end[1] > 0) ? 'west' : 'east';
 };
 
-var isVisible = (originalPosition, finalPosition, direction) => {
+var isVisible = (originalPosition = [], finalPosition = [], direction = []) => {
   switch (direction) {
     case DIRECTIONS[0]:
       return originalPosition[1] === finalPosition[1] && originalPosition[0] > finalPosition[0];
@@ -56,7 +56,7 @@ var isVisible = (originalPosition, finalPosition, direction) => {
   }
 };
 
-var canKill = (currentPlayerState, enemiesStates) => {
+var canKill = (currentPlayerState = {}, enemiesStates = []) => {
   return enemiesStates.some((enemyObject) => {
     return (enemyObject.isAlive && isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction));
   });
