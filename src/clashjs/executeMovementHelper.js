@@ -77,7 +77,6 @@ var clashCoreUtils = (data) => {
       }),0);
 
       if (!survivors.length) {
-        debugger;
         setTimeout(coreCallback('DRAW'), 0);
         setTimeout(evtCallback('DRAW'), 0);
       }
