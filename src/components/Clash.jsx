@@ -28,7 +28,7 @@ var Clash = React.createClass({
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 250,
+      speed: 80,
       kills: []
     };
   },
@@ -46,7 +46,7 @@ var Clash = React.createClass({
       this.setState({
         clashjs: this.ClashJS.getState(),
         shoots: [],
-        speed: 250,
+        speed: 80,
         kills: []
       }, this.nextTurn);
     }, 1000);
@@ -62,7 +62,7 @@ var Clash = React.createClass({
     window.setTimeout(() => {
       this.setState({
         clashjs: this.ClashJS.nextPly(),
-        speed: this.state.speed > 15 ? parseInt(this.state.speed * 0.98, 10) : 15
+        speed: this.state.speed > 30 ? parseInt(this.state.speed * 0.98, 10) : 30
       }, this.nextTurn);
     }, this.state.speed);
 
@@ -186,6 +186,9 @@ var Clash = React.createClass({
   render() {
     var {clashjs, shoots, kills} = this.state;
     var {gameEnvironment, gameStats, playerStates, playerInstances, rounds, totalRounds} = clashjs;
+
+    gameEnvironment = gameEnvironment || {gridSize: 13};
+
     _.forEach(playerInstances, function(player, index) {
       gameStats[player.getId()].isAlive = playerStates[index].isAlive;
     });

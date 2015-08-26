@@ -15,6 +15,9 @@ var turn = (currentPosition = [], howMuchTurn) => {
 };
 
 var getDirection = (start = [], end = []) => {
+  start = start || [];
+  end = end || [];
+
   var diffVertical = Math.abs(start[0] - end[0]);
   var diffHorizontal = Math.abs(start[1] - end[1]);
 
