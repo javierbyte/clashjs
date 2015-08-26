@@ -36,6 +36,7 @@ class ClashJS {
     this._rounds++;
     this._sudeenDeathCount = 0;
     this._playerInstances = _.shuffle(this._playerInstances);
+    this._alivePlayerCount = this._playerInstances.length;
     this._playerStates = this._playerInstances.map((playerInstance) => {
       let gridSize = this._gameEnvironment.gridSize;
       return {
@@ -83,7 +84,7 @@ class ClashJS {
       this._handleCoreAction('DRAW');
       return this._evtCallback('DRAW');
     }
-    if (this._alivePlayerCount <= 3) {
+    if (this._alivePlayerCount <= 2) {
       this._sudeenDeathCount++;
     }
 
@@ -118,6 +119,7 @@ class ClashJS {
       _.forEach(this._playerInstances, (player) => {
         let stats = this._gameStats[player.getId()];
         if (killed.indexOf(player) > -1) {
+          this._alivePlayerCount--;
           stats.deaths++;
         }
         if (stats.deaths) {
