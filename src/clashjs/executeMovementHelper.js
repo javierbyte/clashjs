@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var utils = require('../lib/utils.js');
 var DIRECTIONS = ['north', 'east', 'south', 'west'];
 

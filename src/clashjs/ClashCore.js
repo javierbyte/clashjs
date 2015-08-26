@@ -6,7 +6,7 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 class ClashJS {
   constructor(playerDefinitionArray, currentStats, evtCallback) {
-    this._totalRounds = playerDefinitionArray.length * 10;
+    this._totalRounds = playerDefinitionArray.length * 3;
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = evtCallback;
@@ -80,9 +80,10 @@ class ClashJS {
   }
 
   nextPly() {
-    if (this._sudeenDeathCount > 500) {
+    if (this._sudeenDeathCount > 250) {
       this._handleCoreAction('DRAW');
       return this._evtCallback('DRAW');
+      // return this.getState();
     }
     if (this._alivePlayerCount <= 2) {
       this._sudeenDeathCount++;
