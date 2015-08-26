@@ -13,7 +13,7 @@
     ElPerron = {
         info: {
             name: 'ElPerron',
-            style: 6
+            style: 7
         },
         ai: (playerState, enemiesStates, gameEnvironment) => {
             var directionToTarget,

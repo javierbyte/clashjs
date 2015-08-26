@@ -35,12 +35,10 @@ var manuelmhtr = {
     function calculateVulnerabilityLevel(targetPosition) {
       var vulnerabilityLevel = 0.0;
       enemies.forEach(function(enemy) {
-        if (enemy.ammo > 0) {
-          if (utils.isVisible(enemy.position, targetPosition, enemy.direction)) {
-            vulnerabilityLevel = Math.max(vulnerabilityLevel, 1.0);
-          } else if (isAligned(enemy.position, targetPosition)) {
-            vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.5);
-          }
+        if (utils.isVisible(enemy.position, targetPosition, enemy.direction) && enemy.ammo > 0) {
+          vulnerabilityLevel = Math.max(vulnerabilityLevel, 1.0);
+        } else if (isAligned(enemy.position, targetPosition) && (enemy.ammo > 0 || enemy.nearestAmmoDistance === 1)) {
+          vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.5);
         }
       });
 
@@ -53,8 +51,6 @@ var manuelmhtr = {
             if (isAligned(enemy.position, northEast) || isAligned(enemy.position, southWest)) {
               vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.25);
             }
-          } else if (enemy.nearestAmmoDistance === 1) {
-            vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.5);
           }
         });
       }
