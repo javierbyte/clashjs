@@ -85,22 +85,24 @@ class ClashJS {
       return this._evtCallback('DRAW');
       // return this.getState();
     }
+    let clonedStates = _.clone(this._playerStates, true);
     if (this._alivePlayerCount <= 2) {
       this._sudeenDeathCount++;
     }
 
-    var otherPlayers = this._playerStates.filter((currentEnemyFilter, index) => {
+    var otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {
       if (index === this._currentPlayer) return false;
       return currentEnemyFilter.isAlive;
     });
 
     if (this._playerStates[this._currentPlayer].isAlive) {
+
       this._savePlayerAction(
         this._currentPlayer,
         this._playerInstances[this._currentPlayer].execute(
-          this._playerStates[this._currentPlayer],
+          clonedStates[this._currentPlayer],
           otherPlayers,
-          this._gameEnvironment
+          _.clone(this._gameEnvironment, true)
         )
       );
     }
@@ -144,7 +146,8 @@ class ClashJS {
         let {wins, winrate} = playerStats;
         playerStats.winrate = Math.round(wins * 100 / this._rounds);
       });
-      if (this._rounds >= this._totalRounds) return this._evtCallback('END');
+      console.log(this._playerStates);
+      if (this._rounds >= this._totalRounds) {return this._evtCallback('END');}
     }
   }
 
