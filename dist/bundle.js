@@ -143,10 +143,10 @@
 	 * Module dependencies.
 	 */
 	
-	var url = __webpack_require__(5);
+	var url = __webpack_require__(4);
 	var parser = __webpack_require__(7);
 	var Manager = __webpack_require__(14);
-	var debug = __webpack_require__(4)('socket.io-client');
+	var debug = __webpack_require__(6)('socket.io-client');
 	
 	/**
 	 * Module exports.
@@ -229,6 +229,117 @@
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {
+	/**
+	 * Module dependencies.
+	 */
+	
+	var parseuri = __webpack_require__(5);
+	var debug = __webpack_require__(6)('socket.io-client:url');
+	
+	/**
+	 * Module exports.
+	 */
+	
+	module.exports = url;
+	
+	/**
+	 * URL parser.
+	 *
+	 * @param {String} url
+	 * @param {Object} An object meant to mimic window.location.
+	 *                 Defaults to window.location.
+	 * @api public
+	 */
+	
+	function url(uri, loc){
+	  var obj = uri;
+	
+	  // default to window.location
+	  var loc = loc || global.location;
+	  if (null == uri) uri = loc.protocol + '//' + loc.host;
+	
+	  // relative path support
+	  if ('string' == typeof uri) {
+	    if ('/' == uri.charAt(0)) {
+	      if ('/' == uri.charAt(1)) {
+	        uri = loc.protocol + uri;
+	      } else {
+	        uri = loc.hostname + uri;
+	      }
+	    }
+	
+	    if (!/^(https?|wss?):\/\//.test(uri)) {
+	      debug('protocol-less url %s', uri);
+	      if ('undefined' != typeof loc) {
+	        uri = loc.protocol + '//' + uri;
+	      } else {
+	        uri = 'https://' + uri;
+	      }
+	    }
+	
+	    // parse
+	    debug('parse %s', uri);
+	    obj = parseuri(uri);
+	  }
+	
+	  // make sure we treat `localhost:80` and `localhost` equally
+	  if (!obj.port) {
+	    if (/^(http|ws)$/.test(obj.protocol)) {
+	      obj.port = '80';
+	    }
+	    else if (/^(http|ws)s$/.test(obj.protocol)) {
+	      obj.port = '443';
+	    }
+	  }
+	
+	  obj.path = obj.path || '/';
+	
+	  // define unique id
+	  obj.id = obj.protocol + '://' + obj.host + ':' + obj.port;
+	  // define href
+	  obj.href = obj.protocol + '://' + obj.host + (loc && loc.port == obj.port ? '' : (':' + obj.port));
+	
+	  return obj;
+	}
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+	/**
+	 * Parses an URI
+	 *
+	 * @author Steven Levithan <stevenlevithan.com> (MIT license)
+	 * @api private
+	 */
+	
+	var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+	
+	var parts = [
+	    'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host'
+	  , 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
+	];
+	
+	module.exports = function parseuri(str) {
+	  var m = re.exec(str || '')
+	    , uri = {}
+	    , i = 14;
+	
+	  while (i--) {
+	    uri[parts[i]] = m[i] || '';
+	  }
+	
+	  return uri;
+	};
+
+
+/***/ },
+/* 6 */
 /***/ function(module, exports) {
 
 	
@@ -371,117 +482,6 @@
 
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {
-	/**
-	 * Module dependencies.
-	 */
-	
-	var parseuri = __webpack_require__(6);
-	var debug = __webpack_require__(4)('socket.io-client:url');
-	
-	/**
-	 * Module exports.
-	 */
-	
-	module.exports = url;
-	
-	/**
-	 * URL parser.
-	 *
-	 * @param {String} url
-	 * @param {Object} An object meant to mimic window.location.
-	 *                 Defaults to window.location.
-	 * @api public
-	 */
-	
-	function url(uri, loc){
-	  var obj = uri;
-	
-	  // default to window.location
-	  var loc = loc || global.location;
-	  if (null == uri) uri = loc.protocol + '//' + loc.host;
-	
-	  // relative path support
-	  if ('string' == typeof uri) {
-	    if ('/' == uri.charAt(0)) {
-	      if ('/' == uri.charAt(1)) {
-	        uri = loc.protocol + uri;
-	      } else {
-	        uri = loc.hostname + uri;
-	      }
-	    }
-	
-	    if (!/^(https?|wss?):\/\//.test(uri)) {
-	      debug('protocol-less url %s', uri);
-	      if ('undefined' != typeof loc) {
-	        uri = loc.protocol + '//' + uri;
-	      } else {
-	        uri = 'https://' + uri;
-	      }
-	    }
-	
-	    // parse
-	    debug('parse %s', uri);
-	    obj = parseuri(uri);
-	  }
-	
-	  // make sure we treat `localhost:80` and `localhost` equally
-	  if (!obj.port) {
-	    if (/^(http|ws)$/.test(obj.protocol)) {
-	      obj.port = '80';
-	    }
-	    else if (/^(http|ws)s$/.test(obj.protocol)) {
-	      obj.port = '443';
-	    }
-	  }
-	
-	  obj.path = obj.path || '/';
-	
-	  // define unique id
-	  obj.id = obj.protocol + '://' + obj.host + ':' + obj.port;
-	  // define href
-	  obj.href = obj.protocol + '://' + obj.host + (loc && loc.port == obj.port ? '' : (':' + obj.port));
-	
-	  return obj;
-	}
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	/**
-	 * Parses an URI
-	 *
-	 * @author Steven Levithan <stevenlevithan.com> (MIT license)
-	 * @api private
-	 */
-	
-	var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
-	
-	var parts = [
-	    'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host'
-	  , 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
-	];
-	
-	module.exports = function parseuri(str) {
-	  var m = re.exec(str || '')
-	    , uri = {}
-	    , i = 14;
-	
-	  while (i--) {
-	    uri[parts[i]] = m[i] || '';
-	  }
-	
-	  return uri;
-	};
-
-
-/***/ },
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -490,10 +490,10 @@
 	 * Module dependencies.
 	 */
 	
-	var debug = __webpack_require__(4)('socket.io-parser');
-	var json = __webpack_require__(9);
-	var isArray = __webpack_require__(11);
-	var Emitter = __webpack_require__(8);
+	var debug = __webpack_require__(6)('socket.io-parser');
+	var json = __webpack_require__(8);
+	var isArray = __webpack_require__(10);
+	var Emitter = __webpack_require__(11);
 	var binary = __webpack_require__(12);
 	var isBuf = __webpack_require__(13);
 	
@@ -889,176 +889,6 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
-
-	
-	/**
-	 * Expose `Emitter`.
-	 */
-	
-	module.exports = Emitter;
-	
-	/**
-	 * Initialize a new `Emitter`.
-	 *
-	 * @api public
-	 */
-	
-	function Emitter(obj) {
-	  if (obj) return mixin(obj);
-	};
-	
-	/**
-	 * Mixin the emitter properties.
-	 *
-	 * @param {Object} obj
-	 * @return {Object}
-	 * @api private
-	 */
-	
-	function mixin(obj) {
-	  for (var key in Emitter.prototype) {
-	    obj[key] = Emitter.prototype[key];
-	  }
-	  return obj;
-	}
-	
-	/**
-	 * Listen on the given `event` with `fn`.
-	 *
-	 * @param {String} event
-	 * @param {Function} fn
-	 * @return {Emitter}
-	 * @api public
-	 */
-	
-	Emitter.prototype.on =
-	Emitter.prototype.addEventListener = function(event, fn){
-	  this._callbacks = this._callbacks || {};
-	  (this._callbacks[event] = this._callbacks[event] || [])
-	    .push(fn);
-	  return this;
-	};
-	
-	/**
-	 * Adds an `event` listener that will be invoked a single
-	 * time then automatically removed.
-	 *
-	 * @param {String} event
-	 * @param {Function} fn
-	 * @return {Emitter}
-	 * @api public
-	 */
-	
-	Emitter.prototype.once = function(event, fn){
-	  var self = this;
-	  this._callbacks = this._callbacks || {};
-	
-	  function on() {
-	    self.off(event, on);
-	    fn.apply(this, arguments);
-	  }
-	
-	  on.fn = fn;
-	  this.on(event, on);
-	  return this;
-	};
-	
-	/**
-	 * Remove the given callback for `event` or all
-	 * registered callbacks.
-	 *
-	 * @param {String} event
-	 * @param {Function} fn
-	 * @return {Emitter}
-	 * @api public
-	 */
-	
-	Emitter.prototype.off =
-	Emitter.prototype.removeListener =
-	Emitter.prototype.removeAllListeners =
-	Emitter.prototype.removeEventListener = function(event, fn){
-	  this._callbacks = this._callbacks || {};
-	
-	  // all
-	  if (0 == arguments.length) {
-	    this._callbacks = {};
-	    return this;
-	  }
-	
-	  // specific event
-	  var callbacks = this._callbacks[event];
-	  if (!callbacks) return this;
-	
-	  // remove all handlers
-	  if (1 == arguments.length) {
-	    delete this._callbacks[event];
-	    return this;
-	  }
-	
-	  // remove specific handler
-	  var cb;
-	  for (var i = 0; i < callbacks.length; i++) {
-	    cb = callbacks[i];
-	    if (cb === fn || cb.fn === fn) {
-	      callbacks.splice(i, 1);
-	      break;
-	    }
-	  }
-	  return this;
-	};
-	
-	/**
-	 * Emit `event` with the given args.
-	 *
-	 * @param {String} event
-	 * @param {Mixed} ...
-	 * @return {Emitter}
-	 */
-	
-	Emitter.prototype.emit = function(event){
-	  this._callbacks = this._callbacks || {};
-	  var args = [].slice.call(arguments, 1)
-	    , callbacks = this._callbacks[event];
-	
-	  if (callbacks) {
-	    callbacks = callbacks.slice(0);
-	    for (var i = 0, len = callbacks.length; i < len; ++i) {
-	      callbacks[i].apply(this, args);
-	    }
-	  }
-	
-	  return this;
-	};
-	
-	/**
-	 * Return array of callbacks for `event`.
-	 *
-	 * @param {String} event
-	 * @return {Array}
-	 * @api public
-	 */
-	
-	Emitter.prototype.listeners = function(event){
-	  this._callbacks = this._callbacks || {};
-	  return this._callbacks[event] || [];
-	};
-	
-	/**
-	 * Check if this emitter has `event` handlers.
-	 *
-	 * @param {String} event
-	 * @return {Boolean}
-	 * @api public
-	 */
-	
-	Emitter.prototype.hasListeners = function(event){
-	  return !! this.listeners(event).length;
-	};
-
-
-/***/ },
-/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
@@ -1068,7 +898,7 @@
 	
 	  // Detect the `define` function exposed by asynchronous module loaders. The
 	  // strict `define` check is necessary for compatibility with `r.js`.
-	  var isLoader = "function" === "function" && __webpack_require__(10);
+	  var isLoader = "function" === "function" && __webpack_require__(9);
 	
 	  // Detect native implementations.
 	  var nativeJSON = typeof JSON == "object" && JSON;
@@ -1925,7 +1755,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
@@ -1933,11 +1763,181 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
 	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * Expose `Emitter`.
+	 */
+	
+	module.exports = Emitter;
+	
+	/**
+	 * Initialize a new `Emitter`.
+	 *
+	 * @api public
+	 */
+	
+	function Emitter(obj) {
+	  if (obj) return mixin(obj);
+	};
+	
+	/**
+	 * Mixin the emitter properties.
+	 *
+	 * @param {Object} obj
+	 * @return {Object}
+	 * @api private
+	 */
+	
+	function mixin(obj) {
+	  for (var key in Emitter.prototype) {
+	    obj[key] = Emitter.prototype[key];
+	  }
+	  return obj;
+	}
+	
+	/**
+	 * Listen on the given `event` with `fn`.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+	
+	Emitter.prototype.on =
+	Emitter.prototype.addEventListener = function(event, fn){
+	  this._callbacks = this._callbacks || {};
+	  (this._callbacks[event] = this._callbacks[event] || [])
+	    .push(fn);
+	  return this;
+	};
+	
+	/**
+	 * Adds an `event` listener that will be invoked a single
+	 * time then automatically removed.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+	
+	Emitter.prototype.once = function(event, fn){
+	  var self = this;
+	  this._callbacks = this._callbacks || {};
+	
+	  function on() {
+	    self.off(event, on);
+	    fn.apply(this, arguments);
+	  }
+	
+	  on.fn = fn;
+	  this.on(event, on);
+	  return this;
+	};
+	
+	/**
+	 * Remove the given callback for `event` or all
+	 * registered callbacks.
+	 *
+	 * @param {String} event
+	 * @param {Function} fn
+	 * @return {Emitter}
+	 * @api public
+	 */
+	
+	Emitter.prototype.off =
+	Emitter.prototype.removeListener =
+	Emitter.prototype.removeAllListeners =
+	Emitter.prototype.removeEventListener = function(event, fn){
+	  this._callbacks = this._callbacks || {};
+	
+	  // all
+	  if (0 == arguments.length) {
+	    this._callbacks = {};
+	    return this;
+	  }
+	
+	  // specific event
+	  var callbacks = this._callbacks[event];
+	  if (!callbacks) return this;
+	
+	  // remove all handlers
+	  if (1 == arguments.length) {
+	    delete this._callbacks[event];
+	    return this;
+	  }
+	
+	  // remove specific handler
+	  var cb;
+	  for (var i = 0; i < callbacks.length; i++) {
+	    cb = callbacks[i];
+	    if (cb === fn || cb.fn === fn) {
+	      callbacks.splice(i, 1);
+	      break;
+	    }
+	  }
+	  return this;
+	};
+	
+	/**
+	 * Emit `event` with the given args.
+	 *
+	 * @param {String} event
+	 * @param {Mixed} ...
+	 * @return {Emitter}
+	 */
+	
+	Emitter.prototype.emit = function(event){
+	  this._callbacks = this._callbacks || {};
+	  var args = [].slice.call(arguments, 1)
+	    , callbacks = this._callbacks[event];
+	
+	  if (callbacks) {
+	    callbacks = callbacks.slice(0);
+	    for (var i = 0, len = callbacks.length; i < len; ++i) {
+	      callbacks[i].apply(this, args);
+	    }
+	  }
+	
+	  return this;
+	};
+	
+	/**
+	 * Return array of callbacks for `event`.
+	 *
+	 * @param {String} event
+	 * @return {Array}
+	 * @api public
+	 */
+	
+	Emitter.prototype.listeners = function(event){
+	  this._callbacks = this._callbacks || {};
+	  return this._callbacks[event] || [];
+	};
+	
+	/**
+	 * Check if this emitter has `event` handlers.
+	 *
+	 * @param {String} event
+	 * @return {Boolean}
+	 * @api public
+	 */
+	
+	Emitter.prototype.hasListeners = function(event){
+	  return !! this.listeners(event).length;
 	};
 
 
@@ -1951,7 +1951,7 @@
 	 * Module requirements
 	 */
 	
-	var isArray = __webpack_require__(11);
+	var isArray = __webpack_require__(10);
 	var isBuf = __webpack_require__(13);
 	
 	/**
@@ -2118,15 +2118,15 @@
 	 * Module dependencies.
 	 */
 	
-	var url = __webpack_require__(5);
+	var url = __webpack_require__(4);
 	var eio = __webpack_require__(15);
 	var Socket = __webpack_require__(46);
-	var Emitter = __webpack_require__(8);
+	var Emitter = __webpack_require__(11);
 	var parser = __webpack_require__(7);
 	var on = __webpack_require__(48);
 	var bind = __webpack_require__(49);
 	var object = __webpack_require__(52);
-	var debug = __webpack_require__(4)('socket.io-client:manager');
+	var debug = __webpack_require__(6)('socket.io-client:manager');
 	var indexOf = __webpack_require__(43);
 	var Backoff = __webpack_require__(53);
 	
@@ -2639,7 +2639,7 @@
 	 * @api public
 	 *
 	 */
-	module.exports.parser = __webpack_require__(26);
+	module.exports.parser = __webpack_require__(25);
 
 
 /***/ },
@@ -2651,13 +2651,13 @@
 	 */
 	
 	var transports = __webpack_require__(18);
-	var Emitter = __webpack_require__(8);
+	var Emitter = __webpack_require__(11);
 	var debug = __webpack_require__(37)('engine.io-client:socket');
 	var index = __webpack_require__(43);
-	var parser = __webpack_require__(26);
+	var parser = __webpack_require__(25);
 	var parseuri = __webpack_require__(44);
 	var parsejson = __webpack_require__(45);
-	var parseqs = __webpack_require__(36);
+	var parseqs = __webpack_require__(35);
 	
 	/**
 	 * Module exports.
@@ -2772,9 +2772,9 @@
 	 */
 	
 	Socket.Socket = Socket;
-	Socket.Transport = __webpack_require__(25);
+	Socket.Transport = __webpack_require__(24);
 	Socket.transports = __webpack_require__(18);
-	Socket.parser = __webpack_require__(26);
+	Socket.parser = __webpack_require__(25);
 	
 	/**
 	 * Creates transport of the given type.
@@ -3509,8 +3509,8 @@
 	
 	var XMLHttpRequest = __webpack_require__(19);
 	var Polling = __webpack_require__(23);
-	var Emitter = __webpack_require__(8);
-	var inherit = __webpack_require__(24);
+	var Emitter = __webpack_require__(11);
+	var inherit = __webpack_require__(36);
 	var debug = __webpack_require__(37)('engine.io-client:polling-xhr');
 	
 	/**
@@ -3898,10 +3898,10 @@
 	 * Module dependencies.
 	 */
 	
-	var Transport = __webpack_require__(25);
-	var parseqs = __webpack_require__(36);
-	var parser = __webpack_require__(26);
-	var inherit = __webpack_require__(24);
+	var Transport = __webpack_require__(24);
+	var parseqs = __webpack_require__(35);
+	var parser = __webpack_require__(25);
+	var inherit = __webpack_require__(36);
 	var debug = __webpack_require__(37)('engine.io-client:polling');
 	
 	/**
@@ -4143,26 +4143,14 @@
 
 /***/ },
 /* 24 */
-/***/ function(module, exports) {
-
-	
-	module.exports = function(a, b){
-	  var fn = function(){};
-	  fn.prototype = b.prototype;
-	  a.prototype = new fn;
-	  a.prototype.constructor = a;
-	};
-
-/***/ },
-/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module dependencies.
 	 */
 	
-	var parser = __webpack_require__(26);
-	var Emitter = __webpack_require__(8);
+	var parser = __webpack_require__(25);
+	var Emitter = __webpack_require__(11);
 	
 	/**
 	 * Module exports.
@@ -4319,19 +4307,19 @@
 
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
 	 * Module dependencies.
 	 */
 	
-	var keys = __webpack_require__(27);
-	var hasBinary = __webpack_require__(28);
-	var sliceBuffer = __webpack_require__(30);
-	var base64encoder = __webpack_require__(31);
-	var after = __webpack_require__(32);
-	var utf8 = __webpack_require__(33);
+	var keys = __webpack_require__(26);
+	var hasBinary = __webpack_require__(27);
+	var sliceBuffer = __webpack_require__(29);
+	var base64encoder = __webpack_require__(30);
+	var after = __webpack_require__(31);
+	var utf8 = __webpack_require__(32);
 	
 	/**
 	 * Check if we are running an android browser. That requires us to use
@@ -4388,7 +4376,7 @@
 	 * Create a blob api even for blob builder when vendor prefixes exist
 	 */
 	
-	var Blob = __webpack_require__(35);
+	var Blob = __webpack_require__(34);
 	
 	/**
 	 * Encodes a packet.
@@ -4920,7 +4908,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	
@@ -4945,7 +4933,7 @@
 
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {
@@ -4953,7 +4941,7 @@
 	 * Module requirements.
 	 */
 	
-	var isArray = __webpack_require__(29);
+	var isArray = __webpack_require__(28);
 	
 	/**
 	 * Module exports.
@@ -5010,7 +4998,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = Array.isArray || function (arr) {
@@ -5019,7 +5007,7 @@
 
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	/**
@@ -5054,7 +5042,7 @@
 
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports) {
 
 	/*
@@ -5119,7 +5107,7 @@
 
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = after
@@ -5153,7 +5141,7 @@
 
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/*! http://mths.be/utf8js v2.0.0 by @mathias */
@@ -5394,10 +5382,10 @@
 	
 	}(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)(module), (function() { return this; }())))
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -5413,7 +5401,7 @@
 
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -5469,7 +5457,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports) {
 
 	/**
@@ -5510,6 +5498,18 @@
 	  return qry;
 	};
 
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	
+	module.exports = function(a, b){
+	  var fn = function(){};
+	  fn.prototype = b.prototype;
+	  a.prototype = new fn;
+	  a.prototype.constructor = a;
+	};
 
 /***/ },
 /* 37 */
@@ -5994,7 +5994,7 @@
 	 */
 	
 	var Polling = __webpack_require__(23);
-	var inherit = __webpack_require__(24);
+	var inherit = __webpack_require__(36);
 	
 	/**
 	 * Module exports.
@@ -6232,10 +6232,10 @@
 	 * Module dependencies.
 	 */
 	
-	var Transport = __webpack_require__(25);
-	var parser = __webpack_require__(26);
-	var parseqs = __webpack_require__(36);
-	var inherit = __webpack_require__(24);
+	var Transport = __webpack_require__(24);
+	var parser = __webpack_require__(25);
+	var parseqs = __webpack_require__(35);
+	var inherit = __webpack_require__(36);
 	var debug = __webpack_require__(37)('engine.io-client:websocket');
 	
 	/**
@@ -6625,11 +6625,11 @@
 	 */
 	
 	var parser = __webpack_require__(7);
-	var Emitter = __webpack_require__(8);
+	var Emitter = __webpack_require__(11);
 	var toArray = __webpack_require__(47);
 	var on = __webpack_require__(48);
 	var bind = __webpack_require__(49);
-	var debug = __webpack_require__(4)('socket.io-client:socket');
+	var debug = __webpack_require__(6)('socket.io-client:socket');
 	var hasBin = __webpack_require__(50);
 	
 	/**
@@ -7411,15 +7411,15 @@
 	var ReactContext = __webpack_require__(68);
 	var ReactCurrentOwner = __webpack_require__(73);
 	var ReactElement = __webpack_require__(67);
-	var ReactElementValidator = __webpack_require__(86);
+	var ReactElementValidator = __webpack_require__(88);
 	var ReactDOM = __webpack_require__(96);
 	var ReactDOMTextComponent = __webpack_require__(98);
 	var ReactDefaultInjection = __webpack_require__(147);
-	var ReactInstanceHandles = __webpack_require__(76);
+	var ReactInstanceHandles = __webpack_require__(75);
 	var ReactMount = __webpack_require__(123);
-	var ReactPerf = __webpack_require__(82);
+	var ReactPerf = __webpack_require__(84);
 	var ReactPropTypes = __webpack_require__(178);
-	var ReactReconciler = __webpack_require__(83);
+	var ReactReconciler = __webpack_require__(85);
 	var ReactServerRendering = __webpack_require__(210);
 	
 	var assign = __webpack_require__(69);
@@ -9150,9 +9150,9 @@
 	
 	var ReactElement = __webpack_require__(67);
 	var ReactFragment = __webpack_require__(66);
-	var ReactInstanceHandles = __webpack_require__(76);
+	var ReactInstanceHandles = __webpack_require__(75);
 	
-	var getIteratorFn = __webpack_require__(75);
+	var getIteratorFn = __webpack_require__(77);
 	var invariant = __webpack_require__(63);
 	var warning = __webpack_require__(71);
 	
@@ -9389,54 +9389,6 @@
 
 /***/ },
 /* 75 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule getIteratorFn
-	 * @typechecks static-only
-	 */
-	
-	'use strict';
-	
-	/* global Symbol */
-	var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
-	var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
-	
-	/**
-	 * Returns the iterator method function contained on the iterable object.
-	 *
-	 * Be sure to invoke the function with the iterable as context:
-	 *
-	 *     var iteratorFn = getIteratorFn(myIterable);
-	 *     if (iteratorFn) {
-	 *       var iterator = iteratorFn.call(myIterable);
-	 *       ...
-	 *     }
-	 *
-	 * @param {?object} maybeIterable
-	 * @return {?function}
-	 */
-	function getIteratorFn(maybeIterable) {
-	  var iteratorFn = maybeIterable && (
-	    (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL])
-	  );
-	  if (typeof iteratorFn === 'function') {
-	    return iteratorFn;
-	  }
-	}
-	
-	module.exports = getIteratorFn;
-
-
-/***/ },
-/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -9453,7 +9405,7 @@
 	
 	'use strict';
 	
-	var ReactRootIndex = __webpack_require__(77);
+	var ReactRootIndex = __webpack_require__(76);
 	
 	var invariant = __webpack_require__(63);
 	
@@ -9775,7 +9727,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/**
@@ -9807,6 +9759,54 @@
 	};
 	
 	module.exports = ReactRootIndex;
+
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule getIteratorFn
+	 * @typechecks static-only
+	 */
+	
+	'use strict';
+	
+	/* global Symbol */
+	var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+	var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+	
+	/**
+	 * Returns the iterator method function contained on the iterable object.
+	 *
+	 * Be sure to invoke the function with the iterable as context:
+	 *
+	 *     var iteratorFn = getIteratorFn(myIterable);
+	 *     if (iteratorFn) {
+	 *       var iterator = iteratorFn.call(myIterable);
+	 *       ...
+	 *     }
+	 *
+	 * @param {?object} maybeIterable
+	 * @return {?function}
+	 */
+	function getIteratorFn(maybeIterable) {
+	  var iteratorFn = maybeIterable && (
+	    (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL])
+	  );
+	  if (typeof iteratorFn === 'function') {
+	    return iteratorFn;
+	  }
+	}
+	
+	module.exports = getIteratorFn;
 
 
 /***/ },
@@ -9983,11 +9983,11 @@
 	
 	'use strict';
 	
-	var ReactLifeCycle = __webpack_require__(91);
+	var ReactLifeCycle = __webpack_require__(80);
 	var ReactCurrentOwner = __webpack_require__(73);
 	var ReactElement = __webpack_require__(67);
-	var ReactInstanceMap = __webpack_require__(92);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactInstanceMap = __webpack_require__(81);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var assign = __webpack_require__(69);
 	var invariant = __webpack_require__(63);
@@ -10270,6 +10270,100 @@
 
 /***/ },
 /* 80 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactLifeCycle
+	 */
+	
+	'use strict';
+	
+	/**
+	 * This module manages the bookkeeping when a component is in the process
+	 * of being mounted or being unmounted. This is used as a way to enforce
+	 * invariants (or warnings) when it is not recommended to call
+	 * setState/forceUpdate.
+	 *
+	 * currentlyMountingInstance: During the construction phase, it is not possible
+	 * to trigger an update since the instance is not fully mounted yet. However, we
+	 * currently allow this as a convenience for mutating the initial state.
+	 *
+	 * currentlyUnmountingInstance: During the unmounting phase, the instance is
+	 * still mounted and can therefore schedule an update. However, this is not
+	 * recommended and probably an error since it's about to be unmounted.
+	 * Therefore we still want to trigger in an error for that case.
+	 */
+	
+	var ReactLifeCycle = {
+	  currentlyMountingInstance: null,
+	  currentlyUnmountingInstance: null
+	};
+	
+	module.exports = ReactLifeCycle;
+
+
+/***/ },
+/* 81 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactInstanceMap
+	 */
+	
+	'use strict';
+	
+	/**
+	 * `ReactInstanceMap` maintains a mapping from a public facing stateful
+	 * instance (key) and the internal representation (value). This allows public
+	 * methods to accept the user facing instance as an argument and map them back
+	 * to internal methods.
+	 */
+	
+	// TODO: Replace this with ES6: var ReactInstanceMap = new Map();
+	var ReactInstanceMap = {
+	
+	  /**
+	   * This API should be called `delete` but we'd have to make sure to always
+	   * transform these to strings for IE support. When this transform is fully
+	   * supported we can rename it.
+	   */
+	  remove: function(key) {
+	    key._reactInternalInstance = undefined;
+	  },
+	
+	  get: function(key) {
+	    return key._reactInternalInstance;
+	  },
+	
+	  has: function(key) {
+	    return key._reactInternalInstance !== undefined;
+	  },
+	
+	  set: function(key, value) {
+	    key._reactInternalInstance = value;
+	  }
+	
+	};
+	
+	module.exports = ReactInstanceMap;
+
+
+/***/ },
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10285,12 +10379,12 @@
 	
 	'use strict';
 	
-	var CallbackQueue = __webpack_require__(81);
+	var CallbackQueue = __webpack_require__(83);
 	var PooledClass = __webpack_require__(65);
 	var ReactCurrentOwner = __webpack_require__(73);
-	var ReactPerf = __webpack_require__(82);
-	var ReactReconciler = __webpack_require__(83);
-	var Transaction = __webpack_require__(90);
+	var ReactPerf = __webpack_require__(84);
+	var ReactReconciler = __webpack_require__(85);
+	var Transaction = __webpack_require__(92);
 	
 	var assign = __webpack_require__(69);
 	var invariant = __webpack_require__(63);
@@ -10554,7 +10648,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 81 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10657,7 +10751,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 82 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10764,7 +10858,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 83 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -10780,8 +10874,8 @@
 	
 	'use strict';
 	
-	var ReactRef = __webpack_require__(84);
-	var ReactElementValidator = __webpack_require__(86);
+	var ReactRef = __webpack_require__(86);
+	var ReactElementValidator = __webpack_require__(88);
 	
 	/**
 	 * Helper to call ReactRef.attachRefs with this composite component, split out
@@ -10891,7 +10985,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 84 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -10907,7 +11001,7 @@
 	
 	'use strict';
 	
-	var ReactOwner = __webpack_require__(85);
+	var ReactOwner = __webpack_require__(87);
 	
 	var ReactRef = {};
 	
@@ -10966,7 +11060,7 @@
 
 
 /***/ },
-/* 85 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11081,7 +11175,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 86 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11106,12 +11200,12 @@
 	
 	var ReactElement = __webpack_require__(67);
 	var ReactFragment = __webpack_require__(66);
-	var ReactPropTypeLocations = __webpack_require__(87);
-	var ReactPropTypeLocationNames = __webpack_require__(88);
+	var ReactPropTypeLocations = __webpack_require__(89);
+	var ReactPropTypeLocationNames = __webpack_require__(90);
 	var ReactCurrentOwner = __webpack_require__(73);
-	var ReactNativeComponent = __webpack_require__(89);
+	var ReactNativeComponent = __webpack_require__(91);
 	
-	var getIteratorFn = __webpack_require__(75);
+	var getIteratorFn = __webpack_require__(77);
 	var invariant = __webpack_require__(63);
 	var warning = __webpack_require__(71);
 	
@@ -11549,7 +11643,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 87 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -11577,7 +11671,7 @@
 
 
 /***/ },
-/* 88 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11608,7 +11702,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 89 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11718,7 +11812,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 90 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -11962,100 +12056,6 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)))
 
 /***/ },
-/* 91 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactLifeCycle
-	 */
-	
-	'use strict';
-	
-	/**
-	 * This module manages the bookkeeping when a component is in the process
-	 * of being mounted or being unmounted. This is used as a way to enforce
-	 * invariants (or warnings) when it is not recommended to call
-	 * setState/forceUpdate.
-	 *
-	 * currentlyMountingInstance: During the construction phase, it is not possible
-	 * to trigger an update since the instance is not fully mounted yet. However, we
-	 * currently allow this as a convenience for mutating the initial state.
-	 *
-	 * currentlyUnmountingInstance: During the unmounting phase, the instance is
-	 * still mounted and can therefore schedule an update. However, this is not
-	 * recommended and probably an error since it's about to be unmounted.
-	 * Therefore we still want to trigger in an error for that case.
-	 */
-	
-	var ReactLifeCycle = {
-	  currentlyMountingInstance: null,
-	  currentlyUnmountingInstance: null
-	};
-	
-	module.exports = ReactLifeCycle;
-
-
-/***/ },
-/* 92 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactInstanceMap
-	 */
-	
-	'use strict';
-	
-	/**
-	 * `ReactInstanceMap` maintains a mapping from a public facing stateful
-	 * instance (key) and the internal representation (value). This allows public
-	 * methods to accept the user facing instance as an argument and map them back
-	 * to internal methods.
-	 */
-	
-	// TODO: Replace this with ES6: var ReactInstanceMap = new Map();
-	var ReactInstanceMap = {
-	
-	  /**
-	   * This API should be called `delete` but we'd have to make sure to always
-	   * transform these to strings for IE support. When this transform is fully
-	   * supported we can rename it.
-	   */
-	  remove: function(key) {
-	    key._reactInternalInstance = undefined;
-	  },
-	
-	  get: function(key) {
-	    return key._reactInternalInstance;
-	  },
-	
-	  has: function(key) {
-	    return key._reactInternalInstance !== undefined;
-	  },
-	
-	  set: function(key, value) {
-	    key._reactInternalInstance = value;
-	  }
-	
-	};
-	
-	module.exports = ReactInstanceMap;
-
-
-/***/ },
 /* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -12076,10 +12076,10 @@
 	var ReactCurrentOwner = __webpack_require__(73);
 	var ReactElement = __webpack_require__(67);
 	var ReactErrorUtils = __webpack_require__(94);
-	var ReactInstanceMap = __webpack_require__(92);
-	var ReactLifeCycle = __webpack_require__(91);
-	var ReactPropTypeLocations = __webpack_require__(87);
-	var ReactPropTypeLocationNames = __webpack_require__(88);
+	var ReactInstanceMap = __webpack_require__(81);
+	var ReactLifeCycle = __webpack_require__(80);
+	var ReactPropTypeLocations = __webpack_require__(89);
+	var ReactPropTypeLocationNames = __webpack_require__(90);
 	var ReactUpdateQueue = __webpack_require__(79);
 	
 	var assign = __webpack_require__(69);
@@ -13099,7 +13099,7 @@
 	'use strict';
 	
 	var ReactElement = __webpack_require__(67);
-	var ReactElementValidator = __webpack_require__(86);
+	var ReactElementValidator = __webpack_require__(88);
 	
 	var mapObject = __webpack_require__(97);
 	
@@ -14088,7 +14088,7 @@
 	var DOMChildrenOperations = __webpack_require__(114);
 	var DOMPropertyOperations = __webpack_require__(99);
 	var ReactMount = __webpack_require__(123);
-	var ReactPerf = __webpack_require__(82);
+	var ReactPerf = __webpack_require__(84);
 	
 	var invariant = __webpack_require__(63);
 	var setInnerHTML = __webpack_require__(122);
@@ -15768,15 +15768,15 @@
 	var ReactBrowserEventEmitter = __webpack_require__(124);
 	var ReactCurrentOwner = __webpack_require__(73);
 	var ReactElement = __webpack_require__(67);
-	var ReactElementValidator = __webpack_require__(86);
+	var ReactElementValidator = __webpack_require__(88);
 	var ReactEmptyComponent = __webpack_require__(132);
-	var ReactInstanceHandles = __webpack_require__(76);
-	var ReactInstanceMap = __webpack_require__(92);
+	var ReactInstanceHandles = __webpack_require__(75);
+	var ReactInstanceMap = __webpack_require__(81);
 	var ReactMarkupChecksum = __webpack_require__(133);
-	var ReactPerf = __webpack_require__(82);
-	var ReactReconciler = __webpack_require__(83);
+	var ReactPerf = __webpack_require__(84);
+	var ReactReconciler = __webpack_require__(85);
 	var ReactUpdateQueue = __webpack_require__(79);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var emptyObject = __webpack_require__(70);
 	var containsNode = __webpack_require__(135);
@@ -17840,7 +17840,7 @@
 	'use strict';
 	
 	var ReactElement = __webpack_require__(67);
-	var ReactInstanceMap = __webpack_require__(92);
+	var ReactInstanceMap = __webpack_require__(81);
 	
 	var invariant = __webpack_require__(63);
 	
@@ -18177,7 +18177,7 @@
 	
 	var ReactCompositeComponent = __webpack_require__(140);
 	var ReactEmptyComponent = __webpack_require__(132);
-	var ReactNativeComponent = __webpack_require__(89);
+	var ReactNativeComponent = __webpack_require__(91);
 	
 	var assign = __webpack_require__(69);
 	var invariant = __webpack_require__(63);
@@ -18319,15 +18319,15 @@
 	var ReactContext = __webpack_require__(68);
 	var ReactCurrentOwner = __webpack_require__(73);
 	var ReactElement = __webpack_require__(67);
-	var ReactElementValidator = __webpack_require__(86);
-	var ReactInstanceMap = __webpack_require__(92);
-	var ReactLifeCycle = __webpack_require__(91);
-	var ReactNativeComponent = __webpack_require__(89);
-	var ReactPerf = __webpack_require__(82);
-	var ReactPropTypeLocations = __webpack_require__(87);
-	var ReactPropTypeLocationNames = __webpack_require__(88);
-	var ReactReconciler = __webpack_require__(83);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactElementValidator = __webpack_require__(88);
+	var ReactInstanceMap = __webpack_require__(81);
+	var ReactLifeCycle = __webpack_require__(80);
+	var ReactNativeComponent = __webpack_require__(91);
+	var ReactPerf = __webpack_require__(84);
+	var ReactPropTypeLocations = __webpack_require__(89);
+	var ReactPropTypeLocationNames = __webpack_require__(90);
+	var ReactReconciler = __webpack_require__(85);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var assign = __webpack_require__(69);
 	var emptyObject = __webpack_require__(70);
@@ -19413,7 +19413,7 @@
 	  __webpack_require__(103);
 	var ReactMount = __webpack_require__(123);
 	var ReactMultiChild = __webpack_require__(144);
-	var ReactPerf = __webpack_require__(82);
+	var ReactPerf = __webpack_require__(84);
 	
 	var assign = __webpack_require__(69);
 	var escapeTextContentForBrowser = __webpack_require__(102);
@@ -19919,7 +19919,7 @@
 	var ReactComponentEnvironment = __webpack_require__(141);
 	var ReactMultiChildUpdateTypes = __webpack_require__(120);
 	
-	var ReactReconciler = __webpack_require__(83);
+	var ReactReconciler = __webpack_require__(85);
 	var ReactChildReconciler = __webpack_require__(145);
 	
 	/**
@@ -20350,7 +20350,7 @@
 	
 	'use strict';
 	
-	var ReactReconciler = __webpack_require__(83);
+	var ReactReconciler = __webpack_require__(85);
 	
 	var flattenChildren = __webpack_require__(146);
 	var instantiateReactComponent = __webpack_require__(139);
@@ -20568,7 +20568,7 @@
 	var ReactElement = __webpack_require__(67);
 	var ReactEventListener = __webpack_require__(182);
 	var ReactInjection = __webpack_require__(185);
-	var ReactInstanceHandles = __webpack_require__(76);
+	var ReactInstanceHandles = __webpack_require__(75);
 	var ReactMount = __webpack_require__(123);
 	var ReactReconcileTransaction = __webpack_require__(186);
 	var SelectEventPlugin = __webpack_require__(192);
@@ -21791,7 +21791,7 @@
 	var EventPluginHub = __webpack_require__(125);
 	var EventPropagators = __webpack_require__(149);
 	var ExecutionEnvironment = __webpack_require__(107);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	var SyntheticEvent = __webpack_require__(153);
 	
 	var isEventSupported = __webpack_require__(131);
@@ -22952,7 +22952,7 @@
 	'use strict';
 	
 	var ReactCurrentOwner = __webpack_require__(73);
-	var ReactInstanceMap = __webpack_require__(92);
+	var ReactInstanceMap = __webpack_require__(81);
 	var ReactMount = __webpack_require__(123);
 	
 	var invariant = __webpack_require__(63);
@@ -23026,8 +23026,8 @@
 	
 	'use strict';
 	
-	var ReactUpdates = __webpack_require__(80);
-	var Transaction = __webpack_require__(90);
+	var ReactUpdates = __webpack_require__(82);
+	var Transaction = __webpack_require__(92);
 	
 	var assign = __webpack_require__(69);
 	var emptyFunction = __webpack_require__(72);
@@ -23454,7 +23454,7 @@
 	var ReactClass = __webpack_require__(93);
 	var ReactElement = __webpack_require__(67);
 	var ReactMount = __webpack_require__(123);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var assign = __webpack_require__(69);
 	var invariant = __webpack_require__(63);
@@ -23788,7 +23788,7 @@
 	
 	var ReactElement = __webpack_require__(67);
 	var ReactFragment = __webpack_require__(66);
-	var ReactPropTypeLocationNames = __webpack_require__(88);
+	var ReactPropTypeLocationNames = __webpack_require__(90);
 	
 	var emptyFunction = __webpack_require__(72);
 	
@@ -24199,7 +24199,7 @@
 	var ReactBrowserComponentMixin = __webpack_require__(166);
 	var ReactClass = __webpack_require__(93);
 	var ReactElement = __webpack_require__(67);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var assign = __webpack_require__(69);
 	
@@ -24382,7 +24382,7 @@
 	var ReactBrowserComponentMixin = __webpack_require__(166);
 	var ReactClass = __webpack_require__(93);
 	var ReactElement = __webpack_require__(67);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var assign = __webpack_require__(69);
 	var invariant = __webpack_require__(63);
@@ -24523,9 +24523,9 @@
 	var EventListener = __webpack_require__(183);
 	var ExecutionEnvironment = __webpack_require__(107);
 	var PooledClass = __webpack_require__(65);
-	var ReactInstanceHandles = __webpack_require__(76);
+	var ReactInstanceHandles = __webpack_require__(75);
 	var ReactMount = __webpack_require__(123);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var assign = __webpack_require__(69);
 	var getEventTarget = __webpack_require__(154);
@@ -24849,11 +24849,11 @@
 	var ReactClass = __webpack_require__(93);
 	var ReactEmptyComponent = __webpack_require__(132);
 	var ReactBrowserEventEmitter = __webpack_require__(124);
-	var ReactNativeComponent = __webpack_require__(89);
+	var ReactNativeComponent = __webpack_require__(91);
 	var ReactDOMComponent = __webpack_require__(143);
-	var ReactPerf = __webpack_require__(82);
-	var ReactRootIndex = __webpack_require__(77);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactPerf = __webpack_require__(84);
+	var ReactRootIndex = __webpack_require__(76);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var ReactInjection = {
 	  Component: ReactComponentEnvironment.injection,
@@ -24890,12 +24890,12 @@
 	
 	'use strict';
 	
-	var CallbackQueue = __webpack_require__(81);
+	var CallbackQueue = __webpack_require__(83);
 	var PooledClass = __webpack_require__(65);
 	var ReactBrowserEventEmitter = __webpack_require__(124);
 	var ReactInputSelection = __webpack_require__(187);
 	var ReactPutListenerQueue = __webpack_require__(191);
-	var Transaction = __webpack_require__(90);
+	var Transaction = __webpack_require__(92);
 	
 	var assign = __webpack_require__(69);
 	
@@ -25882,17 +25882,17 @@
 	var EventConstants = __webpack_require__(61);
 	var EventPluginUtils = __webpack_require__(60);
 	var EventPropagators = __webpack_require__(149);
-	var SyntheticClipboardEvent = __webpack_require__(197);
+	var SyntheticClipboardEvent = __webpack_require__(196);
 	var SyntheticEvent = __webpack_require__(153);
-	var SyntheticFocusEvent = __webpack_require__(198);
-	var SyntheticKeyboardEvent = __webpack_require__(199);
+	var SyntheticFocusEvent = __webpack_require__(197);
+	var SyntheticKeyboardEvent = __webpack_require__(198);
 	var SyntheticMouseEvent = __webpack_require__(161);
-	var SyntheticDragEvent = __webpack_require__(196);
+	var SyntheticDragEvent = __webpack_require__(201);
 	var SyntheticTouchEvent = __webpack_require__(202);
 	var SyntheticUIEvent = __webpack_require__(162);
 	var SyntheticWheelEvent = __webpack_require__(203);
 	
-	var getEventCharCode = __webpack_require__(200);
+	var getEventCharCode = __webpack_require__(199);
 	
 	var invariant = __webpack_require__(63);
 	var keyOf = __webpack_require__(95);
@@ -26305,49 +26305,6 @@
 	 * LICENSE file in the root directory of this source tree. An additional grant
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 *
-	 * @providesModule SyntheticDragEvent
-	 * @typechecks static-only
-	 */
-	
-	'use strict';
-	
-	var SyntheticMouseEvent = __webpack_require__(161);
-	
-	/**
-	 * @interface DragEvent
-	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
-	 */
-	var DragEventInterface = {
-	  dataTransfer: null
-	};
-	
-	/**
-	 * @param {object} dispatchConfig Configuration used to dispatch this event.
-	 * @param {string} dispatchMarker Marker identifying the event target.
-	 * @param {object} nativeEvent Native browser event.
-	 * @extends {SyntheticUIEvent}
-	 */
-	function SyntheticDragEvent(dispatchConfig, dispatchMarker, nativeEvent) {
-	  SyntheticMouseEvent.call(this, dispatchConfig, dispatchMarker, nativeEvent);
-	}
-	
-	SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
-	
-	module.exports = SyntheticDragEvent;
-
-
-/***/ },
-/* 197 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
 	 * @providesModule SyntheticClipboardEvent
 	 * @typechecks static-only
 	 */
@@ -26386,7 +26343,7 @@
 
 
 /***/ },
-/* 198 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26429,7 +26386,7 @@
 
 
 /***/ },
-/* 199 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26448,8 +26405,8 @@
 	
 	var SyntheticUIEvent = __webpack_require__(162);
 	
-	var getEventCharCode = __webpack_require__(200);
-	var getEventKey = __webpack_require__(201);
+	var getEventCharCode = __webpack_require__(199);
+	var getEventKey = __webpack_require__(200);
 	var getEventModifierState = __webpack_require__(163);
 	
 	/**
@@ -26520,7 +26477,7 @@
 
 
 /***/ },
-/* 200 */
+/* 199 */
 /***/ function(module, exports) {
 
 	/**
@@ -26576,7 +26533,7 @@
 
 
 /***/ },
-/* 201 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26593,7 +26550,7 @@
 	
 	'use strict';
 	
-	var getEventCharCode = __webpack_require__(200);
+	var getEventCharCode = __webpack_require__(199);
 	
 	/**
 	 * Normalization of deprecated HTML5 `key` values
@@ -26682,6 +26639,49 @@
 	}
 	
 	module.exports = getEventKey;
+
+
+/***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule SyntheticDragEvent
+	 * @typechecks static-only
+	 */
+	
+	'use strict';
+	
+	var SyntheticMouseEvent = __webpack_require__(161);
+	
+	/**
+	 * @interface DragEvent
+	 * @see http://www.w3.org/TR/DOM-Level-3-Events/
+	 */
+	var DragEventInterface = {
+	  dataTransfer: null
+	};
+	
+	/**
+	 * @param {object} dispatchConfig Configuration used to dispatch this event.
+	 * @param {string} dispatchMarker Marker identifying the event target.
+	 * @param {object} nativeEvent Native browser event.
+	 * @extends {SyntheticUIEvent}
+	 */
+	function SyntheticDragEvent(dispatchConfig, dispatchMarker, nativeEvent) {
+	  SyntheticMouseEvent.call(this, dispatchConfig, dispatchMarker, nativeEvent);
+	}
+	
+	SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
+	
+	module.exports = SyntheticDragEvent;
 
 
 /***/ },
@@ -26985,7 +26985,7 @@
 	var DOMProperty = __webpack_require__(100);
 	var ReactDefaultPerfAnalysis = __webpack_require__(207);
 	var ReactMount = __webpack_require__(123);
-	var ReactPerf = __webpack_require__(82);
+	var ReactPerf = __webpack_require__(84);
 	
 	var performanceNow = __webpack_require__(208);
 	
@@ -27526,7 +27526,7 @@
 	'use strict';
 	
 	var ReactElement = __webpack_require__(67);
-	var ReactInstanceHandles = __webpack_require__(76);
+	var ReactInstanceHandles = __webpack_require__(75);
 	var ReactMarkupChecksum = __webpack_require__(133);
 	var ReactServerRenderingTransaction =
 	  __webpack_require__(211);
@@ -27612,9 +27612,9 @@
 	'use strict';
 	
 	var PooledClass = __webpack_require__(65);
-	var CallbackQueue = __webpack_require__(81);
+	var CallbackQueue = __webpack_require__(83);
 	var ReactPutListenerQueue = __webpack_require__(191);
-	var Transaction = __webpack_require__(90);
+	var Transaction = __webpack_require__(92);
 	
 	var assign = __webpack_require__(69);
 	var emptyFunction = __webpack_require__(72);
@@ -27781,22 +27781,26 @@
 	'use strict';
 	
 	var React = __webpack_require__(57);
-	var _ = __webpack_require__(216);
-	
+	var _ = __webpack_require__(215);
+	var fx = __webpack_require__(216);
 	var Tiles = __webpack_require__(217);
 	var Ammos = __webpack_require__(236);
 	var Players = __webpack_require__(237);
-	var Stats = __webpack_require__(215);
-	var Shoots = __webpack_require__(238);
+	var Stats = __webpack_require__(238);
+	var Shoots = __webpack_require__(239);
+	var Notifications = __webpack_require__(240);
 	
-	var deepSetState = __webpack_require__(239);
+	var deepSetState = __webpack_require__(241);
 	
-	var ClashJS = __webpack_require__(240);
+	var ClashJS = __webpack_require__(242);
 	
-	var playerObjects = __webpack_require__(244);
+	var playerObjects = __webpack_require__(247);
 	var playerArray = _.shuffle(_.map(playerObjects, function (el) {
 	  return el;
 	}));
+	
+	var sudeenDeathCount = 0;
+	var killsStack = [];
 	
 	var Clash = React.createClass({
 	  displayName: 'Clash',
@@ -27804,17 +27808,12 @@
 	  mixins: [deepSetState],
 	
 	  getInitialState: function getInitialState() {
-	    this.ClashJS = new ClashJS(playerArray, this.handleEvent);
+	    this.ClashJS = new ClashJS(playerArray, {}, this.handleEvent);
 	    return {
 	      clashjs: this.ClashJS.getState(),
 	      shoots: [],
-	      speed: 50,
-	      winners: playerArray.map(function () {
-	        return 0;
-	      }),
-	      rates: playerArray.map(function () {
-	        return 0;
-	      })
+	      speed: 150,
+	      kills: []
 	    };
 	  },
 	
@@ -27825,41 +27824,16 @@
 	  newGame: function newGame() {
 	    var _this = this;
 	
-	    this.ClashJS.getState().playerStates.forEach(function (player, index) {
-	      if (player.isAlive) {
-	        (function () {
-	          var newWinners = _this.state.winners;
-	          var newRates = _this.state.rates;
-	          var total = 0;
-	
-	          newWinners[index]++;
-	
-	          total = _.reduce(newWinners, function (tot, n) {
-	            return tot + n;
-	          });
-	
-	          newRates = _.map(newWinners, function (wins, index) {
-	            if (!wins) return 0;
-	            if (!total) return 0;
-	            return wins / total;
-	          });
-	
-	          console.log('Stats');
-	          console.log(total, newWinners, newRates);
-	          _this.setState({
-	            winners: newWinners,
-	            rates: newRates
-	          });
-	        })();
-	      }
-	    });
+	    killsStack = [];
 	
 	    window.setTimeout(function () {
-	      _this.ClashJS = new ClashJS(playerArray, _this.handleEvent);
+	      sudeenDeathCount = 0;
+	      _this.ClashJS.setupGame();
 	      _this.setState({
 	        clashjs: _this.ClashJS.getState(),
 	        shoots: [],
-	        speed: 50
+	        speed: 150,
+	        kills: []
 	      }, _this.nextTurn);
 	    }, 1000);
 	  },
@@ -27867,29 +27841,29 @@
 	  nextTurn: function nextTurn() {
 	    var _this2 = this;
 	
-	    var alivePlayerCount = this.ClashJS.getState().playerStates.reduce(function (result, el) {
+	    var _ClashJS$getState = this.ClashJS.getState();
+	
+	    var playerStates = _ClashJS$getState.playerStates;
+	    var rounds = _ClashJS$getState.rounds;
+	    var totalRounds = _ClashJS$getState.totalRounds;
+	
+	    var alivePlayerCount = playerStates.reduce(function (result, el) {
 	      return el.isAlive ? result + 1 : result;
 	    }, 0);
-	
-	    if (alivePlayerCount < 2) {
-	      this.newGame();
-	      return;
-	    }
+	    if (alivePlayerCount < 2) return false;
 	
 	    window.setTimeout(function () {
 	      _this2.setState({
 	        clashjs: _this2.ClashJS.nextPly(),
-	        speed: _this2.state.speed > 15 ? parseInt(_this2.state.speed * 0.98, 10) : 15
+	        speed: _this2.state.speed > 20 ? parseInt(_this2.state.speed * 0.98, 10) : 20
 	      }, _this2.nextTurn);
 	    }, this.state.speed);
 	  },
 	
 	  handleEvent: function handleEvent(evt, data) {
-	    // console.warn(evt, data, this.state.shoots);
-	
 	    if (evt === 'SHOOT') {
 	      var newShoots = this.state.shoots;
-	
+	      var players = this.ClashJS.getState().playerInstances;
 	      newShoots.push({
 	        direction: data.direction,
 	        origin: data.origin.slice(),
@@ -27899,13 +27873,109 @@
 	      this.setState({
 	        shoots: newShoots
 	      });
+	
+	      players[data.shooter].playLaser();
 	    }
+	    if (evt === 'WIN') return this.newGame();
+	    if (evt === 'DRAW') {
+	      this.setState({
+	        kills: [{ date: new Date(), text: 'Stalemate!' }]
+	      });
+	      return this.newGame();
+	    }
+	    if (evt === 'KILL') return this._handleKill(data);
+	    if (evt === 'END') return this.endGame();
 	  },
 	
-	  handleClick: function handleClick() {
+	  _handleKill: function _handleKill(data) {
+	    var _this3 = this;
+	
+	    var players = this.ClashJS.getState().playerInstances;
+	    var kills = this.state.kills;
+	    var killer = players[data.killer];
+	    var killed = _.map(data.killed, function (index) {
+	      killsStack.push(data.killer);
+	      killer.kills++;
+	      players[index].deaths++;
+	      return players[index];
+	    });
+	    var notification = [killer.getName(), 'killed', _.map(killed, function (player) {
+	      return player.getName();
+	    }).join(',')].join(' ');
+	
+	    kills.push({ date: new Date(), text: notification });
 	    this.setState({
-	      clashjs: this.ClashJS.nextStep(),
-	      speed: Math.max(parseInt(this.state.speed * 0.75, 10), 1)
+	      kills: kills
+	    });
+	
+	    setTimeout(function () {
+	      return _this3.handleStreak(data.killer, killer, killed);
+	    }, 100);
+	  },
+	
+	  endGame: function endGame() {
+	    this.setState({
+	      clashjs: null,
+	      shoots: [],
+	      speed: 0,
+	      kills: []
+	    });
+	    return 'finish';
+	  },
+	
+	  handleStreak: function handleStreak(index, killer, killed) {
+	    var streakCount = _.filter(killsStack, function (player) {
+	      return player === index;
+	    }).length;
+	    var multiKill = '';
+	    var spreeMessage = '';
+	    var kills = this.state.kills;
+	    if (killsStack.length === 1) {
+	      setTimeout(fx.streak.firstBlood.play(), 50);
+	    }
+	
+	    switch (killed.length) {
+	      case 2:
+	        setTimeout(fx.streak.doubleKill.play(), 100);
+	        multiKill = killer.getName() + ' got a double kill!';
+	        break;
+	      case 3:
+	        setTimeout(fx.streak.tripleKill.play(), 100);
+	        multiKill = killer.getName() + ' got a Triple Kill!';
+	        break;
+	      case 4:
+	        setTimeout(fx.streak.monsterKill.play(), 100);
+	        multiKill = killer.getName() + ' is a MONSTER KILLER!';
+	        break;
+	    }
+	    kills.push({ date: new Date(), text: multiKill });
+	    switch (streakCount) {
+	      case 1:
+	      case 2:
+	        break;
+	      case 3:
+	        setTimeout(fx.streak.killingSpree.play(), 300);
+	        spreeMessage = killer.getName() + ' is on a killing spree!';
+	        break;
+	      case 4:
+	        setTimeout(fx.streak.dominating.play(), 300);
+	        spreeMessage = killer.getName() + ' is dominating!';
+	        break;
+	      case 5:
+	        setTimeout(fx.streak.rampage.play(), 300);
+	        spreeMessage = killer.getName() + ' is on a rampage of kills!';
+	        break;
+	      case 6:
+	        setTimeout(fx.streak.godLike.play(), 300);
+	        spreeMessage = killer.getName() + ' is Godlike!';
+	        break;
+	      default:
+	        spreeMessage = 'Somebody stop that bastard ' + killer.getName();
+	        setTimeout(fx.streak.ownage.play(), 300);
+	    }
+	    kills.push({ date: new Date(), text: spreeMessage });
+	    this.setState({
+	      kills: kills
 	    });
 	  },
 	
@@ -27913,12 +27983,19 @@
 	    var _state = this.state;
 	    var clashjs = _state.clashjs;
 	    var shoots = _state.shoots;
-	    var winners = _state.winners;
-	    var rates = _state.rates;
+	    var kills = _state.kills;
 	    var gameEnvironment = clashjs.gameEnvironment;
+	    var gameStats = clashjs.gameStats;
 	    var playerStates = clashjs.playerStates;
 	    var playerInstances = clashjs.playerInstances;
+	    var rounds = clashjs.rounds;
+	    var totalRounds = clashjs.totalRounds;
 	
+	    gameEnvironment = gameEnvironment || { gridSize: 13 };
+	
+	    _.forEach(playerInstances, function (player, index) {
+	      gameStats[player.getId()].isAlive = playerStates[index].isAlive;
+	    });
 	    return React.createElement(
 	      'div',
 	      { className: 'clash', onClick: this.handleClick },
@@ -27934,11 +28011,13 @@
 	        gridSize: gameEnvironment.gridSize,
 	        playerInstances: playerInstances,
 	        playerStates: playerStates }),
+	      React.createElement(Notifications, {
+	        kills: kills }),
 	      React.createElement(Stats, {
-	        playerInstances: playerInstances,
+	        rounds: rounds,
+	        total: totalRounds,
 	        playerStates: playerStates,
-	        winners: winners,
-	        rates: rates })
+	        stats: gameStats })
 	    );
 	  }
 	
@@ -27950,86 +28029,9 @@
 /* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-	
-	var React = __webpack_require__(57);
-	var _ = __webpack_require__(216);
-	
-	var Stats = React.createClass({
-	  displayName: 'Stats',
-	
-	  propTypes: {
-	    playerInstances: React.PropTypes.array.isRequired,
-	    playerStates: React.PropTypes.array.isRequired,
-	    winners: React.PropTypes.array.isRequired
-	  },
-	
-	  render: function render() {
-	    var _props = this.props;
-	    var playerInstances = _props.playerInstances;
-	    var playerStates = _props.playerStates;
-	    var winners = _props.winners;
-	    var rates = _props.rates;
-	
-	    return React.createElement(
-	      'table',
-	      { className: 'stats' },
-	      React.createElement(
-	        'thead',
-	        null,
-	        React.createElement(
-	          'td',
-	          null,
-	          React.createElement(
-	            'b',
-	            null,
-	            'Results:'
-	          )
-	        )
-	      ),
-	      React.createElement(
-	        'tbody',
-	        null,
-	        _.map(playerInstances, function (el, index) {
-	          var playerInfo = el.getInfo();
-	          var playerState = playerStates[index];
-	
-	          return React.createElement(
-	            'tr',
-	            { key: index, style: {
-	                textDecoration: playerState.isAlive ? 'none' : 'line-through',
-	                color: playerState.isAlive ? '#FFF' : '#A00'
-	              } },
-	            React.createElement(
-	              'td',
-	              null,
-	              playerInfo.name
-	            ),
-	            React.createElement(
-	              'td',
-	              { className: 'stats-results' },
-	              winners[index],
-	              ' (',
-	              Math.round(rates[index] * 100),
-	              '%)'
-	            )
-	          );
-	        })
-	      )
-	    );
-	  }
-	
-	});
-	
-	module.exports = Stats;
-
-/***/ },
-/* 216 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
 	 * @license
-	 * lodash 3.10.0 (Custom Build) <https://lodash.com/>
+	 * lodash 3.10.1 (Custom Build) <https://lodash.com/>
 	 * Build: `lodash modern -d -o ./index.js`
 	 * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
 	 * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
@@ -28042,7 +28044,7 @@
 	  var undefined;
 	
 	  /** Used as the semantic version number. */
-	  var VERSION = '3.10.0';
+	  var VERSION = '3.10.1';
 	
 	  /** Used to compose bitmasks for wrapper metadata. */
 	  var BIND_FLAG = 1,
@@ -40379,7 +40381,47 @@
 	  }
 	}.call(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33)(module), (function() { return this; }())))
+
+/***/ },
+/* 216 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	module.exports.lasers = {
+	  laser0: new Audio('/static/sounds/lasers/laser0.mp3'),
+	  laser1: new Audio('/static/sounds/lasers/laser1.mp3'),
+	  laser2: new Audio('/static/sounds/lasers/laser2.mp3'),
+	  laser3: new Audio('/static/sounds/lasers/laser3.mp3'),
+	  laser4: new Audio('/static/sounds/lasers/laser4.mp3'),
+	  laser5: new Audio('/static/sounds/lasers/laser5.mp3'),
+	  laser6: new Audio('/static/sounds/lasers/laser6.mp3'),
+	  laser7: new Audio('/static/sounds/lasers/laser7.mp3'),
+	  laser8: new Audio('/static/sounds/lasers/laser8.mp3')
+	};
+	
+	module.exports.explosions = {
+	  explode0: new Audio('/static/sounds/explosions/explode0.wav'),
+	  explode1: new Audio('/static/sounds/explosions/explode1.wav'),
+	  explode2: new Audio('/static/sounds/explosions/explode2.wav')
+	};
+	
+	module.exports.streak = {
+	  firstBlood: new Audio('/static/sounds/streak/first-blood.mp3'),
+	  doubleKill: new Audio('/static/sounds/streak/double-kill.mp3'),
+	  tripleKill: new Audio('/static/sounds/streak/triple-kill.mp3'),
+	  monsterKill: new Audio('/static/sounds/streak/monster-kill.mp3'),
+	  killingSpree: new Audio('/static/sounds/streak/killing-spree.mp3'),
+	  dominating: new Audio('/static/sounds/streak/dominating.mp3'),
+	  rampage: new Audio('/static/sounds/streak/rampage.mp3'),
+	  godLike: new Audio('/static/sounds/streak/god-like.mp3'),
+	  ownage: new Audio('/static/sounds/streak/ownage.mp3')
+	};
+	
+	module.exports.music = {
+	  theme0: new Audio('/static/sounds/music/flight.ogg')
+	};
 
 /***/ },
 /* 217 */
@@ -40460,7 +40502,7 @@
 	var ReactCSSTransitionGroup = __webpack_require__(224);
 	var ReactFragment = __webpack_require__(66);
 	var ReactTransitionGroup = __webpack_require__(225);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	
 	var cx = __webpack_require__(233);
 	var cloneWithProps = __webpack_require__(227);
@@ -42050,10 +42092,10 @@
 	var ReactEmptyComponent = __webpack_require__(132);
 	var ReactBrowserEventEmitter = __webpack_require__(124);
 	var ReactCompositeComponent = __webpack_require__(140);
-	var ReactInstanceHandles = __webpack_require__(76);
-	var ReactInstanceMap = __webpack_require__(92);
+	var ReactInstanceHandles = __webpack_require__(75);
+	var ReactInstanceMap = __webpack_require__(81);
 	var ReactMount = __webpack_require__(123);
-	var ReactUpdates = __webpack_require__(80);
+	var ReactUpdates = __webpack_require__(82);
 	var SyntheticEvent = __webpack_require__(153);
 	
 	var assign = __webpack_require__(69);
@@ -42550,7 +42592,7 @@
 	'use strict';
 	
 	var React = __webpack_require__(57);
-	var _ = __webpack_require__(216);
+	var _ = __webpack_require__(215);
 	
 	var Ammos = React.createClass({
 	  displayName: 'Ammos',
@@ -42594,7 +42636,7 @@
 	'use strict';
 	
 	var React = __webpack_require__(57);
-	var _ = __webpack_require__(216);
+	var _ = __webpack_require__(215);
 	
 	var DIRECTIONS = ['north', 'east', 'south', 'west'];
 	
@@ -42686,10 +42728,123 @@
 	'use strict';
 	
 	var React = __webpack_require__(57);
+	var _ = __webpack_require__(215);
+	
+	var Stats = React.createClass({
+	  displayName: 'Stats',
+	
+	  propTypes: {
+	    stats: React.PropTypes.object.isRequired,
+	    rounds: React.PropTypes.number.isRequired,
+	    total: React.PropTypes.number.isRequired
+	  },
+	
+	  render: function render() {
+	    var _props = this.props;
+	    var stats = _props.stats;
+	    var rounds = _props.rounds;
+	    var total = _props.total;
+	
+	    stats = _.map(stats, function (playerStats) {
+	      return playerStats;
+	    });
+	    stats = _.sortBy(stats, function (playerStats) {
+	      return playerStats.wins * -1;
+	    });
+	    return React.createElement(
+	      'div',
+	      { className: 'stats' },
+	      React.createElement(
+	        'div',
+	        { className: 'stats-title' },
+	        'Results on round ',
+	        rounds,
+	        ' of ',
+	        total
+	      ),
+	      React.createElement(
+	        'table',
+	        null,
+	        React.createElement(
+	          'thead',
+	          null,
+	          React.createElement('td', null),
+	          React.createElement('td', null),
+	          React.createElement(
+	            'td',
+	            null,
+	            'Wins'
+	          ),
+	          React.createElement(
+	            'td',
+	            null,
+	            'Rate'
+	          ),
+	          React.createElement(
+	            'td',
+	            null,
+	            'K/D/R'
+	          )
+	        ),
+	        React.createElement(
+	          'tbody',
+	          null,
+	          _.map(stats, function (playerStats, index) {
+	            return React.createElement(
+	              'tr',
+	              { key: index, className: playerStats.isAlive ? '' : 'player-dead' },
+	              React.createElement(
+	                'td',
+	                null,
+	                playerStats.isAlive ? '' : "💀"
+	              ),
+	              React.createElement(
+	                'td',
+	                { className: 'player-name' },
+	                playerStats.name
+	              ),
+	              React.createElement(
+	                'td',
+	                { className: 'stats-results' },
+	                playerStats.wins
+	              ),
+	              React.createElement(
+	                'td',
+	                { className: 'stats-results' },
+	                playerStats.winrate,
+	                '%'
+	              ),
+	              React.createElement(
+	                'td',
+	                { className: 'stats-results' },
+	                playerStats.kills,
+	                '/',
+	                playerStats.deaths,
+	                '/',
+	                playerStats.kdr.toFixed(1)
+	              )
+	            );
+	          })
+	        )
+	      )
+	    );
+	  }
+	
+	});
+	
+	module.exports = Stats;
+
+/***/ },
+/* 239 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var React = __webpack_require__(57);
 	
 	var DIRECTIONS = ['north', 'east', 'south', 'west'];
 	
-	var _ = __webpack_require__(216);
+	var _ = __webpack_require__(215);
 	
 	var Shoots = React.createClass({
 	  displayName: 'Shoots',
@@ -42730,12 +42885,54 @@
 	module.exports = Shoots;
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var _ = __webpack_require__(216);
+	var React = __webpack_require__(218);
+	var Notifications = React.createClass({
+	  displayName: 'Notifications',
+	
+	  propTypes: {
+	    kills: React.PropTypes.array
+	  },
+	
+	  render: function render() {
+	    var kills = this.props.kills;
+	
+	    var date = new Date();
+	
+	    _.remove(kills, function (k) {
+	      return date - k.date > 3000;
+	    });
+	    kills = _.sortBy(kills, function (k) {
+	      return k.date.valueOf;
+	    });
+	    return React.createElement(
+	      'div',
+	      { className: 'notifications' },
+	      _.map(kills, function (k) {
+	        return React.createElement(
+	          'p',
+	          null,
+	          k.text
+	        );
+	      })
+	    );
+	  }
+	
+	});
+	
+	module.exports = Notifications;
+
+/***/ },
+/* 241 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _ = __webpack_require__(215);
 	
 	module.exports = {
 	  deepSetState: function deepSetState(value, callback) {
@@ -42746,7 +42943,7 @@
 	};
 
 /***/ },
-/* 240 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -42755,44 +42952,68 @@
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 	
-	var PlayerClass = __webpack_require__(241);
-	var executeMovementHelper = __webpack_require__(242);
+	var music = __webpack_require__(216).music;
+	var PlayerClass = __webpack_require__(243);
+	var executeMovementHelper = __webpack_require__(245);
 	
 	var DIRECTIONS = ['north', 'east', 'south', 'west'];
 	
 	var ClashJS = (function () {
-	  function ClashJS(playerDefinitionArray, evtCallback) {
+	  function ClashJS(playerDefinitionArray, currentStats, evtCallback) {
 	    var _this = this;
 	
 	    _classCallCheck(this, ClashJS);
 	
-	    this._gameEnvironment = {
-	      gridSize: 13,
-	      ammoPosition: []
-	    };
-	
+	    this._totalRounds = playerDefinitionArray.length * 3;
+	    this._rounds = 0;
+	    this._gameStats = currentStats || {};
 	    this._evtCallback = evtCallback;
-	
+	    this._alivePlayerCount = 0;
+	    this._sudeenDeathCount = 0;
 	    this._playerInstances = playerDefinitionArray.map(function (playerDefinition) {
-	      return new PlayerClass(playerDefinition);
-	    });
-	
-	    this._playerStates = this._playerInstances.map(function (playerInstance) {
-	      return {
-	        style: playerInstance.getInfo().style,
-	        position: [Math.floor(Math.random() * _this._gameEnvironment.gridSize), Math.floor(Math.random() * _this._gameEnvironment.gridSize)],
-	        direction: DIRECTIONS[Math.floor(Math.random() * 4)],
-	        ammo: 0,
-	        isAlive: true
+	      var player = new PlayerClass(playerDefinition);
+	      _this._gameStats[player.getId()] = {
+	        name: player.getName(),
+	        deaths: 0,
+	        kills: 0,
+	        kdr: 0,
+	        wins: 0,
+	        winrate: 0
 	      };
+	      return player;
 	    });
 	
-	    this._currentPlayer = 0;
-	
-	    this._createAmmo();
+	    this.setupGame();
 	  }
 	
 	  _createClass(ClashJS, [{
+	    key: 'setupGame',
+	    value: function setupGame() {
+	      var _this2 = this;
+	
+	      this._gameEnvironment = {
+	        gridSize: 13,
+	        ammoPosition: []
+	      };
+	      this._rounds++;
+	      this._sudeenDeathCount = 0;
+	      this._playerInstances = _.shuffle(this._playerInstances);
+	      this._alivePlayerCount = this._playerInstances.length;
+	      this._playerStates = this._playerInstances.map(function (playerInstance) {
+	        var gridSize = _this2._gameEnvironment.gridSize;
+	        return {
+	          style: playerInstance.getInfo().style,
+	          position: [Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)],
+	          direction: DIRECTIONS[Math.floor(Math.random() * 4)],
+	          ammo: 0,
+	          isAlive: true
+	        };
+	      });
+	
+	      this._currentPlayer = 0;
+	      this._createAmmo();
+	    }
+	  }, {
 	    key: '_createAmmo',
 	    value: function _createAmmo() {
 	      var newAmmoPosition = [Math.floor(Math.random() * this._gameEnvironment.gridSize), Math.floor(Math.random() * this._gameEnvironment.gridSize)];
@@ -42811,6 +43032,9 @@
 	    value: function getState() {
 	      return {
 	        gameEnvironment: this._gameEnvironment,
+	        gameStats: this._gameStats,
+	        rounds: this._rounds,
+	        totalRounds: this._totalRounds,
 	        playerStates: this._playerStates,
 	        playerInstances: this._playerInstances
 	      };
@@ -42818,46 +43042,95 @@
 	  }, {
 	    key: 'nextPly',
 	    value: function nextPly() {
-	      var _this2 = this;
+	      var _this3 = this;
 	
-	      var otherPlayers = this._playerStates.filter(function (currentEnemyFilter, index) {
-	        if (index === _this2._currentPlayer) return false;
+	      if (this._sudeenDeathCount > 250) {
+	        this._handleCoreAction('DRAW');
+	        return this._evtCallback('DRAW');
+	        // return this.getState();
+	      }
+	      var clonedStates = _.clone(this._playerStates, true);
+	      if (this._alivePlayerCount <= 2) {
+	        this._sudeenDeathCount++;
+	      }
+	
+	      var otherPlayers = clonedStates.filter(function (currentEnemyFilter, index) {
+	        if (index === _this3._currentPlayer) return false;
 	        return currentEnemyFilter.isAlive;
 	      });
 	
 	      if (this._playerStates[this._currentPlayer].isAlive) {
-	        this._savePlayerAction(this._currentPlayer, this._playerInstances[this._currentPlayer].execute(this._playerStates[this._currentPlayer], otherPlayers, this._gameEnvironment));
+	
+	        this._savePlayerAction(this._currentPlayer, this._playerInstances[this._currentPlayer].execute(clonedStates[this._currentPlayer], otherPlayers, _.clone(this._gameEnvironment, true)));
 	      }
 	
 	      this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 	
-	      if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 2 && Math.random() > 0.95) this._createAmmo();
+	      if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.95) this._createAmmo();
 	
-	      return {
-	        gameEnvironment: this._gameEnvironment,
-	        playerStates: this._playerStates,
-	        playerInstances: this._playerInstances
-	      };
+	      return this.getState();
 	    }
 	  }, {
-	    key: 'nextStep',
-	    value: function nextStep() {
-	      var _this3 = this;
+	    key: '_handleCoreAction',
+	    value: function _handleCoreAction(action, data) {
+	      var _this4 = this;
 	
-	      this._playerInstances.forEach(function () {
-	        _this3.nextPly();
-	      });
+	      if (action === 'KILL') {
+	        (function () {
+	          var killer = data.killer;
+	          var killed = data.killed;
 	
-	      return {
-	        gameEnvironment: this._gameEnvironment,
-	        playerStates: this._playerStates,
-	        playerInstances: this._playerInstances
-	      };
+	          _this4._gameStats[killer.getId()].kills++;
+	          _.forEach(_this4._playerInstances, function (player) {
+	            var stats = _this4._gameStats[player.getId()];
+	            if (killed.indexOf(player) > -1) {
+	              _this4._alivePlayerCount--;
+	              stats.deaths++;
+	            }
+	            if (stats.deaths) {
+	              stats.kdr = stats.kills / stats.deaths;
+	            } else {
+	              stats.kdr = stats.kills;
+	            }
+	          });
+	        })();
+	      }
+	      if (action === 'WIN') {
+	        this._gameStats[data.winner.getId()].wins++;
+	        _.forEach(this._gameStats, function (playerStats, key) {
+	          var wins = playerStats.wins;
+	          var winrate = playerStats.winrate;
+	
+	          playerStats.winrate = Math.round(wins * 100 / _this4._rounds);
+	        });
+	
+	        if (this._rounds >= this._totalRounds) return this._evtCallback('END');
+	      }
+	      if (action === 'DRAW') {
+	        _.forEach(this._gameStats, function (playerStats, key) {
+	          var wins = playerStats.wins;
+	          var winrate = playerStats.winrate;
+	
+	          playerStats.winrate = Math.round(wins * 100 / _this4._rounds);
+	        });
+	        console.log(this._playerStates);
+	        if (this._rounds >= this._totalRounds) {
+	          return this._evtCallback('END');
+	        }
+	      }
 	    }
 	  }, {
 	    key: '_savePlayerAction',
 	    value: function _savePlayerAction(playerIndex, playerAction) {
-	      this._playerStates = executeMovementHelper(playerIndex, playerAction, this._playerStates, this._gameEnvironment, this._evtCallback);
+	      this._playerStates = executeMovementHelper({
+	        playerIndex: playerIndex,
+	        playerAction: playerAction,
+	        playerStates: this._playerStates,
+	        playerInstances: this._playerInstances,
+	        gameEnvironment: this._gameEnvironment,
+	        evtCallback: this._evtCallback,
+	        coreCallback: this._handleCoreAction.bind(this)
+	      });
 	    }
 	  }]);
 	
@@ -42867,30 +43140,56 @@
 	module.exports = ClashJS;
 
 /***/ },
-/* 241 */
-/***/ function(module, exports) {
+/* 243 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+	
+	var fx = __webpack_require__(216);
+	var generateId = __webpack_require__(244).generateBase32String;
 	
 	var PlayerClass = (function () {
 	  function PlayerClass(options) {
 	    _classCallCheck(this, PlayerClass);
 	
+	    this._id = generateId(8);
 	    this._playerInfo = options.info;
 	    this._playerAI = options.ai;
 	  }
 	
 	  _createClass(PlayerClass, [{
-	    key: "getInfo",
+	    key: 'getId',
+	    value: function getId() {
+	      return this._id;
+	    }
+	  }, {
+	    key: 'getInfo',
 	    value: function getInfo() {
 	      return this._playerInfo;
 	    }
 	  }, {
-	    key: "execute",
+	    key: 'getName',
+	    value: function getName() {
+	      return this._playerInfo.name;
+	    }
+	  }, {
+	    key: 'playLaser',
+	    value: function playLaser() {
+	      var index = this.getInfo().style % Object.keys(fx.lasers).length;
+	      fx.lasers['laser' + index].play();
+	    }
+	  }, {
+	    key: 'playExplosion',
+	    value: function playExplosion() {
+	      var i = Math.round(Math.random() * 10) % 3;
+	      fx.explosions['explode' + i].play();
+	    }
+	  }, {
+	    key: 'execute',
 	    value: function execute(playerState, enemiesStates, gameEnvironment) {
 	      return this._playerAI(playerState, enemiesStates, gameEnvironment);
 	    }
@@ -42902,12 +43201,69 @@
 	module.exports = PlayerClass;
 
 /***/ },
-/* 242 */
+/* 244 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	var digits = "0123456789";
+	var lowercase = "abcdefghijklmnoprstuvxuyz";
+	var uppercase = lowercase.toUpperCase();
+	var special = "+/";
+	var base64Chars;
+	var base62Chars;
+	var base32Chars;
+	var generateBaseString;
+	
+	module.exports = exports = {};
+	
+	base64Chars = function () {
+	  return [digits, lowercase, uppercase, special].join('');
+	};
+	
+	base62Chars = function () {
+	  return [digits, lowercase, uppercase].join('');
+	};
+	
+	base32Chars = function () {
+	  return [uppercase, digits].join('');
+	};
+	
+	generateBaseString = function (pool, length) {
+	  var output = '';
+	  var i;
+	
+	  for (i = 0; i < length; i += 1) {
+	    output += pool[Math.ceil(Math.random() * 100 % pool.length || 1) - 1];
+	  }
+	
+	  return output;
+	};
+	
+	exports.generateBase64String = function (length) {
+	  return generateBaseString(base64Chars(), length);
+	};
+	
+	exports.generateBase62String = function (length) {
+	  return generateBaseString(base62Chars(), length);
+	};
+	
+	exports.generateBase32String = function (length) {
+	  return generateBaseString(base32Chars(), length);
+	};
+	
+	exports.generateBase10String = function (length) {
+	  return generateBaseString(digits, length);
+	};
+
+/***/ },
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(243);
+	var _ = __webpack_require__(215);
+	var utils = __webpack_require__(246);
 	var DIRECTIONS = ['north', 'east', 'south', 'west'];
 	
 	var safeMovement = function safeMovement(value, size) {
@@ -42916,7 +43272,15 @@
 	  return value;
 	};
 	
-	var clashCoreUtils = function clashCoreUtils(playerIndex, playerAction, playerStates, gameEnvironment, evtCallback) {
+	var clashCoreUtils = function clashCoreUtils(data) {
+	  var playerIndex = data.playerIndex;
+	  var playerAction = data.playerAction;
+	  var playerStates = data.playerStates;
+	  var playerInstances = data.playerInstances;
+	  var gameEnvironment = data.gameEnvironment;
+	  var evtCallback = data.evtCallback;
+	  var coreCallback = data.coreCallback;
+	
 	  var currentPlayerState = playerStates[playerIndex];
 	
 	  if (DIRECTIONS.indexOf(playerAction) !== -1) {
@@ -42960,6 +43324,7 @@
 	      currentPlayerState.ammo -= 1;
 	
 	      var kills = [];
+	      var survivors = [];
 	      evtCallback('SHOOT', {
 	        shooter: playerIndex,
 	        origin: currentPlayerState.position,
@@ -42974,10 +43339,32 @@
 	      });
 	
 	      if (kills.length) {
-	        evtCallback('KILL', {
+	        survivors = _.filter(playerStates, function (player) {
+	          return player.isAlive;
+	        });
+	        setTimeout(coreCallback('KILL', {
+	          killer: playerInstances[playerIndex],
+	          killed: _.map(kills, function (index) {
+	            return playerInstances[index];
+	          })
+	        }), 0);
+	        setTimeout(evtCallback('KILL', {
 	          killer: playerIndex,
 	          killed: kills
-	        });
+	        }), 0);
+	      }
+	
+	      if (!survivors.length) {
+	        setTimeout(coreCallback('DRAW'), 0);
+	        setTimeout(evtCallback('DRAW'), 0);
+	      }
+	      if (survivors.length === 1) {
+	        setTimeout(coreCallback('WIN', {
+	          winner: playerInstances[playerIndex]
+	        }), 0);
+	        setTimeout(evtCallback('WIN', {
+	          winner: playerInstances[playerIndex]
+	        }), 0);
 	      }
 	    })();
 	  }
@@ -42988,7 +43375,7 @@
 	module.exports = clashCoreUtils;
 
 /***/ },
-/* 243 */
+/* 246 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43005,11 +43392,19 @@
 	};
 	
 	var turn = function turn(currentPosition, howMuchTurn) {
+	  if (currentPosition === undefined) currentPosition = [];
+	
 	  var currentPositionIndex = DIRECTIONS.indexOf(currentPosition);
 	  return DIRECTIONS[(currentPositionIndex + howMuchTurn) % 4];
 	};
 	
-	var getDirection = function getDirection(start, end) {
+	var getDirection = function getDirection() {
+	  var start = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var end = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	
+	  start = start || [];
+	  end = end || [];
+	
 	  var diffVertical = Math.abs(start[0] - end[0]);
 	  var diffHorizontal = Math.abs(start[1] - end[1]);
 	
@@ -43019,14 +43414,20 @@
 	  return start[1] - end[1] > 0 ? 'west' : 'east';
 	};
 	
-	var getDistance = function getDistance(start, end) {
+	var getDistance = function getDistance() {
+	  var start = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var end = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	
 	  var diffVertical = Math.abs(start[0] - end[0]);
 	  var diffHorizontal = Math.abs(start[1] - end[1]);
 	
 	  return diffHorizontal + diffVertical;
 	};
 	
-	var fastGetDirection = function fastGetDirection(start, end) {
+	var fastGetDirection = function fastGetDirection() {
+	  var start = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var end = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	
 	  var diffVertical = Math.abs(start[0] - end[0]);
 	  // var diffHorizontal = Math.abs(start[1] - end[1]);
 	
@@ -43036,7 +43437,11 @@
 	  return start[1] - end[1] > 0 ? 'west' : 'east';
 	};
 	
-	var isVisible = function isVisible(originalPosition, finalPosition, direction) {
+	var isVisible = function isVisible() {
+	  var originalPosition = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var finalPosition = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	  var direction = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+	
 	  switch (direction) {
 	    case DIRECTIONS[0]:
 	      return originalPosition[1] === finalPosition[1] && originalPosition[0] > finalPosition[0];
@@ -43051,7 +43456,10 @@
 	  }
 	};
 	
-	var canKill = function canKill(currentPlayerState, enemiesStates) {
+	var canKill = function canKill() {
+	  var currentPlayerState = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var enemiesStates = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	
 	  return enemiesStates.some(function (enemyObject) {
 	    return enemyObject.isAlive && isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction);
 	  });
@@ -43069,97 +43477,23 @@
 	};
 
 /***/ },
-/* 244 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	module.exports = {
-	  javierbyte: __webpack_require__(245),
-	  codingpains: __webpack_require__(246),
-	  manuelmhtr: __webpack_require__(247),
-	  ericku: __webpack_require__(248),
-	  hitler: __webpack_require__(249),
-	  horror: __webpack_require__(250),
-	  yuno: __webpack_require__(251)
-	};
-
-/***/ },
-/* 245 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var utils = __webpack_require__(243);
-	
-	var javierbyte = {
-	  info: {
-	    name: 'javierbyte',
-	    style: 2
-	  },
-	  ai: function ai(playerState, enemiesState, gameEnvironment) {
-	    var directionToAmmo;
-	
-	    if (Math.random() > 0.9) return 'shoot';
-	
-	    if (gameEnvironment.ammoPosition.length) {
-	      directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
-	
-	      if (directionToAmmo !== playerState.direction) {
-	        return directionToAmmo;
-	      }
-	      return 'move';
-	    }
-	
-	    return utils.randomMove();
-	  }
-	};
-	
-	module.exports = javierbyte;
-
-/***/ },
-/* 246 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var utils = __webpack_require__(243);
-	
-	var codingpains = {
-	  info: {
-	    name: 'Codingpains',
-	    style: 0
-	  },
-	  ai: function ai(playerState, enemiesState, gameEnvironment) {
-	    return utils.randomMove();
-	  }
-	};
-	
-	module.exports = codingpains;
-
-/***/ },
 /* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(243);
-	
-	var manuelmhtr = {
-	  info: {
-	    name: 'Manuelmhtr',
-	    style: 3
-	  },
-	  ai: function ai(playerState) {
-	    if (playerState.ammo) {
-	      return 'shoot';
-	    }
-	
-	    return utils.randomMove();
-	  }
+	module.exports = {
+	  // javierbyte: require('./players/javierbyte.js'),
+	  codingpains: __webpack_require__(248),
+	  manuelmhtr: __webpack_require__(250),
+	  // ericku: require('./players/ericku.js'),
+	  // siegfried: require('./players/siegfried.js'),
+	  // horror: require('./players/horror.js'),
+	  elperron: __webpack_require__(251),
+	  yuno: __webpack_require__(252),
+	  xmontoya: __webpack_require__(253),
+	  margeux: __webpack_require__(254)
 	};
-	
-	module.exports = manuelmhtr;
 
 /***/ },
 /* 248 */
@@ -43167,22 +43501,118 @@
 
 	'use strict';
 	
-	var utils = __webpack_require__(243);
+	var utils = __webpack_require__(246);
+	var logic = __webpack_require__(249);
 	
-	var ericku = {
+	var codingpains = {
 	  info: {
-	    name: 'Ericku',
-	    style: 1
+	    name: 'HGE-7',
+	    style: 8
 	  },
-	  ai: function ai(playerState, enemiesStates) {
-	    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
-	      return 'shoot';
+	
+	  ai: function ai(player, enemies, map) {
+	    var armedEnemies = _.filter(enemies, function (enemy) {
+	      return enemy.ammo > 0;
+	    });
+	    if (logic.inDanger(player, armedEnemies)) return codingpains._eluder(player, armedEnemies, map);
+	    if (player.ammo) return codingpains._hunter(player, enemies, map);
+	    return codingpains._gatherer(player, enemies, map);
+	  },
+	
+	  _gatherer: function _gatherer(player, enemies, map) {
+	    var ammoMove;
+	    var safestMove;
+	    var centerMove;
+	    codingpains.info.mode = 'g';
+	    if (!map.ammoPosition.length) {
+	      centerMove = logic.goToCenter(player, map);
+	      if (logic.isMovementSafe(centerMove, player, enemies, map)) return centerMove;
+	    } else {
+	      ammoMove = logic.shouldMoveForAmmo(player, enemies, map);
+	      if (ammoMove && logic.isMovementSafe(ammoMove, player, enemies, map)) return ammoMove;
+	
+	      centerMove = logic.goToCenter(player, map);
+	      if (logic.isMovementSafe(centerMove, player, enemies, map)) return centerMove;
 	    }
+	
+	    safestMove = logic.getSafestMove(player, enemies, map);
+	    if (safestMove && isMovementSafe(safestMove, player, enemies, map)) return safestMove;
+	
 	    return utils.safeRandomMove();
+	  },
+	
+	  _hunter: function _hunter(player, enemies, map) {
+	    var turnMove;
+	    var ammoMove;
+	    var chaseMove;
+	    var safestMove;
+	
+	    codingpains.info.mode = 'h';
+	
+	    enemies = logic.getDangerousEnemies(enemies);
+	
+	    if (utils.canKill(player, enemies)) return 'shoot';
+	
+	    turnMove = logic.turnToAmbush(player, enemies);
+	    if (turnMove) return turnMove;
+	
+	    turnMove = logic.turnToKill(player, enemies);
+	    if (turnMove && logic.isMovementSafe(turnMove, player, enemies, map)) return turnMove;
+	
+	    chaseMove = logic.chaseEnemy(player, enemies, map);
+	    if (chaseMove && logic.isMovementSafe(chaseMove, player, enemies, map)) return chaseMove;
+	
+	    safestMove = logic.getSafestMove(player, enemies, map);
+	    if (safestMove) return safestMove;
+	
+	    return false;
+	  },
+	
+	  _eluder: function _eluder(player, enemies, map) {
+	    console.log('In danger!');
+	    var killers = logic.getImmediateThreats(player, enemies);
+	    var closeThreats = { y: [], x: [] };
+	    codingpains.info.mode = 'e';
+	    if (killers.length) {
+	      if (logic.canKillAll(player, killers)) {
+	        return 'shoot';
+	      } else if (logic.isMovementSafe('move', player, killers, map)) {
+	        return 'move';
+	      } else {
+	        // Here I would activate a shield!, for now just die :(
+	        return false;
+	      }
+	    }
+	
+	    if (player.ammo) return this._hunter(player, enemies, map);
+	    _.forEach(enemies, function (e) {
+	      if (logic.sameY(player.position, e.position)) {
+	        closeThreats.y.push(e);
+	      }
+	      if (logic.sameX(player.position, e.position)) {
+	        closeThreats.x.push(e);
+	      }
+	    });
+	
+	    if (closeThreats.x.length) {
+	      if (player.ammo && utils.canKill(player, closeThreats.x)) return 'shoot';
+	      if (logic.isHorizontal(player.direction) && logic.canMoveTowards(player.direction, player, map)) {
+	        return 'move';
+	      } else {
+	        return logic.opositeDirection(closeThreats.x[0].direction);
+	      }
+	    } else {
+	      if (player.ammo && utils.canKill(player, closeThreats.y)) return 'shoot';
+	      if (logic.isVertical(player.direction) && logic.canMoveTowards(player.direction, player, map)) {
+	        return 'move';
+	      } else {
+	        return logic.opositeDirection(closeThreats.y[0].direction);
+	      }
+	    }
 	  }
 	};
 	
-	module.exports = ericku;
+	module.exports = codingpains;
 
 /***/ },
 /* 249 */
@@ -43190,31 +43620,382 @@
 
 	'use strict';
 	
-	var utils = __webpack_require__(243);
+	var utils = __webpack_require__(246);
+	var DIRECTIONS = ['north', 'east', 'south', 'west'];
 	
-	var HITLER = {
-	  info: {
-	    name: 'Hitler',
-	    style: 4
-	  },
-	  ai: function ai(playerState, enemiesStates, gameEnvironment) {
-	    var directionToAmmo;
+	var inDanger = function inDanger(player, enemies) {
+	  if (!enemies.length) return false;
+	  var pos = player.position;
+	  return _.some(enemies, function (e) {
+	    return sameY(pos, e.position) || sameX(pos, e.position);
+	  });
+	};
 	
-	    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
-	      return 'shoot';
+	var sameY = function sameY(start, end) {
+	  return start[0] === end[0];
+	};
+	
+	var sameX = function sameX(start, end) {
+	  return start[1] === end[1];
+	};
+	
+	var canMoveTowards = function canMoveTowards(direction, player, map) {
+	  var canDo = false;
+	  switch (direction) {
+	    case 'north':
+	      canDo = player.position[0] > 0;
+	      break;
+	    case 'east':
+	      canDo = player.position[1] < map.gridSize;
+	      break;
+	    case 'south':
+	      canDo = player.position[0] < map.gridSize - 1;
+	      break;
+	    case 'west':
+	      canDo = player.position[1] > 0;
+	      break;
+	  }
+	  return canDo;
+	};
+	
+	var canDie = function canDie(player, enemies) {
+	  return enemies.map(function (enemy) {
+	    return enemy.ammo > 0 && utils.isVisible(enemy.position, player.position, enemy.direction);
+	  }).filter(function (result) {
+	    return result === true;
+	  }).length > 0;
+	};
+	
+	var getClosestAmmo = function getClosestAmmo(player, ammoPosition) {
+	  var closest;
+	
+	  if (!ammoPosition.length) return;
+	
+	  closest = ammoPosition[0];
+	
+	  ammoPosition.forEach(function (ammo) {
+	    var isCloser = utils.getDistance(player.position, ammo) < utils.getDistance(player.position, closest);
+	    if (isCloser) {
+	      closest = ammo;
 	    }
+	  });
 	
-	    if (gameEnvironment.ammoPosition.length) {
-	      directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+	  return closest;
+	};
 	
-	      if (directionToAmmo !== playerState.direction) return directionToAmmo;
-	      return 'move';
+	var getReachableAmmo = function getReachableAmmo(player, enemies, map) {
+	  var reachable = map.ammoPosition.filter(function (ammo) {
+	    var distance = utils.getDistance(player.position, ammo);
+	
+	    return !enemies.some(function (enemy) {
+	      return utils.getDistance(enemy.position, ammo) < distance;
+	    });
+	  });
+	
+	  return reachable;
+	};
+	
+	var shouldMoveForAmmo = function shouldMoveForAmmo(player, enemies, map) {
+	  var ammo = getReachableAmmo(player, enemies, map);
+	  var closest;
+	  var direction;
+	
+	  if (!ammo.length) return false;
+	
+	  closest = getClosestAmmo(player, ammo);
+	  direction = utils.fastGetDirection(player.position, closest);
+	
+	  if (direction !== player.direction) {
+	    return direction;
+	  }
+	
+	  return 'move';
+	};
+	
+	var isMovementSafe = function isMovementSafe(action, player, enemies, map) {
+	  var futureState = JSON.parse(JSON.stringify(player));
+	
+	  if (action === 'move') {
+	    switch (player.direction) {
+	      case DIRECTIONS[0]:
+	        if (futureState.position[0] > 0) {
+	          futureState.position[0]--;
+	        }
+	        break;
+	      case DIRECTIONS[1]:
+	        if (futureState.position[1] < map.gridSize) {
+	          futureState.position[1]++;
+	        }
+	        break;
+	      case DIRECTIONS[2]:
+	        if (futureState.position[0] < map.gridSize) {
+	          futureState.position[0]++;
+	        }
+	        break;
+	      case DIRECTIONS[3]:
+	        if (futureState.position[1] > 0) {
+	          futureState.position[1]--;
+	        }
+	        break;
+	      default:
+	        break;
 	    }
-	    return utils.randomMove();
+	  }
+	
+	  if (canDie(futureState, enemies)) {
+	    return false;
+	  } else {
+	    return true;
 	  }
 	};
 	
-	module.exports = HITLER;
+	var getSafestMove = function getSafestMove(player, enemies, map) {
+	  var safest;
+	  var isSafeHere = isMovementSafe('north', player, enemies, map);
+	  var isSafeToMove = isMovementSafe('move', player, enemies, map);
+	
+	  if (isSafeHere) {
+	    if (player.ammo) {
+	      return turnToKill(player, enemies) || chaseEnemy(player, enemies, map);
+	    }
+	  }
+	  if (isSafeToMove) {
+	    return 'move';
+	  }
+	
+	  return;
+	};
+	
+	var goToCenter = function goToCenter(player, map) {
+	  var center = [map.gridSize, map.gridSize].map(function (coord) {
+	    return Math.floor(coord / 2);
+	  });
+	  var movement = utils.fastGetDirection(player.position, center);
+	
+	  if (movement === player.direction) {
+	    movement = 'move';
+	  }
+	
+	  return movement;
+	};
+	
+	var getClosestEnemy = function getClosestEnemy(player, enemies) {
+	  var clonedStates = enemies.slice(0, enemies.length);
+	  var closest;
+	
+	  clonedStates = clonedStates.filter(function (enemy) {
+	    return enemy.isAlive;
+	  });
+	
+	  closest = clonedStates[0];
+	
+	  clonedStates.forEach(function (enemy) {
+	    if (utils.getDistance(player, enemy) < utils.getDistance(player, closest)) {
+	      closest = enemy;
+	    }
+	  });
+	
+	  return closest;
+	};
+	
+	var getBackPosition = function getBackPosition(enemy) {
+	  var back = enemy.position.slice(0, 2);
+	  switch (enemy.direction) {
+	    case 'north':
+	      back[0]++;
+	      break;
+	    case 'south':
+	      back[0]--;
+	      break;
+	    case 'west':
+	      back[1]++;
+	      break;
+	    case 'east':
+	      back[1]--;
+	      break;
+	  }
+	
+	  return back;
+	};
+	
+	var sneakyGetDirection = function sneakyGetDirection(player, enemy) {
+	  var diffVertical = Math.abs(player.position[0] - player.position[0]);
+	
+	  if (diffVertical && enemy.position !== 'north' && enemy.position !== 'south') {
+	    return player.position[0] - enemy.position[0] > 0 ? 'north' : 'south';
+	  }
+	  return player.position[1] - enemy.position[1] > 0 ? 'west' : 'east';
+	};
+	
+	var verticalDelta = function verticalDelta(start, end) {
+	  return start[0] - end[0];
+	};
+	
+	var absVerticalDelta = function absVerticalDelta(start, end) {
+	  return Math.abs(verticalDelta(start, end));
+	};
+	
+	var horizontalDelta = function horizontalDelta(start, end) {
+	  return start[1] - end[1];
+	};
+	
+	var absHorizontalDelta = function absHorizontalDelta(start, end) {
+	  return Math.abs(horizontalDelta(start, end));
+	};
+	
+	var isVertical = function isVertical(direction) {
+	  return ['north', 'south'].indexOf(direction) > -1;
+	};
+	
+	var isHorizontal = function isHorizontal(direction) {
+	  return ['west', 'east'].indexOf(direction) > -1;
+	};
+	
+	var opositeDirection = function opositeDirection(direction) {
+	  var ret;
+	  switch (direction) {
+	    case 'north':
+	      ret = 'south';
+	      break;
+	    case 'south':
+	      ret = 'north';
+	      break;
+	    case 'west':
+	      ret = 'east';
+	      break;
+	    case 'east':
+	      ret = 'west';
+	      break;
+	  }
+	  return ret;
+	};
+	
+	var chaseEnemy = function chaseEnemy(player, enemies, map) {
+	  var closest = getClosestEnemy(player, enemies);
+	  var back = getBackPosition(closest);
+	  var direction = sneakyGetDirection(player, closest);
+	
+	  if (direction !== player.direction) {
+	    return direction;
+	  }
+	
+	  if (!isMovementSafe('move', player, [closest], map)) {
+	    if (isVertical(player.direction) && absHorizontalDelta(player.position, closest.position) === 1) return 'hold';
+	    if (isHorizontal(player.direction) && absVerticalDelta(player.position, closest.position) === 1) return 'hold';
+	    return opositeDirection(closest.direction);
+	  }
+	
+	  return 'move';
+	};
+	
+	var turnToKill = function turnToKill(player, enemies) {
+	  var turn = false;
+	  var mockState = JSON.parse(JSON.stringify(player));
+	
+	  DIRECTIONS.forEach(function (direction) {
+	    mockState.direction = direction;
+	
+	    if (utils.canKill(mockState, enemies)) {
+	      turn = direction;
+	    }
+	  });
+	
+	  return turn;
+	};
+	
+	var turnToAmbush = function turnToAmbush(player, enemies) {
+	  var killables = enemies.filter(function (enemy) {
+	    switch (enemy.direction) {
+	      case 'north':
+	        return verticalDelta(player.position, enemy.position) === -1;
+	        break;
+	      case 'east':
+	        return verticalDelta(player.position, enemy.position) === 1;
+	        break;
+	      case 'south':
+	        return verticalDelta(player.position, enemy.position) === 1;
+	        break;
+	      case 'west':
+	        return verticalDelta(player.position, enemy.position) === -1;
+	        break;
+	      default:
+	        return false;
+	    }
+	  });
+	  var enemy;
+	
+	  if (!killables.length) return;
+	  enemy = killables[0];
+	  if (isVertical(enemy.direction)) {
+	    if (horizontalDelta(player.position, enemy.position) < 0) return 'east';
+	    return 'west';
+	  }
+	
+	  if (verticalDelta(player.position, enemy.position) < 0) return 'south';
+	  return 'north';
+	};
+	
+	var canKillMany = function canKillMany(player, enemies) {
+	  var position = player.position;
+	  var direction = player.direction;
+	
+	  var targets = _.filter(enemies, function (enemy) {
+	    return utils.isVisible(position, enemy.position, direction);
+	  });
+	  return targets.length > 2;
+	};
+	
+	var canKillAll = function canKillAll(player, enemies) {
+	  if (!player.ammo) return false;
+	  var killable = enemies.filter(function (enemy) {
+	    return utils.canKill(player, [enemy]);
+	  });
+	
+	  return enemies.length === killable.length;
+	};
+	
+	var getImmediateThreats = function getImmediateThreats(player, enemies) {
+	  return enemies.filter(function (enemy) {
+	    return enemy.ammo > 0 && utils.isVisible(enemy.position, player.position, enemy.direction);
+	  });
+	};
+	
+	var getDangerousEnemies = function getDangerousEnemies(enemies) {
+	  var dangerous = enemies.filter(function (enemy) {
+	    return enemy.ammo;
+	  });
+	  if (dangerous.length) return dangerous;
+	  return enemies;
+	};
+	
+	module.exports = {
+	  inDanger: inDanger,
+	  sameY: sameY,
+	  sameX: sameX,
+	  canDie: canDie,
+	  canMoveTowards: canMoveTowards,
+	  canKillMany: canKillMany,
+	  getClosestAmmo: getClosestAmmo,
+	  getReachableAmmo: getReachableAmmo,
+	  shouldMoveForAmmo: shouldMoveForAmmo,
+	  isMovementSafe: isMovementSafe,
+	  getSafestMove: getSafestMove,
+	  goToCenter: goToCenter,
+	  getClosestEnemy: getClosestEnemy,
+	  getBackPosition: getBackPosition,
+	  sneakyGetDirection: sneakyGetDirection,
+	  isHorizontal: isHorizontal,
+	  isVertical: isVertical,
+	  absVerticalDelta: absVerticalDelta,
+	  absHorizontalDelta: absHorizontalDelta,
+	  opositeDirection: opositeDirection,
+	  chaseEnemy: chaseEnemy,
+	  turnToKill: turnToKill,
+	  turnToAmbush: turnToAmbush,
+	  canKillAll: canKillAll,
+	  getImmediateThreats: getImmediateThreats,
+	  getDangerousEnemies: getDangerousEnemies
+	};
 
 /***/ },
 /* 250 */
@@ -43222,38 +44003,448 @@
 
 	'use strict';
 	
-	var utils = __webpack_require__(243);
+	var utils = __webpack_require__(246);
+	var ORIENTATION = { north: 'vertical', east: 'horizontal', south: 'vertical', west: 'horizontal' };
 	
-	var MUSOLINI = {
+	var manuelmhtr = {
 	  info: {
-	    name: 'Horror',
-	    style: 5
+	    name: 'Manuelmhtr',
+	    style: 3
 	  },
 	  ai: function ai(playerState, enemiesStates, gameEnvironment) {
-	    var directionToAmmo;
+	    var response;
+	    var enemies = [];
+	    var params = {
+	      vulnerabilityLevel: null,
+	      canKill: null,
+	      nearestAmmo: null,
+	      nearestEnemy: null,
+	      canMove: null
+	    };
 	
-	    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+	    // Parse enemies
+	    enemiesStates.forEach(function (enemy) {
+	      if (enemy.isAlive === true) {
+	        enemy.nearestAmmoDistance = calculateDistanceToNearestAmmo(enemy.position);
+	        enemies.push(enemy);
+	      }
+	    });
+	
+	    // Process parameters
+	    params.vulnerabilityLevel = calculateVulnerabilityLevel(playerState.position);
+	    params.canKill = playerState.ammo > 0 && utils.canKill(playerState, enemiesStates);
+	    params.nearestAmmo = getNearestAmmo(playerState.position);
+	    params.nearestEnemy = getNearestEnemy(playerState.position);
+	    params.canMove = canMove(playerState.position, playerState.direction);
+	
+	    function calculateVulnerabilityLevel(targetPosition) {
+	      var vulnerabilityLevel = 0.0;
+	      enemies.forEach(function (enemy) {
+	        if (utils.isVisible(enemy.position, targetPosition, enemy.direction) && enemy.ammo > 0) {
+	          vulnerabilityLevel = Math.max(vulnerabilityLevel, 1.0);
+	        } else if (isAligned(enemy.position, targetPosition) && (enemy.ammo > 0 || enemy.nearestAmmoDistance === 1)) {
+	          vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.5);
+	        }
+	      });
+	
+	      if (vulnerabilityLevel === 0.0) {
+	        // Check if other enemies are near
+	        var northEast = [targetPosition[0] + 1, targetPosition[1] + 1];
+	        var southWest = [targetPosition[0] - 1, targetPosition[1] - 1];
+	        enemies.forEach(function (enemy) {
+	          if (enemy.ammo > 0) {
+	            if (isAligned(enemy.position, northEast) || isAligned(enemy.position, southWest)) {
+	              vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.25);
+	            }
+	          }
+	        });
+	      }
+	
+	      return vulnerabilityLevel;
+	    }
+	
+	    function isAligned(originalPosition, finalPosition) {
+	      var aligned = false;
+	      aligned = aligned || originalPosition[1] === finalPosition[1] && originalPosition[0] > finalPosition[0];
+	      aligned = aligned || originalPosition[0] === finalPosition[0] && originalPosition[1] < finalPosition[1];
+	      aligned = aligned || originalPosition[1] === finalPosition[1] && originalPosition[0] < finalPosition[0];
+	      aligned = aligned || originalPosition[0] === finalPosition[0] && originalPosition[1] > finalPosition[1];
+	      return aligned;
+	    }
+	
+	    function getNearestAmmo(position) {
+	      var nearestAmmo = null;
+	      var nearestDistance = null;
+	      gameEnvironment.ammoPosition.forEach(function (ammo) {
+	        var distance = utils.getDistance(position, ammo);
+	        if (nearestDistance === null || distance < nearestDistance) {
+	          nearestDistance = distance;
+	          nearestAmmo = {
+	            position: ammo,
+	            distance: nearestDistance
+	          };
+	        }
+	      });
+	      return nearestAmmo;
+	    }
+	
+	    function calculateDistanceToNearestAmmo(position) {
+	      var nearestDistance = null;
+	      gameEnvironment.ammoPosition.forEach(function (ammo) {
+	        var distance = utils.getDistance(position, ammo);
+	        if (nearestDistance === null || distance < nearestDistance) {
+	          nearestDistance = distance;
+	        }
+	      });
+	      return nearestDistance;
+	    }
+	
+	    function getNearestEnemy(position) {
+	      var nearestEnemy = null;
+	      var nearestDistance = null;
+	      enemies.forEach(function (enemy) {
+	        var distance = calculateEnemyDistance(position, enemy);
+	
+	        if (nearestDistance === null || distance < nearestDistance) {
+	          nearestDistance = distance;
+	          nearestEnemy = {
+	            instance: enemy,
+	            distance: nearestDistance
+	          };
+	        }
+	      });
+	      return nearestEnemy;
+	    }
+	
+	    function calculateEnemyDistance(position, enemy) {
+	      var diffVertical = Math.abs(position[0] - enemy.position[0]);
+	      var diffHorizontal = Math.abs(position[1] - enemy.position[1]);
+	      return Math.min(diffHorizontal, diffVertical);
+	    }
+	
+	    function defend() {
+	      if (params.vulnerabilityLevel === 1.0) {
+	        var canRun = params.canMove;
+	        var attacker;
+	
+	        // Find attacker
+	        enemies.forEach(function (enemy) {
+	          if (enemy.ammo > 0 && utils.isVisible(enemy.position, playerState.position, enemy.direction)) {
+	            attacker = enemy;
+	          }
+	        });
+	
+	        // Check if can run
+	        if (attacker && ORIENTATION[attacker.direction] === ORIENTATION[playerState.direction]) {
+	          canRun = false;
+	        }
+	
+	        if (canRun) {
+	          return 'move';
+	        } else if (attacker && playerState.ammo > 0) {
+	          // Counterattack
+	          return huntEnemy(attacker);
+	        } else {
+	          return getSafestDirection();
+	        }
+	      } else {
+	        return getSafestDirection();
+	      }
+	    }
+	
+	    function getSafestDirection() {
+	      var safestDirection = playerState.direction;
+	      var lowestVulnerability = params.vulnerabilityLevel;
+	      var maxDistanceLeft = 0;
+	
+	      var options = [{
+	        direction: 'north',
+	        position: [playerState.position[0] - 1, playerState.position[1]]
+	      }, {
+	        direction: 'east',
+	        position: [playerState.position[0], playerState.position[1] + 1]
+	      }, {
+	        direction: 'south',
+	        position: [playerState.position[0] + 1, playerState.position[1]]
+	      }, {
+	        direction: 'west',
+	        position: [playerState.position[0], playerState.position[1] - 1]
+	      }];
+	
+	      // Process options
+	      options.forEach(function (option) {
+	        option.vulnerability = calculateVulnerabilityLevel(option.position);
+	        option.distanceLeft = calculateDistanceLeft(option.direction);
+	        option.canMove = canMove(playerState.position, option.direction);
+	        var isBetterOption = option.vulnerability < lowestVulnerability || option.vulnerability === lowestVulnerability && option.distanceLeft > maxDistanceLeft;
+	        if (option.canMove && isBetterOption) {
+	          safestDirection = option.direction;
+	          lowestVulnerability = option.vulnerability;
+	          maxDistanceLeft = option.distanceLeft;
+	        }
+	      });
+	
+	      if (safestDirection === playerState.direction) {
+	        return moveSafely();
+	      } else {
+	        return safestDirection;
+	      }
+	
+	      function calculateDistanceLeft(direction) {
+	        if (direction === 'north') {
+	          return playerState.position[0];
+	        } else if (direction === 'east') {
+	          return gameEnvironment.gridSize - playerState.position[1];
+	        } else if (direction === 'south') {
+	          return gameEnvironment.gridSize - playerState.position[0];
+	        } else if (direction === 'west') {
+	          return playerState.position[1];
+	        }
+	      }
+	    }
+	
+	    function canMove(position, direction) {
+	      if (direction === 'north') {
+	        return position[0] > 0;
+	      } else if (direction === 'east') {
+	        return position[1] < gameEnvironment.gridSize;
+	      } else if (direction === 'south') {
+	        return position[0] < gameEnvironment.gridSize;
+	      } else if (direction === 'west') {
+	        return position[1] > 0;
+	      }
+	    }
+	
+	    function attack() {
 	      return 'shoot';
 	    }
-	    if (gameEnvironment.ammoPosition.length) {
-	      directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
 	
-	      if (directionToAmmo !== playerState.direction) return directionToAmmo;
-	      return 'move';
+	    function moveWisely() {
+	      if (playerState.ammo === 0 && params.nearestAmmo) {
+	        return getAmmo(params.nearestAmmo.position);
+	      } else if (playerState.ammo > 0 && params.nearestEnemy) {
+	        if (params.nearestAmmo && params.nearestAmmo.distance < params.nearestEnemy.distance) {
+	          return getAmmo(params.nearestAmmo.position);
+	        } else {
+	          return huntEnemy(params.nearestEnemy.instance);
+	        }
+	      } else {
+	        return getSafestDirection();
+	      }
 	    }
-	    return utils.safeRandomMove();
+	
+	    function huntEnemy(enemy) {
+	      if (utils.isVisible(playerState.position, enemy.position, playerState.direction)) {
+	        return attack();
+	      } else {
+	        var attackDirection = getAttackDirection();
+	        var enemyDistance = calculateEnemyDistance(playerState.position, enemy);
+	
+	        if (attackDirection === playerState.direction && (enemyDistance > 1 || enemy.ammo === 0)) {
+	          return 'move';
+	        } else {
+	          return attackDirection;
+	        }
+	      }
+	
+	      function getAttackDirection() {
+	        var isEnemyAligned = isAligned(playerState.position, enemy.position);
+	        var enemyOrientation = ORIENTATION[enemy.direction];
+	
+	        if (isEnemyAligned) {
+	          return utils.fastGetDirection(playerState.position, enemy.position);
+	        } else {
+	          if (enemyOrientation === 'vertical') {
+	            return enemy.position[1] > playerState.position[1] ? 'east' : 'west';
+	          } else {
+	            return enemy.position[0] > playerState.position[0] ? 'south' : 'north';
+	          }
+	        }
+	      }
+	    }
+	
+	    function moveSafely() {
+	      var destination;
+	      var vulnerabilityOnMove;
+	
+	      if (playerState.direction === 'north') {
+	        destination = [playerState.position[0] - 1, playerState.position[1]];
+	      } else if (playerState.direction === 'east') {
+	        destination = [playerState.position[0], playerState.position[1] + 1];
+	      } else if (playerState.direction === 'south') {
+	        destination = [playerState.position[0] + 1, playerState.position[1]];
+	      } else if (playerState.direction === 'west') {
+	        destination = [playerState.position[0], playerState.position[1] - 1];
+	      }
+	
+	      vulnerabilityOnMove = calculateVulnerabilityLevel(destination);
+	
+	      if (vulnerabilityOnMove === 1.0) {
+	        return null;
+	      } else {
+	        return 'move';
+	      }
+	    }
+	
+	    function getAmmo(ammoPosition) {
+	      // Get direction to turn
+	      var goToDirection = utils.fastGetDirection(playerState.position, ammoPosition);
+	
+	      // If same direction, move
+	      if (goToDirection === playerState.direction) {
+	        return moveSafely();
+	      } else {
+	        return goToDirection;
+	      }
+	    }
+	
+	    // Decide movement
+	    if (params.vulnerabilityLevel === 1.0 || params.vulnerabilityLevel >= 0.5 && params.canKill !== true) {
+	      response = defend();
+	    } else if (params.canKill === true) {
+	      response = attack();
+	    } else {
+	      response = moveWisely();
+	    }
+	    return response;
 	  }
 	};
 	
-	module.exports = MUSOLINI;
+	module.exports = manuelmhtr;
 
 /***/ },
 /* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/**
+	 * Created by Roberto Alvarez on 7/29/2015.
+	 */'use strict';
+	
+	var utils = __webpack_require__(246),
+	    currentDirection = 0,
+	    oldBestAmo = null,
+	    directions = {
+	    1: 'north',
+	    2: 'east',
+	    3: 'south',
+	    4: 'west'
+	},
+	    turnsComplete = 0,
+	    ElPerron = {
+	    info: {
+	        name: 'ElPerron',
+	        style: 7
+	    },
+	    ai: function ai(playerState, enemiesStates, gameEnvironment) {
+	        var directionToTarget,
+	
+	        /**
+	         * Devuelve la direcci�n del amo mas cercano en base a la posici�n actual de la
+	         * nave
+	         * @returns {*}
+	         */
+	        getBestAmmo = function getBestAmmo() {
+	            var myPosition = playerState.position,
+	                distanceMin = 22,
+	                ammoMin = null;
+	            for (var amIndex in gameEnvironment.ammoPosition) {
+	                var ammo = gameEnvironment.ammoPosition[amIndex];
+	                var difXbyMe = Math.abs(myPosition[1] - ammo[1]),
+	                    difYbyMe = Math.abs(myPosition[0] - ammo[0]),
+	                    distanceByMe = difXbyMe + difYbyMe;
+	
+	                if (distanceByMe < distanceMin) {
+	                    distanceMin = distanceByMe;
+	                    ammoMin = ammo;
+	                }
+	            }
+	
+	            return ammoMin;
+	        },
+	
+	        /**
+	         * Devuelve n�mero de enemigos vivos
+	         * @returns {number}
+	         */
+	        getCountEnemiesAlive = function getCountEnemiesAlive() {
+	            var countEnemies = 0;
+	
+	            for (var enIndex in enemiesStates) {
+	                var enemy = enemiesStates[enIndex];
+	
+	                if (enemy.isAlive) {
+	                    countEnemies++;
+	                }
+	            }
+	
+	            return countEnemies;
+	        },
+	
+	        /**
+	         * Devuelve si la nave esta posicionada en el mismo lugar que el ammo
+	         * @param ammo
+	         * @returns {boolean}
+	         */
+	        isOnAmmo = function isOnAmmo(ammo) {
+	            if (ammo == null) {
+	                return false;
+	            }
+	            return ammo[0] == playerState.position[0] && ammo[1] == playerState.position[1];
+	        };
+	
+	        // Hasta la vista baby !!!
+	        if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+	            return 'shoot';
+	        }
+	
+	        if (playerState.ammo == 0 || turnsComplete == 1) {
+	            var toPosition = getBestAmmo();
+	
+	            // Si tengo los suficientes disparos para eliminar a todos los enemigos
+	            // me dirijo hacia ellos
+	            if (playerState.ammo >= getCountEnemiesAlive()) {
+	                toPosition = enemiesStates[0].position;
+	            }
+	
+	            directionToTarget = utils.getDirection(playerState.position, toPosition);
+	
+	            if (isOnAmmo(oldBestAmo)) {
+	                turnsComplete = 0;
+	            }
+	
+	            // Guardo referencia de la posicion a la que me dirigi anteriormente
+	            oldBestAmo = toPosition;
+	
+	            // Si ya se movio, cambio mi direcci�n
+	            if (directionToTarget !== playerState.direction) {
+	                return directionToTarget;
+	            }
+	
+	            return 'move';
+	        } else {
+	            // Si tiene armas lo hago girar
+	            currentDirection++;
+	            if (currentDirection > 4) {
+	                currentDirection = 1;
+	                turnsComplete++;
+	            }
+	
+	            return directions[currentDirection];
+	        }
+	
+	        return utils.randomMove();
+	    }
+	};
+	
+	module.exports = ElPerron;
+
+/***/ },
+/* 252 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 	
-	var utils = __webpack_require__(243);
+	var utils = __webpack_require__(246);
 	var DIRECTIONS = ['north', 'east', 'south', 'west'];
 	
 	var getShortestDirection = function getShortestDirection(start, endArray) {
@@ -43317,6 +44508,102 @@
 	};
 	
 	module.exports = HITLER;
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(246);
+	
+	var xmontoya = {
+	  info: {
+	    name: 'Xmontoya89',
+	    style: 1
+	  },
+	  ai: function ai(playerState, enemiesStates, gameEnvironment) {
+	    var directionToAmmo;
+	
+	    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+	      return 'shoot';
+	    }
+	
+	    if (gameEnvironment.ammoPosition.length) {
+	      directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+	
+	      if (directionToAmmo !== playerState.direction) return directionToAmmo;
+	      return utils.safeRandomMove();
+	    }
+	
+	    return 'move';
+	  }
+	};
+	
+	module.exports = xmontoya;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var utils = __webpack_require__(246);
+	var noAmmo = true;
+	var margeux = {
+	  info: {
+	    name: 'margeux',
+	    style: 5
+	  },
+	  ai: function ai(playerState, enemiesStates, gameEnvironment) {
+	    var directionToAmmo;
+	    var directionToEnemy;
+	    if (playerState.ammo > 0) {
+	      noAmmo = false;
+	    }
+	    if (playerState.ammo == 0) {
+	      noAmmo = true;
+	    }
+	
+	    if (gameEnvironment.ammoPosition.length && noAmmo) {
+	      directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+	
+	      if (directionToAmmo !== playerState.direction) return directionToAmmo;
+	      return 'move';
+	    }
+	
+	    //LOOK for an enemy
+	    if (!noAmmo) {
+	      directionToEnemy = utils.fastGetDirection(playerState.position, enemiesStates[0].position);
+	      if (directionToEnemy !== playerState.direction) {
+	        var directionToMargeus = utils.fastGetDirection(enemiesStates[0].position, playerState.position);
+	        if (directionToMargeus !== enemiesStates[0].position) {
+	          return directionToEnemy;
+	        } else {
+	          return utils.safeRandomMove();
+	        }
+	      }
+	      if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+	        return 'shoot';
+	      } else {
+	        return utils.safeRandomMove();
+	      }
+	    }
+	
+	    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+	      return 'shoot';
+	    }
+	    if (gameEnvironment.ammoPosition.length) {
+	      directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+	
+	      if (directionToAmmo !== playerState.direction) return directionToAmmo;
+	      return 'move';
+	    }
+	    return utils.safeRandomMove();
+	  }
+	};
+	
+	module.exports = margeux;
 
 /***/ }
 /******/ ]);
