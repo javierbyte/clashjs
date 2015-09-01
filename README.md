@@ -10,19 +10,25 @@ This is an experiment. The idea is to create a battle game, where the participan
 
 Clone the repo and then
 
-    npm install
-    npm run dev
+```sh
+npm install
+npm run dev
+```
 
 Then go to `http://localhost:8080`.
 
 # How to participate.
 Add your player as specificed in [player definition](#player-definition) in
 
-    /src/players/YOU.js
+```
+/src/players/YOU.js
+```
 
 And then require yourself in
 
-    /src/Players.js
+```
+/src/Players.js
+```
 
 And run the demo again. Have fun!
 
@@ -55,16 +61,18 @@ The game is simple: we will put all the players in a battle arena, and then make
 ### Player Definition.
 Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
 
-    {
-      info: {
-        name: 'javierbyte',
-        style: 2 // one of the 6 styles (0 to 5)
-      },
-      ai: function(playerState, enemiesStates, gameEnvironment) {
-        // think...
-        return 'move';
-      }
-    }
+```js
+{
+  info: {
+    name: 'javierbyte',
+    style: 2 // one of the 6 styles (0 to 5)
+  },
+  ai: function(playerState, enemiesStates, gameEnvironment) {
+    // think...
+    return 'move';
+  }
+}
+```
 
 The AI function will receive [`playerState`](#player-state), `enemiesStates` (array of all the other players `playerState`s), and [`gameEnvironment`](#game-environment) as arguments, and must return one of the following strings:
   * `move`: To move one tile in the current direction.
@@ -76,28 +84,34 @@ Any other response, trying to move outside the arena size (`gameEnvironment.grid
 ### Player State.
 Let the *player state* (`playerState`) be an object with a player information like the following:
 
-    {
-      position: `[<number>, <number>]`,
-      direction: `<string>`, // One of 'north', 'east', 'south' or 'west'
-      ammo: `<number>`,
-      isAlive: `<bool>`
-    }
+```js
+{
+  position: `[<number>, <number>]`,
+  direction: `<string>`, // One of 'north', 'east', 'south' or 'west'
+  ammo: `<number>`,
+  isAlive: `<bool>`
+}
+```
 
 ### Game Environment.
 Let the *game environment* (`gameEnvironment`) be a configuration object like the following:
 
-    {
-      gridSize: [<number>, <number>],
-      ammoPosition: <array of [<number>, <number>] arrays>
-    }
+```js
+{
+  gridSize: [<number>, <number>],
+  ammoPosition: <array of [<number>, <number>] arrays>
+}
+```
 
 ### Game State.
 Let the *game state* (`gameState`) be an object with the array of all user states, and the game environment.
 
-    {
-      playerStates: <array of `playerStates`>,
-      gameEnvironment: <`gameEnvironment`>
-    }
+```js
+{
+  playerStates: <array of `playerStates`>,
+  gameEnvironment: <`gameEnvironment`>
+}
+```
 
 # Game Technical Spec.
 
