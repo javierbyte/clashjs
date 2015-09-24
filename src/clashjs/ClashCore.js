@@ -97,6 +97,12 @@ class ClashJS {
 
     if (this._playerStates[this._currentPlayer].isAlive) {
 
+      console.info({
+        userState: clonedStates[this._currentPlayer],
+        enemiesState: otherPlayers,
+        gameEnv: _.clone(this._gameEnvironment, true)
+      })
+
       this._savePlayerAction(
         this._currentPlayer,
         this._playerInstances[this._currentPlayer].execute(

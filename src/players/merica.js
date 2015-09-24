@@ -39,5 +39,6 @@ var getNextPosition = function(playerState) {
         case 'east':
             return [playerState[0] + 1, playerState[1]];
     }
+}
 
 module.exports = merica

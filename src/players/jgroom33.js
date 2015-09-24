@@ -5,7 +5,7 @@ var jgroom33 = {
     name: 'jgroom33',
     style: 2
   },
-  ai: (playerState, enemiesState, gameEnvironment) => {
+  ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;
 
     if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
