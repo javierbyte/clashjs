@@ -137,7 +137,7 @@ module.exports = function() {
         ai: function(playerState, enemiesStates, gameEnvironment) {
             init(gameEnvironment);
 
-            if (utils.canKill(playerState, enemiesStates)) {
+            if (utils.canKill(playerState, enemiesStates) && playerState.ammo > 0) {
                 return 'shoot';
             }
 
@@ -145,9 +145,6 @@ module.exports = function() {
 
             if (!canMove) {
                 return utils.randomMove();
-                while (true) {
-                    var move = utils.randomMove();
-                }
             }
 
             var move = utils.randomMove();
