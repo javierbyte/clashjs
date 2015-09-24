@@ -12,6 +12,12 @@ var utils = require('../lib/utils');
 //   getDistance
 // };
 
+utils.canKillSafe = (currentPlayerState = {}, enemiesStates = []) => {
+    return enemiesStates.some((enemyObject) => {
+        return (enemyObject.isAlive && enemyObject.ammo > 0 && utils.isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction));
+    });
+};
+
 var gridSize, topLeft, topRight, bottomLeft, bottomRight, lastIndex, corners;
 var init = function(gameEnvironment) {
     gridSize = gameEnvironment.gridSize;
@@ -58,7 +64,7 @@ module.exports = function() {
         var nextPosition = getNextPosition(playerState);
 
         return _.some(enemiesStates, function(enemyState) {
-            return utils.canKill(enemyState, [{
+            return utils.canKillSafe(enemyState, [{
                 direction: playerState.direction,
                 position: nextPosition
             }]);
