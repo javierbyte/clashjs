@@ -18,6 +18,7 @@ ai: (playerState, enemiesState, gameEnvironment) => {
     var hasAmmo = playerState.ammo > 0;
     var i;
     var directionToAmmo;
+    var closestAmmoPos;
 
 
     //kill if possible
@@ -25,10 +26,11 @@ ai: (playerState, enemiesState, gameEnvironment) => {
         return 'shoot';
     }
 
-    //otherwise go for ammo if we don't have any
-    if (gameEnvironment.ammoPosition.length && !hasAmmo) {
+    //find closest ammo direction
+    if (gameEnvironment.ammoPosition.length > 0) {
 
         var minDist = Math.abs(utils.getDistance(playerState.position, gameEnvironment.ammoPosition[0]));
+        closestAmmoPos = gameEnvironment.ammoPosition[0];
         directionToAmmo = utils.getDirection(
             playerState.position,
             gameEnvironment.ammoPosition[0]
@@ -43,8 +45,14 @@ ai: (playerState, enemiesState, gameEnvironment) => {
                     playerState.position,
                     gameEnvironment.ammoPosition[i]
                 );
+                closestAmmoPos = gameEnvironment.ammoPosition[i];
             }
         }
+        
+    }
+
+    //move to ammo
+    if(!hasAmmo) {
         if (directionToAmmo !== playerState.direction) {
             console.log("turning to ammo");
             return directionToAmmo;
@@ -54,8 +62,18 @@ ai: (playerState, enemiesState, gameEnvironment) => {
     }
 
     //otherwise hunt 
-    if (gameEnvironment.ammoPosition.length) {
+    if (gameEnvironment.ammoPosition.length > 0) {
         console.log("hunting");
+
+        if(!utils.isVisible(playerState.position, closestAmmoPos, playerState.direction)) {
+            if (directionToAmmo !== playerState.direction) {
+                console.log("turning to ammo");
+                return directionToAmmo;
+            }
+            console.log("moving to ammo");
+            return 'move';
+        }
+
     }
 
 
