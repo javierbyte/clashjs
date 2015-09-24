@@ -9,7 +9,7 @@ function attackEnemy(playerState, enemiesStates){
 		if(enemiesStates[i].ammo){
 			var directionToEnemy = utils.getDirection(
 				playerState.position,
-				gameEnvironment.ammoPosition[index]
+				enemiesStates[i].position
 			);
 			return directionToEnemy;
 		}
