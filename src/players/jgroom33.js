@@ -8,4 +8,3 @@
     return 'move';
   }
 }
-module.exports = jgroom33;
