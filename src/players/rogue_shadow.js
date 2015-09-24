@@ -1,12 +1,5 @@
 import utils from '../lib/utils.js';
 
-const goals = [
-  [0, 0],
-  [12, 0],
-  [12, 12],
-  [0, 12],
-];
-
 function closest (from, locations) {
   let closest = locations.reduce((result, to) => {
     let distance = utils.getDistance(from, to);
@@ -23,6 +16,16 @@ function closest (from, locations) {
   return closest.position;
 }
 
+function moveTo (me, position) {
+    let directionTo = utils.fastGetDirection(me.position, position);
+
+    if (directionTo !== me.direction) {
+      return directionTo;
+    }
+
+    return 'move';
+}
+
 function equal (a, b) {
   return a[0] === b[0] && a[1] === b[1];
 }
@@ -34,73 +37,24 @@ export default {
     style: 1
   },
 
-  ai: (me, baddies, game) => {
-    if (utils.canKill(me, baddies) && me.ammo) {
+  ai: (me, ships, game) => {
+    if (utils.canKill(me, ships) && me.ammo) {
         return 'shoot';
     }
 
     if (me.ammo === 0 && game.ammoPosition.length) {
-      let directionToAmmo = utils.fastGetDirection(
-        me.position,
-        closest(me.position, game.ammoPosition)
-      );
-
-      if (directionToAmmo !== me.direction) {
-        return directionToAmmo;
-      }
-
-      return 'move';
+      return moveTo(me, closest(me.position, game.ammoPosition));
     }
 
-    var corner = closest(me.position, goals)
+    let safe = ships.filter((ship) => {
+      return ship.ammo === 0;
+    });
 
-    if (equal(me.position, corner)) {
-
-      if (equal(corner, [0, 0])) {
-        if (me.direction === 'south') {
-          return 'east';
-        }
-        if (me.direction === 'east') {
-          return 'south';
-        }
-        return 'south';
-      }
-      if (equal(corner, [0, 12])) {
-        if (me.direction === 'north') {
-          return 'west';
-        }
-        if (me.direction === 'west') {
-          return 'north';
-        }
-        return 'north';
-      }
-      if (equal(corner, [12, 12])) {
-        if (me.direction === 'north') {
-          return 'east';
-        }
-        if (me.direction === 'east') {
-          return 'north';
-        }
-        return 'east';
-      }
-      if (equal(corner, [12, 0])) {
-        if (me.direction === 'south') {
-          return 'west';
-        }
-        if (me.direction === 'west') {
-          return 'south';
-        }
-        return 'west';
-      }
-
-    } else {
-      var direction = utils.fastGetDirection(me.position, corner);
-
-      if (me.direction !== direction) {
-        return direction;
-      } 
-
-      return 'move';
+    if (safe.length === 0) {
+      safe = ships;
     }
+
+    let target = closest(me.position, safe.map((ship) => ship.position));
+    return moveTo(me, target);
   }
 }
