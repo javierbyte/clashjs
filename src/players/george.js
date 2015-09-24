@@ -11,7 +11,7 @@ function attackEnemy(playerState, enemiesStates){
 				playerState.position,
 				enemiesStates[i].position
 			);
-			console.log(directionToEnemy);
+//			console.log(directionToEnemy);
 			return directionToEnemy;
 		}
 	}
