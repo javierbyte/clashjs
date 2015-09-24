@@ -18,6 +18,19 @@ utils.canKillSafe = (currentPlayerState = {}, enemiesStates = []) => {
     });
 };
 
+var getDirectionVertical = (start = [], end = []) => {
+    start = start || [];
+    end = end || [];
+
+    var diffVertical = Math.abs(start[0] - end[0]);
+    var diffHorizontal = Math.abs(start[1] - end[1]);
+
+    if (diffVertical != 0) {
+        return (start[0] - end[0] > 0) ? 'north' : 'south';
+    }
+    return (start[1] - end[1] > 0) ? 'west' : 'east';
+};
+
 var gridSize, topLeft, topRight, bottomLeft, bottomRight, lastIndex, corners;
 var init = function(gameEnvironment) {
     gridSize = gameEnvironment.gridSize;
@@ -39,7 +52,7 @@ module.exports = function() {
             return utils.getDistance(playerState.position, ammoPosition);
         })[0];
 
-        var direction = utils.getDirection(playerState.position, closestAmmo);
+        var direction = getDirectionVertical(playerState.position, closestAmmo);
         if (playerState.direction != direction) {
             return direction;
         }
@@ -85,14 +98,14 @@ module.exports = function() {
 
         for (var i in corners) {
             var corner = corners[i];
-            var distance = utils.getDistance(playerState.position, corner);
+            var distance = getDirectionVertical(playerState.position, corner);
             if (distance < minDis || minDis == null) {
                 minDis = distance;
                 closestCorner = corner;
             }
         }
 
-        var direction = utils.getDirection(playerState.position, closestCorner);
+        var direction = getDirectionVertical(playerState.position, closestCorner);
         if (playerState.direction == direction) {
             return 'move';
         }
@@ -144,12 +157,16 @@ module.exports = function() {
             var canMove = !getWillBeKilled(playerState, enemiesStates);
 
             if (!canMove) {
-                return utils.randomMove();
+                return 'north';
             }
 
             var move = utils.randomMove();
             if (playerState.ammo == 0 && gameEnvironment.ammoPosition.length > 0) {
                 return goToClosestAmmo(playerState, enemiesStates, gameEnvironment);
+            }
+
+            if (enemiesStates.length == 1) {
+                return utils.randomMove();
             }
 
             if (!atCorner(playerState, gameEnvironment)) {
