@@ -76,19 +76,19 @@ var clashCoreUtils = (data) => {
         killer: playerIndex,
         killed: kills
       }),0);
-    }
 
-    if (!survivors.length) {
-      setTimeout(coreCallback('DRAW'), 0);
-      setTimeout(evtCallback('DRAW'), 0);
-    }
-    if (survivors.length === 1) {
-      setTimeout(coreCallback('WIN', {
-        winner: playerInstances[playerIndex]
-      }), 0);
-      setTimeout(evtCallback('WIN', {
-        winner: playerInstances[playerIndex]
-      }), 0);
+      if (!survivors.length) {
+        setTimeout(coreCallback('DRAW'), 0);
+        setTimeout(evtCallback('DRAW'), 0);
+      }
+      if (survivors.length === 1) {
+        setTimeout(coreCallback('WIN', {
+          winner: playerInstances[playerIndex]
+        }), 0);
+        setTimeout(evtCallback('WIN', {
+          winner: playerInstances[playerIndex]
+        }), 0);
+      }
     }
   }
 
