@@ -6,7 +6,7 @@ function attackEnemy(playerState, enemiesStates){
 
 	var myPosition = playerState.position;
 	for(var i=0;i<enemiesStates.length;i++){
-		if(enemiesStates[i].ammo){
+		if(enemiesStates[i].ammo && enemiesStates[i].alive){
 			var directionToEnemy = utils.getDirection(
 				playerState.position,
 				enemiesStates[i].position
@@ -24,6 +24,7 @@ var george = {
 	},
 	ai: (playerState, enemiesStates, gameEnvironment) => {
 		var directionToAmmo;
+		var myPosition = playerState.position;
 
 		if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
 			return 'shoot';
@@ -33,10 +34,9 @@ var george = {
 		if(direction)
 			return direction;
 
-		if(playerState.ammo>=2)
-			return utils.getDistance(myPosition, enemiesStates[0].position);
+		if(playerState.ammo)
+			return utils.getDirection(myPosition, enemiesStates[0].position);
 
-		var myPosition = playerState.position;
 
 		if (gameEnvironment.ammoPosition.length) {
 			var distance = 10000;
