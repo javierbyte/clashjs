@@ -11,6 +11,7 @@ function attackEnemy(playerState, enemiesStates){
 				playerState.position,
 				enemiesStates[i].position
 			);
+//			console.log(directionToEnemy);
 			return directionToEnemy;
 		}
 	}
@@ -31,6 +32,9 @@ var george = {
 		var direction = attackEnemy(playerState, enemiesStates);
 		if(direction)
 			return direction;
+
+		if(playerState.ammo>=2)
+			return utils.getDistance(myPosition, enemiesStates[0].position);
 
 		var myPosition = playerState.position;
 
