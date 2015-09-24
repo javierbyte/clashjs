@@ -75,15 +75,6 @@ export default {
         return 'north';
       }
       if (equal(corner, [12, 12])) {
-        if (me.direction === 'south') {
-          return 'west';
-        }
-        if (me.direction === 'west') {
-          return 'south';
-        }
-        return 'west';
-      }
-      if (equal(corner, [12, 0])) {
         if (me.direction === 'north') {
           return 'east';
         }
@@ -91,6 +82,15 @@ export default {
           return 'north';
         }
         return 'east';
+      }
+      if (equal(corner, [12, 0])) {
+        if (me.direction === 'south') {
+          return 'west';
+        }
+        if (me.direction === 'west') {
+          return 'south';
+        }
+        return 'west';
       }
 
     } else {
