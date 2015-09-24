@@ -3,8 +3,8 @@ var utils = require('../lib/utils.js');
 
 var MUSOLINI = {
   info: {
-    name: 'Fred',
-    style: 5
+    name: 'Pedobear',
+    style: 8
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;
@@ -29,7 +29,7 @@ var MUSOLINI = {
     })
     console.log(minDistance)
 
-    if (minDistance.enemy && minDistance.d < 3 && playerState.ammo) {
+    if (minDistance.enemy && minDistance.d < 2 && playerState.ammo) {
       return utils.fastGetDirection(playerState.position, minDistance.enemy.position)
     }
 

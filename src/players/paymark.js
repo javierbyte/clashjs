@@ -20,6 +20,12 @@ ai: (playerState, enemiesState, gameEnvironment) => {
     var directionToAmmo;
     var closestAmmoPos;
 
+    console.log(playerState.custom);
+
+    if(!playerState.custom) {
+        playerState.custom = {};
+    }
+
 
     //kill if possible
     if (utils.canKill(playerState, enemiesState) && playerState.ammo) {
@@ -37,9 +43,13 @@ ai: (playerState, enemiesState, gameEnvironment) => {
         );
 
 
-        for(i=1; i>gameEnvironment.ammoPosition; i++) {
+        for(i=1; i<gameEnvironment.ammoPosition.length; i++) {
+            console.log(gameEnvironment.ammoPosition[i]);
+
             var testDist = Math.abs(utils.getDistance(playerState.position, gameEnvironment.ammoPosition[i]));
+            console.log("comparing " + testDist + " < " + minDist);
             if(testDist < minDist) {
+                console.log("testDist smaller");
                 minDist = testDist;
                 directionToAmmo = utils.getDirection(
                     playerState.position,
