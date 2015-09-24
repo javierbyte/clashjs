@@ -5,8 +5,12 @@ function attackEnemy(playerState, enemiesStates){
 		return null;
 
 	var myPosition = playerState.position;
+	var first = 0;
 	for(var i=0;i<enemiesStates.length;i++){
-		if(enemiesStates[i].ammo && enemiesStates[i].alive){
+		if(!enemiesStates[i].alive)
+			continue;
+		first = i;
+		if(enemiesStates[i].ammo){
 			var directionToEnemy = utils.getDirection(
 				playerState.position,
 				enemiesStates[i].position
@@ -15,6 +19,7 @@ function attackEnemy(playerState, enemiesStates){
 			return directionToEnemy;
 		}
 	}
+	return utils.getDirection(myPosition, enemiesStates[first].position);
 }
 
 var george = {
@@ -33,10 +38,6 @@ var george = {
 		var direction = attackEnemy(playerState, enemiesStates);
 		if(direction)
 			return direction;
-
-		if(playerState.ammo)
-			return utils.getDirection(myPosition, enemiesStates[0].position);
-
 
 		if (gameEnvironment.ammoPosition.length) {
 			var distance = 10000;
