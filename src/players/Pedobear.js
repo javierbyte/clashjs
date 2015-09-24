@@ -3,7 +3,7 @@ var utils = require('../lib/utils.js');
 
 var MUSOLINI = {
   info: {
-    name: 'Fred',
+    name: 'Pedobear',
     style: 5
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {

@@ -6,7 +6,7 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 class ClashJS {
   constructor(playerDefinitionArray, currentStats, evtCallback) {
-    this._totalRounds = playerDefinitionArray.length * 3;
+    this._totalRounds = playerDefinitionArray.length * 5;
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = evtCallback;
