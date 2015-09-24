@@ -12,6 +12,25 @@ var utils = require('../lib/utils');
 //   getDistance
 // };
 
+utils.canKillSafe = (currentPlayerState = {}, enemiesStates = []) => {
+    return enemiesStates.some((enemyObject) => {
+        return (enemyObject.isAlive && enemyObject.ammo > 0 && utils.isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction));
+    });
+};
+
+var getDirectionVertical = (start = [], end = []) => {
+    start = start || [];
+    end = end || [];
+
+    var diffVertical = Math.abs(start[0] - end[0]);
+    var diffHorizontal = Math.abs(start[1] - end[1]);
+
+    if (diffVertical != 0) {
+        return (start[0] - end[0] > 0) ? 'north' : 'south';
+    }
+    return (start[1] - end[1] > 0) ? 'west' : 'east';
+};
+
 var gridSize, topLeft, topRight, bottomLeft, bottomRight, lastIndex, corners;
 var init = function(gameEnvironment) {
     gridSize = gameEnvironment.gridSize;
@@ -33,7 +52,7 @@ module.exports = function() {
             return utils.getDistance(playerState.position, ammoPosition);
         })[0];
 
-        var direction = utils.getDirection(playerState.position, closestAmmo);
+        var direction = getDirectionVertical(playerState.position, closestAmmo);
         if (playerState.direction != direction) {
             return direction;
         }
@@ -58,7 +77,7 @@ module.exports = function() {
         var nextPosition = getNextPosition(playerState);
 
         return _.some(enemiesStates, function(enemyState) {
-            return utils.canKill(enemyState, [{
+            return utils.canKillSafe(enemyState, [{
                 direction: playerState.direction,
                 position: nextPosition
             }]);
@@ -79,14 +98,14 @@ module.exports = function() {
 
         for (var i in corners) {
             var corner = corners[i];
-            var distance = utils.getDistance(playerState.position, corner);
+            var distance = getDirectionVertical(playerState.position, corner);
             if (distance < minDis || minDis == null) {
                 minDis = distance;
                 closestCorner = corner;
             }
         }
 
-        var direction = utils.getDirection(playerState.position, closestCorner);
+        var direction = getDirectionVertical(playerState.position, closestCorner);
         if (playerState.direction == direction) {
             return 'move';
         }
@@ -131,22 +150,23 @@ module.exports = function() {
         ai: function(playerState, enemiesStates, gameEnvironment) {
             init(gameEnvironment);
 
-            if (utils.canKill(playerState, enemiesStates)) {
+            if (utils.canKill(playerState, enemiesStates) && playerState.ammo > 0) {
                 return 'shoot';
             }
 
             var canMove = !getWillBeKilled(playerState, enemiesStates);
 
             if (!canMove) {
-                return utils.randomMove();
-                while (true) {
-                    var move = utils.randomMove();
-                }
+                return 'north';
             }
 
             var move = utils.randomMove();
             if (playerState.ammo == 0 && gameEnvironment.ammoPosition.length > 0) {
                 return goToClosestAmmo(playerState, enemiesStates, gameEnvironment);
+            }
+
+            if (enemiesStates.length == 1) {
+                return utils.randomMove();
             }
 
             if (!atCorner(playerState, gameEnvironment)) {

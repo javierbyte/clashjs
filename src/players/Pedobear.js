@@ -27,13 +27,23 @@ var MUSOLINI = {
         }
       }
     })
-    console.log(minDistance)
 
     if (minDistance.enemy && minDistance.d < 2 && playerState.ammo) {
       return utils.fastGetDirection(playerState.position, minDistance.enemy.position)
     }
 
+
     if (gameEnvironment.ammoPosition.length) {
+      var closestAmmo = gameEnvironment.ammoPosition.reduce((p, ammo) => {
+        const d = utils.getDistance(playerState.position, ammo)
+        if (d < p.distance) {
+          p.ammo = ammo
+          p.distance = d
+          return p
+        } else {
+          return p
+        }
+      }, {distance: 10000, ammo: null})
       directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
 
       if (directionToAmmo !== playerState.direction) return directionToAmmo;

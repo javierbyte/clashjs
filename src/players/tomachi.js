@@ -20,7 +20,7 @@ var TOMACHI = {
         return 'move';
     }
     return turnRight(playerState);
-    //return utils.safeRandomMove();
+    //return utils.safeRandomMove(); 
   }
 };
 
