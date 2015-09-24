@@ -1,18 +1,17 @@
 var utils = require('../lib/utils.js');
 
-function avoidEnemy(playerState, enemiesStates){
-	if(playerState.ammo)
+function attackEnemy(playerState, enemiesStates){
+	if(!playerState.ammo)
 		return null;
 
 	var myPosition = playerState.position;
 	for(var i=0;i<enemiesStates.length;i++){
 		if(enemiesStates[i].ammo){
 			var directionToEnemy = utils.getDirection(
-				gameEnvironment.ammoPosition[index],
-				playerState.position
+				playerState.position,
+				gameEnvironment.ammoPosition[index]
 			);
-			if(directionToEnemy==enemiesStates[i].direction)
-				return null;
+			return directionToEnemy;
 		}
 	}
 }
@@ -28,6 +27,10 @@ var george = {
 		if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
 			return 'shoot';
 		}
+
+		var direction = attackEnemy(playerState, enemiesStates);
+		if(direction)
+			return direction;
 
 		var myPosition = playerState.position;
 
