@@ -8,8 +8,9 @@ var jgroom33 = {
   ai: (playerState, enemiesState, gameEnvironment) => {
     var directionToAmmo;
 
-    if (Math.random() > 0.9) return 'shoot';
-
+    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
+        return 'shoot';
+    }
     if (gameEnvironment.ammoPosition.length) {
       directionToAmmo = utils.getDirection(
         playerState.position,
