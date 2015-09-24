@@ -37,7 +37,7 @@ ai: (playerState, enemiesState, gameEnvironment) => {
         );
 
 
-        for(i=1; i>gameEnvironment.ammoPosition; i++) {
+        for(i=1; i>gameEnvironment.ammoPosition.length; i++) {
             var testDist = Math.abs(utils.getDistance(playerState.position, gameEnvironment.ammoPosition[i]));
             if(testDist < minDist) {
                 minDist = testDist;
