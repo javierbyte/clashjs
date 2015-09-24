@@ -1,9 +1,9 @@
 var utils = require('../lib/utils.js');
 
-var siegfried = {
+var MUSOLINI = {
   info: {
-    name: 'Siegfried',
-    style: 4
+    name: 'mel',
+    style: 5
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;
@@ -11,15 +11,14 @@ var siegfried = {
     if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
       return 'shoot';
     }
-
     if (gameEnvironment.ammoPosition.length) {
-      directionToAmmo = utils.getDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+      directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
 
       if (directionToAmmo !== playerState.direction) return directionToAmmo;
       return 'move';
     }
-    return utils.randomMove();
+    return utils.safeRandomMove();
   }
 };
 
-module.exports = siegfried;
+module.exports = MUSOLINI;
