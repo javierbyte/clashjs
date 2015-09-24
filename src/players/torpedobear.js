@@ -37,7 +37,7 @@ if (utils.canKill(playerState, enemiesStates) && playerState.ammo) {
     return 'shoot';
 }
 if (gameEnvironment.ammoPosition.length) {
-    directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[0]);
+    directionToAmmo = utils.fastGetDirection(playerState.position, gameEnvironment.ammoPosition[gameEnvironment.ammoPosition.length-1]);
 
     if (directionToAmmo !== playerState.direction) return directionToAmmo;
     return 'move';
