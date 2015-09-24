@@ -28,8 +28,9 @@ var Clash = React.createClass({
     return {
       clashjs: this.ClashJS.getState(),
       shoots: [],
-      speed: 150,
-      kills: []
+      speed: 80,
+      kills: [],
+      currentGameIndex: 1
     };
   },
 
@@ -39,30 +40,39 @@ var Clash = React.createClass({
 
   newGame() {
     killsStack = [];
+    var nextGameIndex = this.state.currentGameIndex + 1;
 
-    window.setTimeout(() => {
+    if (this.nextTurnTimeout) clearTimeout(this.nextTurnTimeout)
+
+    this.nextTurnTimeout = window.setTimeout(() => {
       sudeenDeathCount = 0;
       this.ClashJS.setupGame();
       this.setState({
         clashjs: this.ClashJS.getState(),
         shoots: [],
         speed: 150,
-        kills: []
+        kills: [],
+        currentGameIndex: nextGameIndex
       }, this.nextTurn);
     }, 1000);
   },
 
   nextTurn() {
+
     var {playerStates, rounds, totalRounds} = this.ClashJS.getState();
     var alivePlayerCount = playerStates.reduce((result, el) => {
       return el.isAlive ? (result + 1) : result;
     }, 0);
     if (alivePlayerCount < 2) return false;
 
-    window.setTimeout(() => {
+    var currentGameIndex = this.state.currentGameIndex;
+
+    if (this.nextTurnTimeout) clearTimeout(this.nextTurnTimeout)
+    this.nextTurnTimeout = window.setTimeout(() => {
+      if (this.state.currentGameIndex !== currentGameIndex) return
       this.setState({
         clashjs: this.ClashJS.nextPly(),
-        speed: this.state.speed > 20 ? parseInt(this.state.speed * 0.98, 10) : 20
+        speed: this.state.speed > 50 ? parseInt(this.state.speed * 0.98, 10) : 50
       }, this.nextTurn);
     }, this.state.speed);
 
