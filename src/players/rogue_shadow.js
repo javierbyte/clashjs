@@ -1,7 +1,5 @@
 import utils from '../lib/utils.js';
 
-let current = 0;
-
 const goals = [
   [0, 0],
   [12, 0],
@@ -57,18 +55,44 @@ export default {
     var corner = closest(me.position, goals)
 
     if (equal(me.position, corner)) {
-      if (me.direction === 'south') {
-        return 'west';
-      }
-      if (me.direction === 'west') {
-        return 'north';
-      }
-      if (me.direction === 'north') {
-        return 'east';
-      }
-      if (me.direction === 'east') {
+
+      if (equal(corner, [0, 0])) {
+        if (me.direction === 'south') {
+          return 'east';
+        }
+        if (me.direction === 'east') {
+          return 'south';
+        }
         return 'south';
       }
+      if (equal(corner, [0, 12])) {
+        if (me.direction === 'north') {
+          return 'west';
+        }
+        if (me.direction === 'west') {
+          return 'north';
+        }
+        return 'north';
+      }
+      if (equal(corner, [12, 12])) {
+        if (me.direction === 'north') {
+          return 'east';
+        }
+        if (me.direction === 'east') {
+          return 'north';
+        }
+        return 'east';
+      }
+      if (equal(corner, [12, 0])) {
+        if (me.direction === 'south') {
+          return 'west';
+        }
+        if (me.direction === 'west') {
+          return 'south';
+        }
+        return 'west';
+      }
+
     } else {
       var direction = utils.fastGetDirection(me.position, corner);
 
