@@ -15,14 +15,12 @@ var Stats = React.createClass({
     stats = _.sortBy(stats, (playerStats) => playerStats.wins * -1);
     return (
       <div className='stats'>
-        <div className="stats-title">Results on round {rounds} of {total}</div>
+        <div className="stats-title">Round {rounds} of {total}</div>
         <table>
           <thead>
             <td></td>
             <td></td>
             <td>Wins</td>
-            <td>Rate</td>
-            <td>K/D/R</td>
           </thead>
           <tbody>
           {_.map(stats, (playerStats, index) => {
@@ -31,8 +29,6 @@ var Stats = React.createClass({
                 <td>{playerStats.isAlive ? '' : "💀"}</td>
                 <td className='player-name'>{playerStats.name}</td>
                 <td className='stats-results'>{playerStats.wins}</td>
-                <td className='stats-results'>{playerStats.winrate}%</td>
-                <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
               </tr>
             );
           })}

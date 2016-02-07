@@ -66,13 +66,13 @@ b {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  transition: transform .3s;
+  transition: transform 0.25s;
 }
 .clash-player-container {
   position: absolute;
   top: 0;
   left: 0;
-  transition: transform .4s;
+  transition: transform 0.25s;
 }
 .clash-player-name {
   top: -2em;
@@ -99,7 +99,7 @@ b {
   top: 0;
   right: 0;
   padding: 1em;
-  font-size: .9em;
+  font-size: 0.85em;
 }
 
 .stats-title {
@@ -111,7 +111,6 @@ b {
 }
 .stats td {
   padding: 0 .5em;
-  font-size: 1.2em;
 }
 
 .player-dead td {

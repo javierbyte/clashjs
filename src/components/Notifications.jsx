@@ -1,4 +1,4 @@
-var React = require('react/addons');
+var React = require('react/addons')
 var Notifications = React.createClass({
 
   propTypes: {
@@ -14,8 +14,8 @@ var Notifications = React.createClass({
     return (
       <div className='notifications'>
         {
-          _.map(kills, (k) => {
-            return (<p>{k.text}</p>);
+          _.map(kills, (k, idx) => {
+            return (<p key={idx}>{k.text}</p>);
           })
         }
       </div>

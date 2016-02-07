@@ -6,7 +6,7 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 
 class ClashJS {
   constructor(playerDefinitionArray, currentStats, evtCallback) {
-    this._totalRounds = playerDefinitionArray.length * 5;
+    this._totalRounds = playerDefinitionArray.length * 2 + 5;
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = evtCallback;
@@ -83,9 +83,8 @@ class ClashJS {
     if (this._sudeenDeathCount > (250 * this._alivePlayerCount)) {
       this._handleCoreAction('DRAW');
       return this._evtCallback('DRAW');
-      // return this.getState();
     }
-    let clonedStates = _.clone(this._playerStates, true);
+    let clonedStates = _.cloneDeep(this._playerStates, true);
     if (this._alivePlayerCount <= 3) {
       this._sudeenDeathCount++;
     }
@@ -96,19 +95,12 @@ class ClashJS {
     });
 
     if (this._playerStates[this._currentPlayer].isAlive) {
-
-      console.info({
-        userState: clonedStates[this._currentPlayer],
-        enemiesState: otherPlayers,
-        gameEnv: _.clone(this._gameEnvironment, true)
-      })
-
       this._savePlayerAction(
         this._currentPlayer,
         this._playerInstances[this._currentPlayer].execute(
           clonedStates[this._currentPlayer],
           otherPlayers,
-          _.clone(this._gameEnvironment, true)
+          _.cloneDeep(this._gameEnvironment, true)
         )
       );
     }
@@ -152,7 +144,6 @@ class ClashJS {
         let {wins, winrate} = playerStats;
         playerStats.winrate = Math.round(wins * 100 / this._rounds);
       });
-      console.log(this._playerStates);
       if (this._rounds >= this._totalRounds) {return this._evtCallback('END');}
     }
   }
