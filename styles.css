@@ -122,6 +122,7 @@ b {
 }
 
 .notifications {
+  font-size: 0.85em;
   position: fixed;
   padding: 5px;
   background: #000;
