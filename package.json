@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "ClashJS, JS AI battle game",
   "scripts": {
-    "build": "webpack --progress --profile --colors",
+    "build": "rm -rf dist && mkdir dist && NODE_ENV=production webpack --config webpack.config.prod.js",
     "dev": "webpack-dev-server --progress --profile --colors --hot"
   },
   "repository": {

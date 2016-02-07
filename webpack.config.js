@@ -1,4 +1,4 @@
-var webpack = require('webpack');
+var webpack = require('webpack')
 
 module.exports = {
   entry: [
@@ -11,9 +11,6 @@ module.exports = {
     path: 'dist',
     publicPath: '/dist'
   },
-  resolve: {
-    extensions: ['', '.js', '.jsx']
-  },
   module: {
     loaders: [{
       test: /\.jsx?$/,
@@ -22,12 +19,13 @@ module.exports = {
     }]
   },
   devServer: {
-      contentBase: './',
-      noInfo: true, //  --no-info option
-      hot: true,
-      inline: true
+    contentBase: './',
+    noInfo: true, //  --no-info option
+    hot: true,
+    inline: true
   },
   plugins: [
     new webpack.NoErrorsPlugin()
   ]
-};
+}
+

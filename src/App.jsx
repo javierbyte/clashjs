@@ -1,6 +1,6 @@
 var React = require('react');
 
-var Clash = require('./components/Clash');
+var Clash = require('./components/Clash.jsx');
 
 var App = React.createClass({
 
