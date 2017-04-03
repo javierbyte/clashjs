@@ -12,7 +12,7 @@ class ClashJS {
     this._evtCallback = evtCallback;
     this._alivePlayerCount = 0;
     this._sudeenDeathCount = 0;
-    this._playerInstances = playerDefinitionArray.map((playerDefinition) => {
+    this._playerInstances = playerDefinitionArray.map(playerDefinition => {
       let player = new PlayerClass(playerDefinition);
       this._gameStats[player.getId()] = {
         name: player.getName(),
@@ -37,7 +37,7 @@ class ClashJS {
     this._sudeenDeathCount = 0;
     this._playerInstances = _.shuffle(this._playerInstances);
     this._alivePlayerCount = this._playerInstances.length;
-    this._playerStates = this._playerInstances.map((playerInstance) => {
+    this._playerStates = this._playerInstances.map(playerInstance => {
       let gridSize = this._gameEnvironment.gridSize;
       return {
         style: playerInstance.getInfo().style,
@@ -58,9 +58,11 @@ class ClashJS {
       Math.floor(Math.random() * this._gameEnvironment.gridSize)
     ];
 
-    if (this._gameEnvironment.ammoPosition.some(el => {
-      return el[0] === newAmmoPosition[0] && el[1] === newAmmoPosition[1];
-    })) {
+    if (
+      this._gameEnvironment.ammoPosition.some(el => {
+        return el[0] === newAmmoPosition[0] && el[1] === newAmmoPosition[1];
+      })
+    ) {
       this._createAmmo();
       return;
     }
@@ -80,7 +82,7 @@ class ClashJS {
   }
 
   nextPly() {
-    if (this._sudeenDeathCount > (250 * this._alivePlayerCount)) {
+    if (this._sudeenDeathCount > 250 * this._alivePlayerCount) {
       this._handleCoreAction('DRAW');
       return this._evtCallback('DRAW');
     }
@@ -107,17 +109,17 @@ class ClashJS {
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 
-    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.95) this._createAmmo();
+    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.95)
+      this._createAmmo();
 
     return this.getState();
   }
 
-
   _handleCoreAction(action, data) {
     if (action === 'KILL') {
-      let {killer, killed} = data;
-      this._gameStats[killer.getId()].kills++
-      _.forEach(this._playerInstances, (player) => {
+      let { killer, killed } = data;
+      this._gameStats[killer.getId()].kills++;
+      _.forEach(this._playerInstances, player => {
         let stats = this._gameStats[player.getId()];
         if (killed.indexOf(player) > -1) {
           this._alivePlayerCount--;
@@ -133,7 +135,7 @@ class ClashJS {
     if (action === 'WIN') {
       this._gameStats[data.winner.getId()].wins++;
       _.forEach(this._gameStats, (playerStats, key) => {
-        let {wins, winrate} = playerStats;
+        let { wins, winrate } = playerStats;
         playerStats.winrate = Math.round(wins * 100 / this._rounds);
       });
 
@@ -141,25 +143,25 @@ class ClashJS {
     }
     if (action === 'DRAW') {
       _.forEach(this._gameStats, (playerStats, key) => {
-        let {wins, winrate} = playerStats;
+        let { wins, winrate } = playerStats;
         playerStats.winrate = Math.round(wins * 100 / this._rounds);
       });
-      if (this._rounds >= this._totalRounds) {return this._evtCallback('END');}
+      if (this._rounds >= this._totalRounds) {
+        return this._evtCallback('END');
+      }
     }
   }
 
   _savePlayerAction(playerIndex, playerAction) {
-    this._playerStates = executeMovementHelper(
-      {
-        playerIndex: playerIndex,
-        playerAction: playerAction,
-        playerStates: this._playerStates,
-        playerInstances: this._playerInstances,
-        gameEnvironment: this._gameEnvironment,
-        evtCallback: this._evtCallback,
-        coreCallback: this._handleCoreAction.bind(this)
-      }
-    );
+    this._playerStates = executeMovementHelper({
+      playerIndex: playerIndex,
+      playerAction: playerAction,
+      playerStates: this._playerStates,
+      playerInstances: this._playerInstances,
+      gameEnvironment: this._gameEnvironment,
+      evtCallback: this._evtCallback,
+      coreCallback: this._handleCoreAction.bind(this)
+    });
   }
 }
 

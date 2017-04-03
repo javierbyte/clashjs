@@ -1,4 +1,4 @@
-var webpack = require('webpack')
+var webpack = require('webpack');
 
 module.exports = {
   entry: [
@@ -12,11 +12,13 @@ module.exports = {
     publicPath: '/dist'
   },
   module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /(node_modules|bower_components)/,
-      loaders: ['babel']
-    }]
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loaders: ['babel']
+      }
+    ]
   },
   devServer: {
     contentBase: './',
@@ -24,8 +26,5 @@ module.exports = {
     hot: true,
     inline: true
   },
-  plugins: [
-    new webpack.NoErrorsPlugin()
-  ]
-}
-
+  plugins: [new webpack.NoErrorsPlugin()]
+};

@@ -22,9 +22,9 @@ var getDirection = (start = [], end = []) => {
   var diffHorizontal = Math.abs(start[1] - end[1]);
 
   if (diffVertical > diffHorizontal) {
-    return (start[0] - end[0] > 0) ? 'north' : 'south';
+    return start[0] - end[0] > 0 ? 'north' : 'south';
   }
-  return (start[1] - end[1] > 0) ? 'west' : 'east';
+  return start[1] - end[1] > 0 ? 'west' : 'east';
 };
 
 var getDistance = (start = [], end = []) => {
@@ -39,9 +39,9 @@ var fastGetDirection = (start = [], end = []) => {
   // var diffHorizontal = Math.abs(start[1] - end[1]);
 
   if (diffVertical) {
-    return (start[0] - end[0] > 0) ? 'north' : 'south';
+    return start[0] - end[0] > 0 ? 'north' : 'south';
   }
-  return (start[1] - end[1] > 0) ? 'west' : 'east';
+  return start[1] - end[1] > 0 ? 'west' : 'east';
 };
 
 var isVisible = (originalPosition = [], finalPosition = [], direction = []) => {
@@ -60,8 +60,9 @@ var isVisible = (originalPosition = [], finalPosition = [], direction = []) => {
 };
 
 var canKill = (currentPlayerState = {}, enemiesStates = []) => {
-  return enemiesStates.some((enemyObject) => {
-    return (enemyObject.isAlive && isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction));
+  return enemiesStates.some(enemyObject => {
+    return enemyObject.isAlive &&
+      isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction);
   });
 };
 

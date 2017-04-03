@@ -8,4 +8,4 @@ module.exports = {
   yuno: require('./players/yuno.js'),
   xmontoya: require('./players/xmontoya.js'),
   margeux: require('./players/margeux.js')
-}
+};

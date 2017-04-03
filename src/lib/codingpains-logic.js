@@ -4,7 +4,7 @@ var DIRECTIONS = ['north', 'east', 'south', 'west'];
 var inDanger = function(player, enemies) {
   if (!enemies.length) return false;
   var pos = player.position;
-  return _.some(enemies, (e) => sameY(pos, e.position) || sameX(pos, e.position));
+  return _.some(enemies, e => sameY(pos, e.position) || sameX(pos, e.position));
 };
 
 var sameY = function(start, end) {
@@ -17,7 +17,7 @@ var sameX = function(start, end) {
 
 var canMoveTowards = function(direction, player, map) {
   var canDo = false;
-  switch(direction) {
+  switch (direction) {
     case 'north':
       canDo = player.position[0] > 0;
       break;
@@ -35,11 +35,13 @@ var canMoveTowards = function(direction, player, map) {
 };
 
 var canDie = function(player, enemies) {
-  return enemies.map(function(enemy) {
-    return enemy.ammo > 0 && utils.isVisible(enemy.position, player.position, enemy.direction);
-  }).filter(function(result) {
-    return result === true;
-  }).length > 0;
+  return enemies
+    .map(function(enemy) {
+      return enemy.ammo > 0 && utils.isVisible(enemy.position, player.position, enemy.direction);
+    })
+    .filter(function(result) {
+      return result === true;
+    }).length > 0;
 };
 
 var getClosestAmmo = function(player, ammoPosition) {
@@ -64,7 +66,7 @@ var getReachableAmmo = function(player, enemies, map) {
     var distance = utils.getDistance(player.position, ammo);
 
     return !enemies.some(function(enemy) {
-      return utils.getDistance(enemy.position, ammo) < distance
+      return utils.getDistance(enemy.position, ammo) < distance;
     });
   });
 
@@ -143,7 +145,7 @@ var getSafestMove = function(player, enemies, map) {
 };
 
 var goToCenter = function(player, map) {
-  var center = [map.gridSize,map.gridSize].map((coord) => Math.floor(coord/2));
+  var center = [map.gridSize, map.gridSize].map(coord => Math.floor(coord / 2));
   var movement = utils.fastGetDirection(player.position, center);
 
   if (movement === player.direction) {
@@ -172,7 +174,7 @@ var getClosestEnemy = function(player, enemies) {
   return closest;
 };
 
-var getBackPosition = function(enemy) {
+var getBackPosition = function(enemy) {
   var back = enemy.position.slice(0, 2);
   switch (enemy.direction) {
     case 'north':
@@ -196,14 +198,14 @@ var sneakyGetDirection = function(player, enemy) {
   var diffVertical = Math.abs(player.position[0] - player.position[0]);
 
   if (diffVertical && enemy.position !== 'north' && enemy.position !== 'south') {
-    return (player.position[0] - enemy.position[0] > 0) ? 'north' : 'south';
+    return player.position[0] - enemy.position[0] > 0 ? 'north' : 'south';
   }
-  return (player.position[1] - enemy.position[1] > 0) ? 'west' : 'east';
+  return player.position[1] - enemy.position[1] > 0 ? 'west' : 'east';
 };
 
 var verticalDelta = function(start, end) {
   return start[0] - end[0];
-}
+};
 
 var absVerticalDelta = function(start, end) {
   return Math.abs(verticalDelta(start, end));
@@ -242,7 +244,7 @@ var opositeDirection = function(direction) {
       break;
   }
   return ret;
-}
+};
 
 var chaseEnemy = function(player, enemies, map) {
   var closest = getClosestEnemy(player, enemies);
@@ -306,28 +308,28 @@ var turnToAmbush = function(player, enemies) {
   }
 
   if (verticalDelta(player.position, enemy.position) < 0) return 'south';
-    return 'north';
+  return 'north';
 };
 
 var canKillMany = function(player, enemies) {
-  let {position, direction} = player;
-  var targets = _.filter(enemies, (enemy) => utils.isVisible(position, enemy.position, direction));
+  let { position, direction } = player;
+  var targets = _.filter(enemies, enemy => utils.isVisible(position, enemy.position, direction));
   return targets.length > 2;
 };
 
 var canKillAll = function(player, enemies) {
   if (!player.ammo) return false;
-  var killable = enemies.filter((enemy) => utils.canKill(player, [enemy]));
+  var killable = enemies.filter(enemy => utils.canKill(player, [enemy]));
 
   return enemies.length === killable.length;
 };
 
 var getImmediateThreats = function(player, enemies) {
-  return enemies.filter((enemy) => enemy.ammo > 0 && utils.isVisible(enemy.position, player.position, enemy.direction));
+  return enemies.filter(enemy => enemy.ammo > 0 && utils.isVisible(enemy.position, player.position, enemy.direction));
 };
 
 var getDangerousEnemies = function(enemies) {
-  var dangerous = enemies.filter((enemy) => enemy.ammo);
+  var dangerous = enemies.filter(enemy => enemy.ammo);
   if (dangerous.length) return dangerous;
   return enemies;
 };

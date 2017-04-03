@@ -8,8 +8,8 @@ var safeMovement = (value, size) => {
   return value;
 };
 
-var clashCoreUtils = (data) => {
-  var {playerIndex, playerAction, playerStates, playerInstances, gameEnvironment, evtCallback, coreCallback} = data;
+var clashCoreUtils = data => {
+  var { playerIndex, playerAction, playerStates, playerInstances, gameEnvironment, evtCallback, coreCallback } = data;
   var currentPlayerState = playerStates[playerIndex];
 
   if (DIRECTIONS.indexOf(playerAction) !== -1) {
@@ -60,34 +60,49 @@ var clashCoreUtils = (data) => {
     });
 
     playerStates.forEach((enemyObject, enemyIndex) => {
-      if (enemyObject.isAlive && utils.isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction)) {
+      if (
+        enemyObject.isAlive &&
+        utils.isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction)
+      ) {
         kills.push(enemyIndex);
         enemyObject.isAlive = false;
       }
     });
 
     if (kills.length) {
-      survivors = _.filter(playerStates, (player) => player.isAlive);
-      setTimeout(coreCallback('KILL', {
-        killer: playerInstances[playerIndex],
-        killed: _.map(kills, (index) => playerInstances[index])
-      }),0);
-      setTimeout(evtCallback('KILL', {
-        killer: playerIndex,
-        killed: kills
-      }),0);
+      survivors = _.filter(playerStates, player => player.isAlive);
+      setTimeout(
+        coreCallback('KILL', {
+          killer: playerInstances[playerIndex],
+          killed: _.map(kills, index => playerInstances[index])
+        }),
+        0
+      );
+      setTimeout(
+        evtCallback('KILL', {
+          killer: playerIndex,
+          killed: kills
+        }),
+        0
+      );
 
       if (!survivors.length) {
         setTimeout(coreCallback('DRAW'), 0);
         setTimeout(evtCallback('DRAW'), 0);
       }
       if (survivors.length === 1) {
-        setTimeout(coreCallback('WIN', {
-          winner: playerInstances[playerIndex]
-        }), 0);
-        setTimeout(evtCallback('WIN', {
-          winner: playerInstances[playerIndex]
-        }), 0);
+        setTimeout(
+          coreCallback('WIN', {
+            winner: playerInstances[playerIndex]
+          }),
+          0
+        );
+        setTimeout(
+          evtCallback('WIN', {
+            winner: playerInstances[playerIndex]
+          }),
+          0
+        );
       }
     }
   }
