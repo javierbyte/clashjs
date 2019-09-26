@@ -5,7 +5,7 @@ import executeMovementHelper from "./executeMovementHelper.js";
 
 var DIRECTIONS = ["north", "east", "south", "west"];
 
-const SUDDEN_DEATH_TURN = 60;
+const SUDDEN_DEATH_TURN = 100;
 
 class ClashJS {
   constructor(playerDefinitionArray, currentStats, evtCallback) {
@@ -17,7 +17,7 @@ class ClashJS {
     this._gameStats = currentStats || {};
     this._evtCallback = (msg, data) => {
       // this.target.dispatchEvent(new CustomEvent("DATA", { detail: { name: msg, data: data } }));
-      evtCallback(msg, data)
+      evtCallback(msg, data);
     };
     this._alivePlayerCount = 0;
     this._suddenDeathCount = 0;
@@ -133,7 +133,7 @@ class ClashJS {
       this._createAmmo();
     }
 
-    if (Math.random() > 0.99) {
+    if (Math.random() > 0.98) {
       this._createAmmo();
     }
 

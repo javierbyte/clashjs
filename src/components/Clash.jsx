@@ -201,7 +201,7 @@ class Clash extends React.Component {
         spreeMessage = killer.getName() + " is Godlike!";
         break;
       default:
-        spreeMessage = "Somebody stop " + killer.getName();
+        spreeMessage = `Somebody please stop ${killer.getName()}!`;
         setTimeout(fx.streak.ownage.play(), 300);
     }
     kills.push({ date: new Date(), text: spreeMessage });
@@ -233,7 +233,7 @@ class Clash extends React.Component {
       });
       notification.push({ date: new Date(), text: "Refresh the page to start again" });
     }
-    
+
     return (
       <div className="clash" onClick={this.handleClick.bind(this)}>
         <Tiles gridSize={gameEnvironment.gridSize} />
