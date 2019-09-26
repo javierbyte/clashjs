@@ -21,6 +21,10 @@
         padding: 0;
       }
 
+      html {
+        font-size: 14px;
+      }
+
       body {
         margin: 0;
         padding: 0;
@@ -62,6 +66,7 @@
       }
 
       .clash {
+        top: calc(50vh - 50vmin);
         width: 100vmin;
         height: 100vmin;
         margin: 0 auto;
@@ -124,7 +129,7 @@
         top: 0;
         right: 0;
         padding: 1em;
-        font-size: 0.85em;
+        font-size: 0.8rem;
       }
 
       .stats-title {
@@ -136,14 +141,30 @@
       }
       .stats td {
         padding: 0 0.5em;
+        text-align: center;
+      }
+
+      .player-dead-emoji {
+        opacity: 0;
+        padding: 0 !important;
+        transform: scale(1.7);
+        transition: opacity 0.3s, transform 0.3s 0.05s;
       }
 
       .player-dead td {
         color: #55555;
       }
 
+      td.player-name {
+        text-align: left;
+      }
+
       .player-dead .player-name {
         text-decoration: line-through;
+      }
+      .player-dead .player-dead-emoji {
+        opacity: 1;
+        transform: scale(1);
       }
 
       .notifications {

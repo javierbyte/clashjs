@@ -23,7 +23,7 @@ class Stats extends React.Component {
             {_.map(stats, (playerStats, index) => {
               return (
                 <tr key={index} className={playerStats.isAlive ? "" : "player-dead"}>
-                  <td>{playerStats.isAlive ? "" : "💀"}</td>
+                  <td className="player-dead-emoji">💀</td>
                   <td className="player-name">{playerStats.name}</td>
                   <td className="stats-results">{playerStats.wins}</td>
                 </tr>
