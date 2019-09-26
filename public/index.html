@@ -106,10 +106,13 @@
         transition: transform 0.2s;
       }
       .clash-player-name {
-        top: -2.5rem;
+        top: -2rem;
+        width: 5rem;
+        left: 50%;
+        margin-left: -2.5rem;
         text-transform: uppercase;
         text-align: center;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
       }
 
       .clash-shoot {
@@ -124,27 +127,6 @@
         left: 0;
         width: 100vmin;
         height: 100vmin;
-      }
-
-      .stats {
-        background: #000000;
-        position: fixed;
-        top: 0;
-        right: 0;
-        padding: 1em;
-        font-size: 0.8rem;
-      }
-
-      .stats-title {
-        text-align: center;
-      }
-
-      .stats-results {
-        text-align: right;
-      }
-      .stats td {
-        padding: 0 0.5em;
-        text-align: center;
       }
 
       .player-dead-emoji {
@@ -170,15 +152,38 @@
         transform: scale(1);
       }
 
-      .notifications {
-        font-size: 0.85em;
-        position: fixed;
+      .notifications, .stats {
+        font-size: 0.75rem;
+        background: rgba(0, 0, 0, 0.618);
         padding: 0.5rem 0.618rem;
-        background: #000;
         color: #ffffff;
-        top: 10%;
+      }
+
+      .stats {
+        position: fixed;
+        top: 0;
+        right: 0;
+      }
+
+      .stats-title {
+        text-align: center;
+      }
+
+      .stats-results {
+        text-align: right;
+      }
+      .stats td {
+        padding: 0 0.5em;
+        text-align: center;
+      }
+
+
+      .notifications {
+        position: fixed;
+        bottom: 0%;
+        right: 0%;
         z-index: 9000;
-        opacity: 0.618;
+        width: 11rem;
       }
 
       .animation-shot {

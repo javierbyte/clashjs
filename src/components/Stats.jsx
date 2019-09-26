@@ -8,14 +8,13 @@ class Stats extends React.Component {
     stats = _.sortBy(stats, playerStats => playerStats.wins * -1);
     return (
       <div className="stats">
-        <div className="stats-title">
-          Round {rounds} of {total}
-        </div>
         <table>
           <thead>
             <tr>
               <th />
-              <th />
+              <th>
+                Round {rounds}/{total}
+              </th>
               <th>Wins</th>
             </tr>
           </thead>

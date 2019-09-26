@@ -183,7 +183,7 @@ class Clash extends React.Component {
       text: multiKill
     });
 
-    switch (streakCount) {
+    switch (streakCount + Math.floor(Math.random() * 3)) {
       case 3:
         setTimeout(fx.streak.killingSpree.play(), 300);
         spreeMessage = killer.getName() + " is on a killing spree!";
@@ -204,7 +204,7 @@ class Clash extends React.Component {
         spreeMessage = `Somebody please stop ${killer.getName()}!`;
         setTimeout(fx.streak.ownage.play(), 300);
     }
-    kills.push({ date: new Date(), text: spreeMessage });
+    if (Math.random() > 0.5) kills.push({ date: new Date(), text: spreeMessage });
     this.setState({
       kills: kills
     });
@@ -240,7 +240,7 @@ class Clash extends React.Component {
         <Shoots shoots={shoots.slice()} gridSize={gameEnvironment.gridSize} />
         <Ammos gridSize={gameEnvironment.gridSize} ammoPosition={gameEnvironment.ammoPosition} />
         <Players gridSize={gameEnvironment.gridSize} playerInstances={playerInstances} playerStates={playerStates} />
-        <Notifications kills={notification} />
+        {!!notification.length && <Notifications kills={notification} />}
         <Stats rounds={rounds} total={totalRounds} playerStates={playerStates} stats={gameStats} />
         {false && <pre className="debugger">{JSON.stringify(playerStates, 0, 2)}</pre>}
       </div>
