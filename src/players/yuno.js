@@ -27,7 +27,7 @@ var turnToKill = (originalPosition, positionArray) => {
 var HITLER = {
   info: {
     name: 'Yuno',
-    style: 6
+    style: 9
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;

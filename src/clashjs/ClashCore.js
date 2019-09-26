@@ -12,7 +12,7 @@ class ClashJS {
     // const clashjsTarget = class ClashJSTarget extends EventTarget {};
     // this.target = new clashjsTarget();
 
-    this._totalRounds = playerDefinitionArray.length * 2 + 8;
+    this._totalRounds = playerDefinitionArray.length * 2 + 6;
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = (msg, data) => {
