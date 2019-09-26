@@ -1,16 +1,16 @@
-var React = require("react");
-var _ = require("lodash");
-var fx = require("./../lib/sound-effects");
-var Tiles = require("./Tiles.jsx");
-var Ammos = require("./Ammos.jsx");
-var Players = require("./Players.jsx");
-var Stats = require("./Stats.jsx");
-var Shoots = require("./Shoots.jsx");
-var Notifications = require("./Notifications.jsx");
+import React from "react";
+import _ from "lodash";
+import fx from "./../lib/sound-effects";
+import Tiles from "./Tiles.jsx";
+import Ammos from "./Ammos.jsx";
+import Players from "./Players.jsx";
+import Stats from "./Stats.jsx";
+import Shoots from "./Shoots.jsx";
+import Notifications from "./Notifications.jsx";
 
-var ClashJS = require("../clashjs/ClashCore.js");
+import ClashJS from "../clashjs/ClashCore.js";
 
-var playerObjects = require("../Players.js");
+import playerObjects from "../Players.js";
 var playerArray = _.shuffle(_.map(playerObjects, el => el));
 
 var killsStack = [];
@@ -247,4 +247,4 @@ class Clash extends React.Component {
   }
 }
 
-module.exports = Clash;
+export default Clash;

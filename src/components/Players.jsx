@@ -1,5 +1,5 @@
-var React = require("react");
-var _ = require("lodash");
+import React from "react";
+import _ from "lodash";
 
 var DIRECTIONS = ["north", "east", "south", "west"];
 
@@ -70,4 +70,4 @@ class Players extends React.Component {
   }
 }
 
-module.exports = Players;
+export default Players;

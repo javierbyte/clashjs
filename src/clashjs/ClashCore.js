@@ -1,7 +1,7 @@
-const _ = require("lodash");
+import _ from "lodash";
 
-var PlayerClass = require("./PlayerClass.js");
-var executeMovementHelper = require("./executeMovementHelper.js");
+import PlayerClass from "./PlayerClass.js";
+import executeMovementHelper from "./executeMovementHelper.js";
 
 var DIRECTIONS = ["north", "east", "south", "west"];
 
@@ -192,4 +192,4 @@ class ClashJS {
   }
 }
 
-module.exports = ClashJS;
+export default ClashJS;

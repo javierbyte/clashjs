@@ -1,8 +1,7 @@
-var React = require("react");
+import React from "react";
+import _ from "lodash";
 
 var DIRECTIONS = ["north", "east", "south", "west"];
-
-var _ = require("lodash");
 
 class Shoots extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -41,4 +40,4 @@ class Shoots extends React.Component {
   }
 }
 
-module.exports = Shoots;
+export default Shoots;

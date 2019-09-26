@@ -1,5 +1,5 @@
-var React = require("react");
-var _ = require("lodash");
+import React from "react";
+import _ from "lodash";
 
 class Ammos extends React.Component {
   render() {
@@ -26,4 +26,4 @@ class Ammos extends React.Component {
   }
 }
 
-module.exports = Ammos;
+export default Ammos;

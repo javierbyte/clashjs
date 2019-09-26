@@ -1,5 +1,5 @@
-var React = require("react");
-var _ = require("lodash");
+import React from "react";
+import _ from "lodash";
 
 class Stats extends React.Component {
   render() {
@@ -36,4 +36,4 @@ class Stats extends React.Component {
   }
 }
 
-module.exports = Stats;
+export default Stats;

@@ -1,9 +1,9 @@
-var fx = require("./../lib/sound-effects");
-var generateId = require("./../lib/string-tools").generateBase32String;
+import fx from "./../lib/sound-effects";
+import generateId from "./../lib/string-tools";
 
 class PlayerClass {
   constructor(options) {
-    this._id = generateId(8);
+    this._id = generateId.generateBase32String(8);
     this._playerInfo = options.info;
     this._playerAI = options.ai;
   }
@@ -34,4 +34,4 @@ class PlayerClass {
   }
 }
 
-module.exports = PlayerClass;
+export default PlayerClass;

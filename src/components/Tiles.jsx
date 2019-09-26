@@ -1,4 +1,4 @@
-var React = require("react");
+import React from "react";
 
 class Tiles extends React.Component {
   shouldComponentUpdate() {
@@ -22,4 +22,4 @@ class Tiles extends React.Component {
   }
 }
 
-module.exports = Tiles;
+export default Tiles;

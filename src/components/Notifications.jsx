@@ -1,6 +1,5 @@
-var React = require("react");
-
-const _ = require("lodash");
+import React from "react";
+import _ from "lodash";
 
 class Notifications extends React.Component {
   render() {
@@ -19,4 +18,4 @@ class Notifications extends React.Component {
   }
 }
 
-module.exports = Notifications;
+export default Notifications;
