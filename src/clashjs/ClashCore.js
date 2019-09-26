@@ -8,15 +8,16 @@ var DIRECTIONS = ["north", "east", "south", "west"];
 const SUDDEN_DEATH_TURN = 60;
 
 class ClashJS {
-  constructor(playerDefinitionArray, currentStats) {
-    const clashjsTarget = class ClashJSTarget extends EventTarget {};
-    this.target = new clashjsTarget();
+  constructor(playerDefinitionArray, currentStats, evtCallback) {
+    // const clashjsTarget = class ClashJSTarget extends EventTarget {};
+    // this.target = new clashjsTarget();
 
     this._totalRounds = playerDefinitionArray.length * 2 + 8;
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = (msg, data) => {
-      this.target.dispatchEvent(new CustomEvent("DATA", { detail: { name: msg, data: data } }));
+      // this.target.dispatchEvent(new CustomEvent("DATA", { detail: { name: msg, data: data } }));
+      evtCallback(msg, data)
     };
     this._alivePlayerCount = 0;
     this._suddenDeathCount = 0;

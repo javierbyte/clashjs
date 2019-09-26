@@ -15,7 +15,6 @@ var playerArray = _.shuffle(_.map(playerObjects, el => el));
 
 var killsStack = [];
 
-window.ClashInstance = new ClashJS(playerArray, {});
 const DEFAULT_SPEED = 100;
 const MAX_SPEED = 50;
 
@@ -23,9 +22,11 @@ class Clash extends React.Component {
   constructor(props) {
     super(props);
 
-    window.ClashInstance.target.addEventListener("DATA", evt => {
-      this.handleEvent(evt.detail.name, evt.detail.data);
-    });
+    window.ClashInstance = new ClashJS(playerArray, {}, this.handleEvent.bind(this));
+
+    // window.ClashInstance.target.addEventListener("DATA", evt => {
+    //   this.handleEvent(evt.detail.name, evt.detail.data);
+    // });
 
     this.state = {
       clashjs: window.ClashInstance.getState(),
