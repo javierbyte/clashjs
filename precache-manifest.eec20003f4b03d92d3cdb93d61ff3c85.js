@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "54d71328597cdc0ee0f9c58ae1a22d82",
+    "revision": "23395ba34f2c3bf55e48cd5ff4dc2d20",
     "url": "/clashjs/index.html"
   },
   {
