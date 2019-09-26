@@ -231,10 +231,8 @@ class Clash extends React.Component {
         text: <b style={{ color: "#0e0", fontWeight: 700 }}>Congrats {winner.name}!</b>
       });
       notification.push({ date: new Date(), text: "Refresh the page to start again" });
-
-      console.log(JSON.stringify(gameStats, 0, 2));
     }
-
+    
     return (
       <div className="clash" onClick={this.handleClick.bind(this)}>
         <Tiles gridSize={gameEnvironment.gridSize} />

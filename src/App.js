@@ -1,5 +1,5 @@
-import React from "react";
-import "./App.css";
+const React = require("react");
+require("./App.css");
 
 var Clash = require("./components/Clash.jsx");
 
@@ -11,4 +11,4 @@ function App() {
   );
 }
 
-export default App;
+module.exports = App;
