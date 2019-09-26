@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/clashjs/static/css/main.5facb584.chunk.css",
-    "main.js": "/clashjs/static/js/main.72502530.chunk.js",
-    "main.js.map": "/clashjs/static/js/main.72502530.chunk.js.map",
+    "main.js": "/clashjs/static/js/main.79efbec5.chunk.js",
+    "main.js.map": "/clashjs/static/js/main.79efbec5.chunk.js.map",
     "runtime-main.js": "/clashjs/static/js/runtime-main.8e4963c4.js",
     "runtime-main.js.map": "/clashjs/static/js/runtime-main.8e4963c4.js.map",
     "static/js/2.2495bc4f.chunk.js": "/clashjs/static/js/2.2495bc4f.chunk.js",
     "static/js/2.2495bc4f.chunk.js.map": "/clashjs/static/js/2.2495bc4f.chunk.js.map",
     "index.html": "/clashjs/index.html",
-    "precache-manifest.eec20003f4b03d92d3cdb93d61ff3c85.js": "/clashjs/precache-manifest.eec20003f4b03d92d3cdb93d61ff3c85.js",
+    "precache-manifest.24f0a99ab4d20a58efaea662c55dc189.js": "/clashjs/precache-manifest.24f0a99ab4d20a58efaea662c55dc189.js",
     "service-worker.js": "/clashjs/service-worker.js",
     "static/css/main.5facb584.chunk.css.map": "/clashjs/static/css/main.5facb584.chunk.css.map"
   }
