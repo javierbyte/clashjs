@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/clashjs/static/css/main.5facb584.chunk.css",
-    "main.js": "/clashjs/static/js/main.6527d34b.chunk.js",
-    "main.js.map": "/clashjs/static/js/main.6527d34b.chunk.js.map",
+    "main.js": "/clashjs/static/js/main.ceb67d9f.chunk.js",
+    "main.js.map": "/clashjs/static/js/main.ceb67d9f.chunk.js.map",
     "runtime-main.js": "/clashjs/static/js/runtime-main.8e4963c4.js",
     "runtime-main.js.map": "/clashjs/static/js/runtime-main.8e4963c4.js.map",
-    "static/js/2.03d64904.chunk.js": "/clashjs/static/js/2.03d64904.chunk.js",
-    "static/js/2.03d64904.chunk.js.map": "/clashjs/static/js/2.03d64904.chunk.js.map",
+    "static/js/2.5408d9c2.chunk.js": "/clashjs/static/js/2.5408d9c2.chunk.js",
+    "static/js/2.5408d9c2.chunk.js.map": "/clashjs/static/js/2.5408d9c2.chunk.js.map",
     "index.html": "/clashjs/index.html",
-    "precache-manifest.e8658e40f4863f164a21d0e197329398.js": "/clashjs/precache-manifest.e8658e40f4863f164a21d0e197329398.js",
+    "precache-manifest.a3eb21d9ac9364f1db4e4093ff3fe9d7.js": "/clashjs/precache-manifest.a3eb21d9ac9364f1db4e4093ff3fe9d7.js",
     "service-worker.js": "/clashjs/service-worker.js",
     "static/css/main.5facb584.chunk.css.map": "/clashjs/static/css/main.5facb584.chunk.css.map"
   }
