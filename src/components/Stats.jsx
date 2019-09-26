@@ -1,31 +1,29 @@
-var React = require('react');
-var _ = require('lodash');
+var React = require("react");
+var _ = require("lodash");
 
-var Stats = React.createClass({
-  propTypes: {
-    stats: React.PropTypes.object.isRequired,
-    rounds: React.PropTypes.number.isRequired,
-    total: React.PropTypes.number.isRequired
-  },
-
+class Stats extends React.Component {
   render() {
     let { stats, rounds, total } = this.props;
     stats = _.map(stats, playerStats => playerStats);
     stats = _.sortBy(stats, playerStats => playerStats.wins * -1);
     return (
       <div className="stats">
-        <div className="stats-title">Round {rounds} of {total}</div>
+        <div className="stats-title">
+          Round {rounds} of {total}
+        </div>
         <table>
           <thead>
-            <td />
-            <td />
-            <td>Wins</td>
+            <tr>
+              <th />
+              <th />
+              <th>Wins</th>
+            </tr>
           </thead>
           <tbody>
             {_.map(stats, (playerStats, index) => {
               return (
-                <tr key={index} className={playerStats.isAlive ? '' : 'player-dead'}>
-                  <td>{playerStats.isAlive ? '' : '💀'}</td>
+                <tr key={index} className={playerStats.isAlive ? "" : "player-dead"}>
+                  <td>{playerStats.isAlive ? "" : "💀"}</td>
                   <td className="player-name">{playerStats.name}</td>
                   <td className="stats-results">{playerStats.wins}</td>
                 </tr>
@@ -36,6 +34,6 @@ var Stats = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Stats;

@@ -1,12 +1,7 @@
-var React = require('react');
-var _ = require('lodash');
+var React = require("react");
+var _ = require("lodash");
 
-var Ammos = React.createClass({
-  propTypes: {
-    gridSize: React.PropTypes.number.isRequired,
-    ammoPosition: React.PropTypes.array
-  },
-
+class Ammos extends React.Component {
   render() {
     var { gridSize, ammoPosition } = this.props;
 
@@ -18,21 +13,17 @@ var Ammos = React.createClass({
           key={ammoIndex}
           className="clash-ammo"
           style={{
-            top: tileSize * ammoPos[0] + 'vmin',
-            left: tileSize * ammoPos[1] + 'vmin',
-            width: tileSize + 'vmin',
-            height: tileSize + 'vmin'
+            top: tileSize * ammoPos[0] + "vmin",
+            left: tileSize * ammoPos[1] + "vmin",
+            width: tileSize + "vmin",
+            height: tileSize + "vmin"
           }}
         />
       );
     });
 
-    return (
-      <div className="clash-layer animation-glow">
-        {ammoRender}
-      </div>
-    );
+    return <div className="clash-layer animation-glow">{ammoRender}</div>;
   }
-});
+}
 
 module.exports = Ammos;

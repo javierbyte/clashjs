@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 var utils = require('./../lib/utils');
 var logic = require('./../lib/codingpains-logic');
 
@@ -31,7 +33,7 @@ var codingpains = {
     }
 
     safestMove = logic.getSafestMove(player, enemies, map);
-    if (safestMove && isMovementSafe(safestMove, player, enemies, map)) return safestMove;
+    if (safestMove && logic.isMovementSafe(safestMove, player, enemies, map)) return safestMove;
 
     return utils.safeRandomMove();
   },

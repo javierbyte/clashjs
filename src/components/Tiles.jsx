@@ -1,13 +1,9 @@
-var React = require('react/addons');
+var React = require("react");
 
-var Tiles = React.createClass({
-  propTypes: {
-    gridSize: React.PropTypes.number.isRequired
-  },
-
+class Tiles extends React.Component {
   shouldComponentUpdate() {
     return false;
-  },
+  }
 
   render() {
     var { gridSize } = this.props;
@@ -18,16 +14,12 @@ var Tiles = React.createClass({
     var tileRender = [];
     for (i = 0; i < gridSize * gridSize; i++) {
       tileRender.push(
-        <div style={{ height: tileSize + 'vmin', width: tileSize + 'vmin' }} className="clash-tile" key={i} />
+        <div style={{ height: tileSize + "vmin", width: tileSize + "vmin" }} className="clash-tile" key={i} />
       );
     }
 
-    return (
-      <div>
-        {tileRender}
-      </div>
-    );
+    return <div>{tileRender}</div>;
   }
-});
+}
 
 module.exports = Tiles;

@@ -1,9 +1,8 @@
-var React = require('react/addons');
-var Notifications = React.createClass({
-  propTypes: {
-    kills: React.PropTypes.array
-  },
+var React = require("react");
 
+const _ = require("lodash");
+
+class Notifications extends React.Component {
   render() {
     var { kills } = this.props;
     var date = new Date();
@@ -18,6 +17,6 @@ var Notifications = React.createClass({
       </div>
     );
   }
-});
+}
 
 module.exports = Notifications;

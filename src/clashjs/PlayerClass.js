@@ -1,5 +1,5 @@
-var fx = require('./../lib/sound-effects');
-var generateId = require('./../lib/string-tools').generateBase32String;
+var fx = require("./../lib/sound-effects");
+var generateId = require("./../lib/string-tools").generateBase32String;
 
 class PlayerClass {
   constructor(options) {
@@ -20,18 +20,17 @@ class PlayerClass {
     return this._playerInfo.name;
   }
 
-  playLaser() {
-    var index = this.getInfo().style % Object.keys(fx.lasers).length;
-    fx.lasers['laser' + index].play();
-  }
-
   playExplosion() {
     var i = Math.round(Math.random() * 10) % 3;
-    fx.explosions['explode' + i].play();
+    fx.explosions["explode" + i].play();
   }
 
   execute(playerState, enemiesStates, gameEnvironment) {
-    return this._playerAI(playerState, enemiesStates, gameEnvironment);
+    try {
+      return this._playerAI(playerState, enemiesStates, gameEnvironment);
+    } catch (e) {
+      console.error("!", e);
+    }
   }
 }
 

@@ -1,22 +1,15 @@
-var React = require('react');
-var _ = require('lodash');
+var React = require("react");
+var _ = require("lodash");
 
-var DIRECTIONS = ['north', 'east', 'south', 'west'];
+var DIRECTIONS = ["north", "east", "south", "west"];
 
-var Players = React.createClass({
-  propTypes: {
-    gridSize: React.PropTypes.number.isRequired,
-    playerStates: React.PropTypes.array,
-    playerInstances: React.PropTypes.array
-  },
-
-  getInitialState() {
-    var { playerStates } = this.props;
-
-    return {
-      playerDirections: playerStates.map(el => DIRECTIONS.indexOf(el.direction))
+class Players extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playerDirections: props.playerStates.map(el => DIRECTIONS.indexOf(el.direction))
     };
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     var playerDirections = this.state.playerDirections;
@@ -24,14 +17,14 @@ var Players = React.createClass({
 
     this.setState({
       playerDirections: newPlayerDirections.map((el, index) => {
-        var diff = (el + 4) % 4 - (playerDirections[index] + 4) % 4;
+        var diff = ((el + 4) % 4) - ((playerDirections[index] + 4) % 4);
         if (diff === 3) diff = -1;
         if (diff === -3) diff = 1;
 
         return playerDirections[index] + diff;
       })
     });
-  },
+  }
 
   render() {
     var { playerDirections } = this.state;
@@ -49,38 +42,32 @@ var Players = React.createClass({
           key={playerIndex}
           className="clash-player-container"
           style={{
-            width: tileSize + 'vmin',
-            height: tileSize + 'vmin',
-            transform: 'translateY(' +
+            width: tileSize + "vmin",
+            height: tileSize + "vmin",
+            transform:
+              "translateY(" +
               tileSize * playerData.position[0] +
-              'vmin) ' +
-              'translateX(' +
+              "vmin) " +
+              "translateX(" +
               tileSize * playerData.position[1] +
-              'vmin)'
-          }}
-        >
+              "vmin)"
+          }}>
           <div
             className="clash-player"
             style={{
-              width: tileSize + 'vmin',
-              height: tileSize + 'vmin',
-              backgroundImage: 'url(static/rockets/rocket' + (playerData.style || 0) + '.png)',
-              transform: 'scale(1.25) ' + 'rotate(' + 90 * playerDirections[playerIndex] + 'deg) '
+              width: tileSize + "vmin",
+              height: tileSize + "vmin",
+              backgroundImage: "url(static/rockets/rocket" + (playerData.style || 0) + ".png)",
+              transform: "scale(1.25) " + "rotate(" + 90 * playerDirections[playerIndex] + "deg) "
             }}
           />
-          <div className="clash-player-name">
-            {playerInfo.name}
-          </div>
+          <div className="clash-player-name">{playerInfo.name}</div>
         </div>
       );
     });
 
-    return (
-      <div className="clash-layer">
-        {playerRender}
-      </div>
-    );
+    return <div className="clash-layer">{playerRender}</div>;
   }
-});
+}
 
 module.exports = Players;

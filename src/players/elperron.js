@@ -80,9 +80,9 @@
 
                 // Si tengo los suficientes disparos para eliminar a todos los enemigos
                 // me dirijo hacia ellos
-                if (playerState.ammo >= getCountEnemiesAlive()) {
-                    toPosition = enemiesStates[0].position;
-                }
+                // if (playerState.ammo >= getCountEnemiesAlive()) {
+                //     toPosition = enemiesStates[0].position;
+                // }
 
                 directionToTarget = utils.getDirection(playerState.position, toPosition);
 

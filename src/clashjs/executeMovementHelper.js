@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var utils = require('../lib/utils.js');
-var DIRECTIONS = ['north', 'east', 'south', 'west'];
+var _ = require("lodash");
+var utils = require("../lib/utils.js");
+var DIRECTIONS = ["north", "east", "south", "west"];
 
 var safeMovement = (value, size) => {
   if (value < 0) return 0;
@@ -17,7 +17,7 @@ var clashCoreUtils = data => {
     return playerStates;
   }
 
-  if (playerAction === 'move') {
+  if (playerAction === "move") {
     switch (currentPlayerState.direction) {
       case DIRECTIONS[0]:
         currentPlayerState.position[0]--;
@@ -48,12 +48,12 @@ var clashCoreUtils = data => {
     });
   }
 
-  if (playerAction === 'shoot' && currentPlayerState.ammo > 0) {
+  if (playerAction === "shoot" && currentPlayerState.ammo > 0) {
     currentPlayerState.ammo -= 1;
 
     let kills = [];
     let survivors = [];
-    evtCallback('SHOOT', {
+    evtCallback("SHOOT", {
       shooter: playerIndex,
       origin: currentPlayerState.position,
       direction: currentPlayerState.direction
@@ -71,38 +71,27 @@ var clashCoreUtils = data => {
 
     if (kills.length) {
       survivors = _.filter(playerStates, player => player.isAlive);
-      setTimeout(
-        coreCallback('KILL', {
-          killer: playerInstances[playerIndex],
-          killed: _.map(kills, index => playerInstances[index])
-        }),
-        0
-      );
-      setTimeout(
-        evtCallback('KILL', {
-          killer: playerIndex,
-          killed: kills
-        }),
-        0
-      );
+      coreCallback("KILL", {
+        killer: playerInstances[playerIndex],
+        killed: _.map(kills, index => playerInstances[index])
+      });
+      evtCallback("KILL", {
+        killer: playerIndex,
+        killed: kills
+      });
 
       if (!survivors.length) {
-        setTimeout(coreCallback('DRAW'), 0);
-        setTimeout(evtCallback('DRAW'), 0);
+        coreCallback("DRAW");
+        evtCallback("DRAW");
       }
+
       if (survivors.length === 1) {
-        setTimeout(
-          coreCallback('WIN', {
-            winner: playerInstances[playerIndex]
-          }),
-          0
-        );
-        setTimeout(
-          evtCallback('WIN', {
-            winner: playerInstances[playerIndex]
-          }),
-          0
-        );
+        coreCallback("WIN", {
+          winner: playerInstances[playerIndex]
+        });
+        evtCallback("WIN", {
+          winner: playerInstances[playerIndex]
+        });
       }
     }
   }

@@ -1,17 +1,25 @@
-var music = require('./../lib/sound-effects').music;
-var PlayerClass = require('./PlayerClass.js');
-var executeMovementHelper = require('./executeMovementHelper.js');
+const _ = require("lodash");
 
-var DIRECTIONS = ['north', 'east', 'south', 'west'];
+var PlayerClass = require("./PlayerClass.js");
+var executeMovementHelper = require("./executeMovementHelper.js");
+
+var DIRECTIONS = ["north", "east", "south", "west"];
+
+const SUDDEN_DEATH_TURN = 60;
 
 class ClashJS {
-  constructor(playerDefinitionArray, currentStats, evtCallback) {
-    this._totalRounds = playerDefinitionArray.length * 2 + 5;
+  constructor(playerDefinitionArray, currentStats) {
+    const clashjsTarget = class ClashJSTarget extends EventTarget {};
+    this.target = new clashjsTarget();
+
+    this._totalRounds = playerDefinitionArray.length * 2 + 8;
     this._rounds = 0;
     this._gameStats = currentStats || {};
-    this._evtCallback = evtCallback;
+    this._evtCallback = (msg, data) => {
+      this.target.dispatchEvent(new CustomEvent("DATA", { detail: { name: msg, data: data } }));
+    };
     this._alivePlayerCount = 0;
-    this._sudeenDeathCount = 0;
+    this._suddenDeathCount = 0;
     this._playerInstances = playerDefinitionArray.map(playerDefinition => {
       let player = new PlayerClass(playerDefinition);
       this._gameStats[player.getId()] = {
@@ -28,13 +36,19 @@ class ClashJS {
     this.setupGame();
   }
 
+  _getAlivePlayerCount() {
+    return this._playerStates.reduce((result, el) => {
+      return el.isAlive ? result + 1 : result;
+    }, 0);
+  }
+
   setupGame() {
     this._gameEnvironment = {
       gridSize: 13,
       ammoPosition: []
     };
     this._rounds++;
-    this._sudeenDeathCount = 0;
+    this._suddenDeathCount = 0;
     this._playerInstances = _.shuffle(this._playerInstances);
     this._alivePlayerCount = this._playerInstances.length;
     this._playerStates = this._playerInstances.map(playerInstance => {
@@ -82,13 +96,18 @@ class ClashJS {
   }
 
   nextPly() {
-    if (this._sudeenDeathCount > 250 * this._alivePlayerCount) {
-      this._handleCoreAction('DRAW');
-      return this._evtCallback('DRAW');
+    if (this._suddenDeathCount > SUDDEN_DEATH_TURN * this._getAlivePlayerCount()) {
+      this._evtCallback("DRAW");
+      this._handleCoreAction("DRAW");
     }
     let clonedStates = _.cloneDeep(this._playerStates, true);
-    if (this._alivePlayerCount <= 3) {
-      this._sudeenDeathCount++;
+
+    if (this._getAlivePlayerCount() < 2) {
+      this._suddenDeathCount += 10;
+    }
+
+    if (this._getAlivePlayerCount() < 3) {
+      this._suddenDeathCount++;
     }
 
     var otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {
@@ -109,14 +128,19 @@ class ClashJS {
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 
-    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.95)
+    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.92) {
       this._createAmmo();
+    }
+
+    if (Math.random() > 0.99) {
+      this._createAmmo();
+    }
 
     return this.getState();
   }
 
   _handleCoreAction(action, data) {
-    if (action === 'KILL') {
+    if (action === "KILL") {
       let { killer, killed } = data;
       this._gameStats[killer.getId()].kills++;
       _.forEach(this._playerInstances, player => {
@@ -131,23 +155,26 @@ class ClashJS {
           stats.kdr = stats.kills;
         }
       });
+      this._suddenDeathCount = 0;
     }
-    if (action === 'WIN') {
+    if (action === "WIN") {
       this._gameStats[data.winner.getId()].wins++;
       _.forEach(this._gameStats, (playerStats, key) => {
         let { wins, winrate } = playerStats;
-        playerStats.winrate = Math.round(wins * 100 / this._rounds);
+        playerStats.winrate = Math.round((wins * 100) / this._rounds);
       });
 
-      if (this._rounds >= this._totalRounds) return this._evtCallback('END');
+      if (this._rounds >= this._totalRounds) {
+        return this._evtCallback("END");
+      }
     }
-    if (action === 'DRAW') {
+    if (action === "DRAW") {
       _.forEach(this._gameStats, (playerStats, key) => {
         let { wins, winrate } = playerStats;
-        playerStats.winrate = Math.round(wins * 100 / this._rounds);
+        playerStats.winrate = Math.round((wins * 100) / this._rounds);
       });
       if (this._rounds >= this._totalRounds) {
-        return this._evtCallback('END');
+        return this._evtCallback("END");
       }
     }
   }
