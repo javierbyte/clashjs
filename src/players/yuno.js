@@ -1,15 +1,18 @@
-var utils = require('../lib/utils.js');
-var DIRECTIONS = ['north', 'east', 'south', 'west'];
+var utils = require("../lib/utils.js");
+var DIRECTIONS = ["north", "east", "south", "west"];
 
 var getShortestDirection = (start, endArray) => {
-  var reducedArray = endArray.reduce((reduced, currentPosition) => {
-    if (reduced[0] === -1 || utils.getDistance(start, currentPosition) < reduced[0]) {
-      reduced[0] = utils.getDistance(start, currentPosition);
-      reduced[1] = currentPosition;
-    }
+  var reducedArray = endArray.reduce(
+    (reduced, currentPosition) => {
+      if (reduced[0] === -1 || utils.getDistance(start, currentPosition) < reduced[0]) {
+        reduced[0] = utils.getDistance(start, currentPosition);
+        reduced[1] = currentPosition;
+      }
 
-    return reduced;
-  }, [-1, 0]);
+      return reduced;
+    },
+    [-1, 0]
+  );
 
   return utils.fastGetDirection(start, reducedArray[1]);
 };
@@ -24,16 +27,16 @@ var turnToKill = (originalPosition, positionArray) => {
   }, null);
 };
 
-var HITLER = {
+var Yuno = {
   info: {
-    name: 'Yuno',
+    name: "Yuno",
     style: 9
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;
     var directionToPlayer;
 
-    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) return 'shoot';
+    if (utils.canKill(playerState, enemiesStates) && playerState.ammo) return "shoot";
 
     if (playerState.ammo) {
       directionToPlayer = turnToKill(playerState.position, enemiesStates.map(el => el.position));
@@ -43,18 +46,18 @@ var HITLER = {
 
       directionToPlayer = getShortestDirection(playerState.position, enemiesStates.map(el => el.position));
       if (directionToPlayer !== playerState.direction) return directionToPlayer;
-      return 'move';
+      return "move";
     }
 
     if (gameEnvironment.ammoPosition.length) {
       directionToAmmo = getShortestDirection(playerState.position, gameEnvironment.ammoPosition);
 
       if (directionToAmmo !== playerState.direction) return directionToAmmo;
-      return 'move';
+      return "move";
     }
 
     return utils.safeRandomMove();
   }
 };
 
-module.exports = HITLER;
+module.exports = Yuno;
