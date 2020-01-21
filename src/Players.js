@@ -7,5 +7,6 @@ module.exports = {
   elperron: require('./players/elperron.js'),
   yuno: require('./players/yuno.js'),
   xmontoya: require('./players/xmontoya.js'),
-  margeux: require('./players/margeux.js')
+  margeux: require('./players/margeux.js'),
+  hamza: require ('./players/hamzaplay.js')
 };
