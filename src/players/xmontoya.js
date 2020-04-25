@@ -3,7 +3,7 @@ var utils = require('../lib/utils.js');
 var xmontoya = {
   info: {
     name: 'Xmontoya89',
-    style: 1
+    stylex: 1
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;

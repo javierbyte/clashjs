@@ -6,7 +6,7 @@ var logic = require('./../lib/codingpains-logic');
 var codingpains = {
   info: {
     name: 'HGE-7',
-    style: 8
+    stylex: 8
   },
 
   ai: function(player, enemies, map) {

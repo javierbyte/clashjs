@@ -12,10 +12,11 @@ Clone the repo and then
 
 ```sh
 npm install
-npm run dev
+npm build
+npm start
 ```
 
-Then go to `http://localhost:8080`.
+Then go to `http://localhost:8080` or `http://localhost:3000`.
 
 # How to participate.
 Add your player as specificed in [player definition](#player-definition) in

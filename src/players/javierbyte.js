@@ -3,7 +3,7 @@ var utils = require("../lib/utils.js");
 var javierbyte = {
   info: {
     name: "javierbyte",
-    style: 2
+    stylex: 2
   },
   ai: (playerState, enemiesState, gameEnvironment) => {
     var directionToAmmo;

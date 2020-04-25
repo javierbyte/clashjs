@@ -13,12 +13,12 @@
     ElPerron = {
         info: {
             name: 'ElPerron',
-            style: 7
+            stylex: 7
         },
         ai: (playerState, enemiesStates, gameEnvironment) => {
             var directionToTarget,
                 /**
-                 * Devuelve la dirección del amo mas cercano en base a la posición actual de la
+                 * Devuelve la direcciÃ³n del amo mas cercano en base a la posiciÃ³n actual de la
                  * nave
                  * @returns {*}
                  */
@@ -41,7 +41,7 @@
                     return ammoMin;
                 },
                 /**
-                 * Devuelve número de enemigos vivos
+                 * Devuelve nÃºmero de enemigos vivos
                  * @returns {number}
                  */
                 getCountEnemiesAlive = () => {
@@ -93,7 +93,7 @@
                 // Guardo referencia de la posicion a la que me dirigi anteriormente
                 oldBestAmo = toPosition;
 
-                // Si ya se movio, cambio mi dirección
+                // Si ya se movio, cambio mi direcciÃ³n
                 if (directionToTarget !== playerState.direction) {
                     return directionToTarget;
                 }

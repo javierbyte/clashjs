@@ -3,7 +3,7 @@ var utils = require('../lib/utils.js');
 var siegfried = {
   info: {
     name: 'Siegfried',
-    style: 4
+    stylex: 4
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;

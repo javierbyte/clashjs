@@ -2,6 +2,10 @@ import React from "react";
 import _ from "lodash";
 
 class Ammos extends React.Component {
+  propTypes: {
+     gridSize: React.PropTypes.number.isRequired,
+     ammoPosition: React.PropTypes.array
+   };
   render() {
     var { gridSize, ammoPosition } = this.props;
 
@@ -22,7 +26,9 @@ class Ammos extends React.Component {
       );
     });
 
-    return <div className="clash-layer animation-glow">{ammoRender}</div>;
+    return (
+     <div className="clash-layer animation-glow">{ammoRender}</div>
+);
   }
 }
 

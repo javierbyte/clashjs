@@ -3,7 +3,7 @@ var utils = require('../lib/utils.js');
 var MUSOLINI = {
   info: {
     name: 'Horror',
-    style: 10
+    stylex: 10
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;

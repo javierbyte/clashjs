@@ -10,10 +10,11 @@
   "author": "Javier Bórquez <hi@javier.xyz> (http://github.com/javierbyte)",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "create-react-class": "^15.6.3",
     "lodash": "^4.17.15",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.2"
+    "react-scripts": "^3.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -39,6 +40,9 @@
     ]
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "gh-pages": "^2.1.1"
   }
 }

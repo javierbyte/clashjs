@@ -3,7 +3,7 @@ var noAmmo = true;
 var margeux = {
   info: {
     name: 'margeux',
-    style: 5
+    stylex: 5
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;

@@ -55,7 +55,7 @@ class ClashJS {
     this._playerStates = this._playerInstances.map(playerInstance => {
       let gridSize = this._gameEnvironment.gridSize;
       return {
-        style: playerInstance.getInfo().style,
+        style: playerInstance.getInfo().style || _.random(110),
         position: [Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)],
         direction: DIRECTIONS[Math.floor(Math.random() * 4)],
         ammo: 0,
@@ -68,6 +68,10 @@ class ClashJS {
   }
 
   _createAmmo() {
+    if (this._gameEnvironment.ammoPosition.length === Math.pow(this._gameEnvironment.gridSize, 2)) {
+      console.log('Out of places to create ammo, skipping ...')
+      return
+    }
     var newAmmoPosition = [
       Math.floor(Math.random() * this._gameEnvironment.gridSize),
       Math.floor(Math.random() * this._gameEnvironment.gridSize)
@@ -97,6 +101,7 @@ class ClashJS {
   }
 
   nextPly() {
+    console.log('_suddenDeathCount', this._suddenDeathCount)
     if (this._suddenDeathCount > SUDDEN_DEATH_TURN * this._getAlivePlayerCount()) {
       this._evtCallback("DRAW");
       this._handleCoreAction("DRAW");
@@ -107,8 +112,8 @@ class ClashJS {
       this._suddenDeathCount += 10;
     }
 
-    if (this._getAlivePlayerCount() < 3) {
-      this._suddenDeathCount++;
+    if (this._getAlivePlayerCount() < 5) {
+      this._suddenDeathCount+= 1/this._getAlivePlayerCount();
     }
 
     var otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {

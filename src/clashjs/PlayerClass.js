@@ -22,12 +22,14 @@ class PlayerClass {
 
   playExplosion() {
     var i = Math.round(Math.random() * 10) % 3;
-    fx.explosions["explode" + i].play();
+    fx.playSound(fx.explosions["explode" + i]);
   }
 
   execute(playerState, enemiesStates, gameEnvironment) {
     try {
-      return this._playerAI(playerState, enemiesStates, gameEnvironment);
+      const action = this._playerAI(playerState, enemiesStates, gameEnvironment);
+      // console.log('player turn', this.getName(), this.getId(), action)
+      return action
     } catch (e) {
       console.error("!", e);
     }

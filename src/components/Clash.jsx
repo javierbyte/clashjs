@@ -11,7 +11,7 @@ import Notifications from "./Notifications.jsx";
 import ClashJS from "../clashjs/ClashCore.js";
 
 import playerObjects from "../Players.js";
-var playerArray = _.shuffle(_.map(playerObjects, el => el));
+var playerArray = _.shuffle(_.map(playerObjects, (el) => el));
 
 var killsStack = [];
 
@@ -22,30 +22,48 @@ class Clash extends React.Component {
   constructor(props) {
     super(props);
 
-    window.ClashInstance = new ClashJS(playerArray, {}, this.handleEvent.bind(this));
+    window.ClashInstance = new ClashJS(
+      playerArray,
+      {},
+      this.handleEvent.bind(this)
+    );
 
     // window.ClashInstance.target.addEventListener("DATA", evt => {
     //   this.handleEvent(evt.detail.name, evt.detail.data);
     // });
 
     this.state = {
+      startGame: false,
       clashjs: window.ClashInstance.getState(),
       shoots: [],
       speed: DEFAULT_SPEED,
       kills: [],
       currentGameIndex: 1,
-      finished: false
+      finished: false,
     };
   }
 
-  componentDidMount() {
-    this.nextTurn();
-  }
+  // componentDidMount() {
+  //   if (this.state.startGame) {
+  //     this.nextTurn();
+  //   }
+  // }
 
   handleClick() {
     this.setState({
-      speed: Math.floor(this.state.speed * 0.9)
+      speed: Math.floor(this.state.speed * 0.9),
     });
+  }
+
+  handleStartGame() {
+    this.setState({
+      startGame: true,
+    });
+    this.nextTurn();
+  }
+
+  handleToggleSounds() {
+    fx.soundsOff ? fx.enableSounds() : fx.disableSounds()
   }
 
   newGame() {
@@ -56,12 +74,12 @@ class Clash extends React.Component {
     window.ClashInstance.setupGame();
 
     this.setState(
-      state => {
+      (state) => {
         return {
           clashjs: window.ClashInstance.getState(),
           speed: DEFAULT_SPEED,
           kills: [],
-          currentGameIndex: state.currentGameIndex + 1
+          currentGameIndex: state.currentGameIndex + 1,
         };
       },
       () => {
@@ -99,7 +117,10 @@ class Clash extends React.Component {
       this.setState(
         {
           clashjs: window.ClashInstance.getState(),
-          speed: this.state.speed > MAX_SPEED ? parseInt(this.state.speed * 0.99, 10) : MAX_SPEED
+          speed:
+            this.state.speed > MAX_SPEED
+              ? parseInt(this.state.speed * 0.99, 10)
+              : MAX_SPEED,
         },
         this.nextTurn
       );
@@ -112,11 +133,11 @@ class Clash extends React.Component {
       newShoots.push({
         direction: data.direction,
         origin: data.origin.slice(),
-        time: new Date().getTime()
+        time: new Date().getTime(),
       });
 
       this.setState({
-        shoots: newShoots
+        shoots: newShoots,
       });
     }
     if (evt === "WIN") return this.newGame();
@@ -129,17 +150,21 @@ class Clash extends React.Component {
     let players = window.ClashInstance.getState().playerInstances;
     let kills = this.state.kills;
     let killer = players[data.killer];
-    let killed = _.map(data.killed, index => {
+    let killed = _.map(data.killed, (index) => {
       killsStack.push(data.killer);
       killer.kills++;
       players[index].deaths++;
       return players[index];
     });
-    let notification = [killer.getName(), "killed", _.map(killed, player => player.getName()).join(",")].join(" ");
+    let notification = [
+      killer.getName(),
+      "killed",
+      _.map(killed, (player) => player.getName()).join(","),
+    ].join(" ");
 
     kills.push({ date: new Date(), text: notification });
     this.setState({
-      kills: kills
+      kills: kills,
     });
 
     setTimeout(() => this.handleStreak(data.killer, killer, killed), 100);
@@ -151,72 +176,76 @@ class Clash extends React.Component {
       shoots: [],
       speed: 0,
       kills: [],
-      finished: true
+      finished: true,
     });
   }
 
   handleStreak(index, killer, killed) {
-    let streakCount = _.filter(killsStack, player => player === index).length;
+    let streakCount = _.filter(killsStack, (player) => player === index).length;
     let multiKill = "";
     let spreeMessage = "";
     let kills = this.state.kills;
     if (killsStack.length === 1) {
-      setTimeout(fx.streak.firstBlood.play(), 50);
+      fx.playSound(fx.streak.firstBlood);
     }
 
     switch (killed.length) {
       case 2:
-        setTimeout(fx.streak.doubleKill.play(), 100);
+        fx.playSound(fx.streak.doubleKill);
         multiKill = killer.getName() + " got a double kill!";
         break;
       case 3:
-        setTimeout(fx.streak.tripleKill.play(), 100);
+        fx.playSound(fx.streak.tripleKill);
         multiKill = killer.getName() + " got a Triple Kill!";
         break;
       case 4:
-        setTimeout(fx.streak.monsterKill.play(), 100);
+        fx.playSound(fx.streak.monsterKill);
         multiKill = killer.getName() + " is a MONSTER KILLER!";
         break;
     }
     kills.push({
       date: new Date(),
-      text: multiKill
+      text: multiKill,
     });
 
     switch (streakCount + Math.floor(Math.random() * 3)) {
       case 3:
-        setTimeout(fx.streak.killingSpree.play(), 300);
+        fx.playSound(fx.streak.killingSpree);
         spreeMessage = killer.getName() + " is on a killing spree!";
         break;
       case 4:
-        setTimeout(fx.streak.dominating.play(), 300);
+        fx.playSound(fx.streak.dominating);
         spreeMessage = killer.getName() + " is dominating!";
         break;
       case 5:
-        setTimeout(fx.streak.rampage.play(), 300);
+        fx.playSound(fx.streak.rampage);
         spreeMessage = killer.getName() + " is on a rampage of kills!";
         break;
-      case 6:
-        setTimeout(fx.streak.godLike.play(), 300);
-        spreeMessage = killer.getName() + " is Godlike!";
-        break;
       default:
-        spreeMessage = `Somebody please stop ${killer.getName()}!`;
-        setTimeout(fx.streak.ownage.play(), 300);
+        fx.playSound(fx.streak.ownage);
+        spreeMessage = `Can anyone stop ${killer.getName()}?!?`;
     }
-    if (Math.random() > 0.5) kills.push({ date: new Date(), text: spreeMessage });
+    if (Math.random() > 0.5)
+      kills.push({ date: new Date(), text: spreeMessage });
     this.setState({
-      kills: kills
+      kills: kills,
     });
   }
 
   render() {
-    var { clashjs, shoots, kills, finished } = this.state;
+    var { clashjs, shoots, kills, finished, startGame } = this.state;
 
-    var { gameEnvironment, gameStats, playerStates, playerInstances, rounds, totalRounds } = clashjs;
+    var {
+      gameEnvironment,
+      gameStats,
+      playerStates,
+      playerInstances,
+      rounds,
+      totalRounds,
+    } = clashjs;
 
     gameEnvironment = gameEnvironment || {
-      gridSize: 13
+      gridSize: 13,
     };
 
     _.forEach(playerInstances, (player, index) => {
@@ -226,23 +255,56 @@ class Clash extends React.Component {
     const notification = [...kills];
 
     if (finished) {
-      const winner = _.sortBy(gameStats, playerStats => playerStats.wins * -1)[0];
+      const winner = _.sortBy(
+        gameStats,
+        (playerStats) => playerStats.wins * -1
+      )[0];
       notification.push({
         date: new Date(),
-        text: <b style={{ color: "#0e0", fontWeight: 700 }}>Congrats {winner.name}!</b>
+        text: (
+          <b style={{ color: "#0e0", fontWeight: 700 }}>
+            Congrats {winner.name}!
+          </b>
+        ),
       });
-      notification.push({ date: new Date(), text: "Refresh the page to start again" });
+      notification.push({
+        date: new Date(),
+        text: "Refresh the page to start again",
+      });
     }
 
     return (
       <div className="clash" onClick={this.handleClick.bind(this)}>
         <Tiles gridSize={gameEnvironment.gridSize} />
         <Shoots shoots={shoots.slice()} gridSize={gameEnvironment.gridSize} />
-        <Ammos gridSize={gameEnvironment.gridSize} ammoPosition={gameEnvironment.ammoPosition} />
-        <Players gridSize={gameEnvironment.gridSize} playerInstances={playerInstances} playerStates={playerStates} />
+        <Ammos
+          gridSize={gameEnvironment.gridSize}
+          ammoPosition={gameEnvironment.ammoPosition}
+        />
+        <Players
+          gridSize={gameEnvironment.gridSize}
+          playerInstances={playerInstances}
+          playerStates={playerStates}
+        />
         {!!notification.length && <Notifications kills={notification} />}
-        <Stats rounds={rounds} total={totalRounds} playerStates={playerStates} stats={gameStats} />
-        {false && <pre className="debugger">{JSON.stringify(playerStates, 0, 2)}</pre>}
+        <Stats
+          rounds={rounds}
+          total={totalRounds}
+          playerStates={playerStates}
+          stats={gameStats}
+        />
+        {true && (
+          <pre className="debugger">{JSON.stringify(playerStates, 0, 2)}</pre>
+        )}
+
+        <div className="settings-panel">
+          <button onClick={this.handleStartGame.bind(this)}>
+            Start the Game!
+          </button>
+          <button onClick={this.handleToggleSounds.bind(this)}>
+            Toggle Sounds
+          </button>
+        </div>
       </div>
     );
   }

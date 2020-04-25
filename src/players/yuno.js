@@ -30,7 +30,7 @@ var turnToKill = (originalPosition, positionArray) => {
 var Yuno = {
   info: {
     name: "Yuno",
-    style: 9
+    stylex: 9
   },
   ai: (playerState, enemiesStates, gameEnvironment) => {
     var directionToAmmo;
