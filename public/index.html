@@ -1,257 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
+    <title>ClashJS | AI Javascript Battle Game</title>
+    <meta
+      name="description"
+      content="Javascript artificial intelligence battle game. Create a spaceship AI and kill your enemies!"
+    />
+    <meta
+      property="og:image"
+      content="https://github.com/javierbyte/clashjs/raw/gh-pages/spec_assets/screenshot.jpg"
+    />
+    <link href="favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" href="https://use.typekit.net/cwy1feb.css" />
 
-  <title>ClashJS | AI Javascript Battle Game</title>
-  <meta name="description"
-    content="Javascript artificial intelligence battle game. Create a spaceship AI and kill your enemies!" />
-  <meta property="og:image" content="https://github.com/javierbyte/clashjs/raw/gh-pages/spec_assets/screenshot.jpg" />
-  <link href="favicon.ico" rel="icon" type="image/x-icon" />
-  <link rel="stylesheet" href="https://use.typekit.net/cwy1feb.css" />
-
-  <style>
-    * {
-      position: relative;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      font-size: 16px;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    body {
-      background: url("./static/bg.jpg") no-repeat center #2c3e50;
-      background-size: cover;
-      color: #fff;
-    }
-
-    body,
-    table {
-      font: 1em/1.618 din-2014, sans-serif;
-      font-weight: 200;
-    }
-
-    b {
-      font-weight: 500;
-    }
-
-    .instructions {
-      position: fixed;
-      font-size: 0.8em;
-      bottom: 0;
-      left: 0;
-      padding: 1em;
-      color: #eee;
-    }
-
-    .instructions a {
-      color: #fff;
-    }
-
-    .clash {
-      top: calc(50vh - 50vmin);
-      width: 100vmin;
-      height: 100vmin;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .clash-tile {
-      display: inline-block;
-      float: left;
-    }
-
-    .clash-tile:nth-child(odd) {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .clash-ammo {
-      position: absolute;
-      background: url("./static/star.png") no-repeat center / 80%;
-    }
-
-    .clash-ammo:hover {
-      transform: rotate(360deg);
-    }
-
-    .clash-player {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: transform 0.2s;
-    }
-
-    .clash-player-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: transform 0.2s;
-    }
-
-    .clash-player-name {
-      top: -2rem;
-      width: 5rem;
-      left: 50%;
-      margin-left: -2.5rem;
-      text-transform: uppercase;
-      text-align: center;
-      font-size: 0.75rem;
-    }
-
-    .clash-shoot {
-      position: absolute;
-      width: 100em;
-      transform-origin: center left;
-    }
-
-    .clash-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100vmin;
-      height: 100vmin;
-    }
-
-    .player-dead-emoji {
-      opacity: 0;
-      padding: 0 !important;
-      transform: scale(1.7);
-      transition: opacity 0.3s, transform 0.3s 0.05s;
-    }
-
-    .player-dead td {
-      color: #55555;
-    }
-
-    td.player-name {
-      text-align: left;
-    }
-
-    .player-dead .player-name {
-      text-decoration: line-through;
-    }
-
-    .player-dead .player-dead-emoji {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .notifications,
-    .stats {
-      font-size: 0.75rem;
-      background: rgba(0, 0, 0, 0.618);
-      padding: 0.5rem 0.618rem;
-      color: #ffffff;
-    }
-
-    .stats {
-      position: fixed;
-      top: 0;
-      right: 0;
-    }
-
-    .stats-title {
-      text-align: center;
-    }
-
-    .stats-results {
-      text-align: right;
-    }
-
-    .stats td {
-      padding: 0 0.5em;
-      text-align: center;
-    }
-
-
-    .notifications {
-      position: fixed;
-      bottom: 0%;
-      right: 0%;
-      z-index: 9000;
-      width: 11rem;
-    }
-
-    .animation-shot {
-      animation: shotKeyFrame 0.3s;
-    }
-
-    .debugger {
-      background: rgba(0, 0, 0, 0.5);
-      line-height: 1.4;
-      padding: 1rem;
-      font-size: 0.8rem;
-      position: fixed;
-      top: 50%;
-      left: 0;
-      overflow-y: scroll;
-    }
-
-    .settings-panel {
-      /* background: rgba(0, 0, 0, 0.5); */
-      line-height: 1.4;
-      padding: 1rem;
-      font-size: 0.8rem;
-      position: fixed;
-      top: 0;
-      left: 0;
-    }
-
-    @keyframes shotKeyFrame {
-      0% {
-        background: #f00;
-        margin-top: -0.05em;
-        height: 0.1em;
+    <style>
+      * {
+        position: relative;
+        margin: 0;
+        padding: 0;
       }
 
-      100% {
-        background: #ff0;
-        height: 0.7em;
-        margin-top: -0.35em;
-      }
-    }
-
-    .animation-glow {
-      animation: glowKeyFrame 1s infinite alternate;
-    }
-
-    @keyframes glowKeyFrame {
-      0% {
-        -webkit-filter: saturate(0);
+      html {
+        font-size: 16px;
       }
 
-      100% {
-        -webkit-filter: saturate(1);
+      body {
+        margin: 0;
+        padding: 0;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!--
+      html,
+      body {
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      body {
+        background: url("./static/bg.jpg") no-repeat center #2c3e50;
+        background-size: cover;
+        color: #fff;
+      }
+
+      body,
+      table {
+        font: 1em/1.618 din-2014, sans-serif;
+        font-weight: 200;
+      }
+
+      b {
+        font-weight: 500;
+      }
+
+      .instructions {
+        position: fixed;
+        font-size: 0.8em;
+        bottom: 0;
+        left: 0;
+        padding: 1em;
+        color: #eee;
+      }
+      .instructions a {
+        color: #fff;
+      }
+
+      .clash {
+        top: calc(50vh - 50vmin);
+        width: 100vmin;
+        height: 100vmin;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .clash-tile {
+        display: inline-block;
+        float: left;
+      }
+      .clash-tile:nth-child(odd) {
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .clash-ammo {
+        position: absolute;
+        background: url("./static/star.png") no-repeat center / 80%;
+      }
+      .clash-ammo:hover {
+        transform: rotate(360deg);
+      }
+
+      .clash-player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: transform 0.2s;
+      }
+      .clash-player-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform 0.2s;
+      }
+      .clash-player-name {
+        top: -2rem;
+        width: 5rem;
+        left: 50%;
+        margin-left: -2.5rem;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 0.75rem;
+      }
+
+      .clash-shoot {
+        position: absolute;
+        width: 100em;
+        transform-origin: center left;
+      }
+
+      .clash-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vmin;
+        height: 100vmin;
+      }
+
+      .player-dead-emoji {
+        opacity: 0;
+        padding: 0 !important;
+        transform: scale(1.7);
+        transition: opacity 0.3s, transform 0.3s 0.05s;
+      }
+
+      .player-dead td {
+        color: #55555;
+      }
+
+      td.player-name {
+        text-align: left;
+      }
+
+      .player-dead .player-name {
+        text-decoration: line-through;
+      }
+      .player-dead .player-dead-emoji {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .notifications,
+      .stats {
+        font-size: 0.75rem;
+        background: rgba(0, 0, 0, 0.618);
+        padding: 0.5rem 0.618rem;
+        color: #ffffff;
+      }
+
+      .stats {
+        position: fixed;
+        top: 0;
+        right: 0;
+      }
+
+      .stats-title {
+        text-align: center;
+      }
+
+      .stats-results {
+        text-align: right;
+      }
+      .stats td {
+        padding: 0 0.5em;
+        text-align: center;
+      }
+
+      .notifications {
+        position: fixed;
+        bottom: 0%;
+        right: 0%;
+        z-index: 9000;
+        width: 11rem;
+      }
+
+      .animation-shot {
+        animation: shotKeyFrame 0.3s;
+      }
+
+      .debugger {
+        background: rgba(0, 0, 0, 0.5);
+        line-height: 1.4;
+        padding: 1rem;
+        font-size: 0.8rem;
+        position: fixed;
+        top: 50%;
+        left: 0;
+        overflow-y: scroll;
+      }
+
+      .control-panel {
+        /* background: rgba(0, 0, 0, 0.5); */
+        line-height: 1.4;
+        padding: 1rem;
+        font-size: 0.8rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      .control-panel .circle-button:hover {
+        background-color: #009fb7;
+      }
+
+      .control-panel .circle-button:focus {
+        outline: none;
+      }
+
+      .control-panel .circle-button {
+        margin: 8px;
+        display: inline-flex;
+        color: rgba(0, 0, 0, 0.87);
+        background-color: white;
+        width: 56px;
+        height: 56px;
+        padding: 0;
+        font-size: 1.6rem;
+        min-width: 0;
+        box-sizing: border-box;
+        min-height: 36px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2),
+          0px 6px 10px 0px rgba(0, 0, 0, 0.14),
+          0px 1px 18px 0px rgba(0, 0, 0, 0.12);
+      }
+
+      @keyframes shotKeyFrame {
+        0% {
+          background: #f00;
+          margin-top: -0.05em;
+          height: 0.1em;
+        }
+        100% {
+          background: #ff0;
+          height: 0.7em;
+          margin-top: -0.35em;
+        }
+      }
+
+      .animation-glow {
+        animation: glowKeyFrame 1s infinite alternate;
+      }
+      @keyframes glowKeyFrame {
+        0% {
+          -webkit-filter: saturate(0);
+        }
+        100% {
+          -webkit-filter: saturate(1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -273,5 +295,4 @@
   </div>
 
 </body>
-
 </html>

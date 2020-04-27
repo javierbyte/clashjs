@@ -7,6 +7,7 @@ import Players from "./Players.jsx";
 import Stats from "./Stats.jsx";
 import Shoots from "./Shoots.jsx";
 import Notifications from "./Notifications.jsx";
+import ControlPanel from "./ControlPanel.jsx";
 
 import ClashJS from "../clashjs/ClashCore.js";
 
@@ -33,7 +34,8 @@ class Clash extends React.Component {
     // });
 
     this.state = {
-      startGame: false,
+      running: false,
+      sounds: true,
       clashjs: window.ClashInstance.getState(),
       shoots: [],
       speed: DEFAULT_SPEED,
@@ -53,17 +55,35 @@ class Clash extends React.Component {
     this.setState({
       speed: Math.floor(this.state.speed * 0.9),
     });
-  }
-
-  handleStartGame() {
-    this.setState({
-      startGame: true,
-    });
     this.nextTurn();
   }
 
   handleToggleSounds() {
     fx.soundsOff ? fx.enableSounds() : fx.disableSounds()
+  }
+
+  handleToggleRunning() {
+    this.setState(
+      (prevState) => {
+        return {
+          running: !prevState.running,
+        };
+      },
+      () => {
+        if (this.state.running) this.nextTurn();
+      }
+    );
+  }
+
+  handleToggleSounds() {
+    this.setState(
+      (prevState) => ({
+        sounds: !prevState.sounds,
+      }),
+      () => {
+        //TODO - toggle sounds on/off
+      }
+    );
   }
 
   newGame() {
@@ -92,7 +112,8 @@ class Clash extends React.Component {
   }
 
   nextTurn() {
-    if (this.state.finished) return;
+    console.log("next turn");
+    if (!this.state.running || this.state.finished) return;
 
     var currentGameIndex = this.state.currentGameIndex;
 
@@ -128,6 +149,7 @@ class Clash extends React.Component {
   }
 
   handleEvent(evt, data) {
+    console.log("handleEvent", evt);
     if (evt === "SHOOT") {
       let newShoots = this.state.shoots;
       newShoots.push({
@@ -233,8 +255,7 @@ class Clash extends React.Component {
   }
 
   render() {
-    var { clashjs, shoots, kills, finished, startGame } = this.state;
-
+    var { clashjs, shoots, kills, finished, running, sounds } = this.state;
     var {
       gameEnvironment,
       gameStats,
@@ -293,18 +314,16 @@ class Clash extends React.Component {
           playerStates={playerStates}
           stats={gameStats}
         />
-        {true && (
+
+        <ControlPanel
+          running={running}
+          sounds={sounds}
+          handleToggleRunning={this.handleToggleRunning.bind(this)}
+          handleToggleSounds={this.handleToggleSounds.bind(this)}
+        />
+        {false && (
           <pre className="debugger">{JSON.stringify(playerStates, 0, 2)}</pre>
         )}
-
-        <div className="settings-panel">
-          <button onClick={this.handleStartGame.bind(this)}>
-            Start the Game!
-          </button>
-          <button onClick={this.handleToggleSounds.bind(this)}>
-            Toggle Sounds
-          </button>
-        </div>
       </div>
     );
   }
