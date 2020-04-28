@@ -5,10 +5,11 @@ import toJson from 'enzyme-to-json';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import expect from 'expect'
+import {ClashJS} from './ClashCore';
+import {PlayerClass} from './PlayerClass';
 // import TestUtils from 'react-addons-test-utils'
 configure({ adapter: new Adapter() });
 
-import {ClashJS} from './ClashCore';
 jest.mock('./ClashCore');
 
 
@@ -31,7 +32,6 @@ it('Clash Core should return all the functions', async () => {
 });
 
 
-import {PlayerClass} from './PlayerClass';
 jest.mock('./PlayerClass');
 
 it('Player Class should return all the functions', async () => {

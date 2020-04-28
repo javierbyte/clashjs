@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import {shallow, mount, render} from 'enzyme';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import Tiles from './components/Tiles';
+import Tiles from './Tiles';
 
 configure({ adapter: new Adapter() });
 

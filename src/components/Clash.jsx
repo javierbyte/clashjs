@@ -11,7 +11,7 @@ import ControlPanel from "./ControlPanel.jsx";
 
 import ClashJS from "../clashjs/ClashCore.js";
 
-import playerObjects from "../Players.js";
+import * as playerObjects from "../Players.js";
 var playerArray = _.shuffle(_.map(playerObjects, (el) => el));
 
 var killsStack = [];
@@ -43,6 +43,7 @@ class Clash extends React.Component {
       currentGameIndex: 1,
       finished: false,
     };
+    fx.enableSounds()
   }
 
   // componentDidMount() {
@@ -56,10 +57,6 @@ class Clash extends React.Component {
       speed: Math.floor(this.state.speed * 0.9),
     });
     this.nextTurn();
-  }
-
-  handleToggleSounds() {
-    fx.soundsOff ? fx.enableSounds() : fx.disableSounds()
   }
 
   handleToggleRunning() {
@@ -81,7 +78,7 @@ class Clash extends React.Component {
         sounds: !prevState.sounds,
       }),
       () => {
-        //TODO - toggle sounds on/off
+        this.state.sounds ? fx.enableSounds() : fx.disableSounds()
       }
     );
   }
@@ -223,6 +220,8 @@ class Clash extends React.Component {
       case 4:
         fx.playSound(fx.streak.monsterKill);
         multiKill = killer.getName() + " is a MONSTER KILLER!";
+        break;
+      default:
         break;
     }
     kills.push({

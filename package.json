@@ -2,7 +2,7 @@
   "name": "clashjs",
   "version": "1.1.0",
   "private": false,
-  "homepage": "https://javier.xyz/clashjs/",
+  "homepage": ".",
   "repository": {
     "type": "git",
     "url": "https://github.com/javierbyte/clashjs.git"
@@ -14,9 +14,10 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.1.2"
+    "react-scripts": "^3.1.2"
   },
   "scripts": {
     "start": "react-scripts start",

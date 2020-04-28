@@ -1,4 +1,3 @@
-import fx from "./../lib/sound-effects";
 import generateId from "./../lib/string-tools";
 
 class PlayerClass {
@@ -18,11 +17,6 @@ class PlayerClass {
 
   getName() {
     return this._playerInfo.name;
-  }
-
-  playExplosion() {
-    var i = Math.round(Math.random() * 10) % 3;
-    fx.playSound(fx.explosions["explode" + i]);
   }
 
   execute(playerState, enemiesStates, gameEnvironment) {
