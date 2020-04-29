@@ -58,7 +58,7 @@ class Players extends React.Component {
               width: tileSize + "vmin",
               height: tileSize + "vmin",
               backgroundImage: "url(static/rockets/rocket" + (playerData.style || 0) + ".png)",
-              transform: "scale(1.25) " + "rotate(" + 90 * playerDirections[playerIndex] + "deg) "
+              transform: "scale(1.25) rotate(" + 90 * playerDirections[playerIndex] + "deg) "
             }}
           />
           <div className="clash-player-name">{playerInfo.name}</div>

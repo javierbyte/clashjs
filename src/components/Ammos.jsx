@@ -1,11 +1,8 @@
 import React from "react";
+import PropTypes from 'prop-types'
 import _ from "lodash";
 
 class Ammos extends React.Component {
-  propTypes: {
-     gridSize: React.PropTypes.number.isRequired,
-     ammoPosition: React.PropTypes.array
-   };
   render() {
     var { gridSize, ammoPosition } = this.props;
 
@@ -31,5 +28,9 @@ class Ammos extends React.Component {
 );
   }
 }
+Ammos.propTypes = {
+  gridSize: PropTypes.number.isRequired,
+  ammoPosition: PropTypes.array
+};
 
 export default Ammos;
