@@ -194,14 +194,18 @@
       }
 
       .debugger {
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.9);
         line-height: 1.4;
         padding: 1rem;
         font-size: 0.8rem;
         position: fixed;
-        top: 50%;
+        top: 0;
         left: 0;
         overflow-y: scroll;
+        width: 250px;
+        bottom: 0;
+        z-index: 7;
+        padding-top: 86px;
       }
 
       .control-panel {
@@ -212,6 +216,7 @@
         position: fixed;
         top: 0;
         left: 0;
+        z-index: 10;
       }
 
       .control-panel .circle-button:hover {
@@ -284,15 +289,17 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
 
-
-  <div class="instructions">
-    <b style="font-weight: 700">CLASHJS</b>
-    <div>Javascript AI battle game.</div>
-    <div>
-      Learn how to play
-      <a target="_blank" href="https://github.com/javierbyte/clashjs#game-definitions">here</a>.
+    <div class="instructions">
+      <b style="font-weight: 700;">CLASHJS</b>
+      <div>Javascript AI battle game.</div>
+      <div>
+        Learn how to play
+        <a
+          target="_blank"
+          href="https://github.com/javierbyte/clashjs#game-definitions"
+          >here</a
+        >.
+      </div>
     </div>
-  </div>
-
-</body>
+  </body>
 </html>

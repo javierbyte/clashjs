@@ -8,6 +8,7 @@ import Stats from "./Stats.jsx";
 import Shoots from "./Shoots.jsx";
 import Notifications from "./Notifications.jsx";
 import ControlPanel from "./ControlPanel.jsx";
+import DebugPanel from "./DebugPanel.jsx";
 
 import ClashJS from "../clashjs/ClashCore.js";
 
@@ -35,6 +36,7 @@ class Clash extends React.Component {
 
     this.state = {
       running: false,
+      showDebug: false,
       sounds: true,
       clashjs: window.ClashInstance.getState(),
       shoots: [],
@@ -43,14 +45,18 @@ class Clash extends React.Component {
       currentGameIndex: 1,
       finished: false,
     };
-    fx.enableSounds()
+    fx.enableSounds();
   }
 
-  // componentDidMount() {
-  //   if (this.state.startGame) {
-  //     this.nextTurn();
-  //   }
-  // }
+  componentDidMount() {
+    window.addEventListener("keypress", (evt) => {
+      if (evt.key === "d") {
+        this.setState((prevState) => ({
+          showDebug: !prevState.showDebug,
+        }));
+      }
+    });
+  }
 
   handleClick() {
     this.setState({
@@ -78,7 +84,7 @@ class Clash extends React.Component {
         sounds: !prevState.sounds,
       }),
       () => {
-        this.state.sounds ? fx.enableSounds() : fx.disableSounds()
+        this.state.sounds ? fx.enableSounds() : fx.disableSounds();
       }
     );
   }
@@ -109,7 +115,6 @@ class Clash extends React.Component {
   }
 
   nextTurn() {
-    console.log("next turn");
     if (!this.state.running || this.state.finished) return;
 
     var currentGameIndex = this.state.currentGameIndex;
@@ -146,7 +151,6 @@ class Clash extends React.Component {
   }
 
   handleEvent(evt, data) {
-    console.log("handleEvent", evt);
     if (evt === "SHOOT") {
       let newShoots = this.state.shoots;
       newShoots.push({
@@ -254,7 +258,15 @@ class Clash extends React.Component {
   }
 
   render() {
-    var { clashjs, shoots, kills, finished, running, sounds } = this.state;
+    var {
+      clashjs,
+      shoots,
+      kills,
+      finished,
+      running,
+      sounds,
+      showDebug,
+    } = this.state;
     var {
       gameEnvironment,
       gameStats,
@@ -320,9 +332,7 @@ class Clash extends React.Component {
           handleToggleRunning={this.handleToggleRunning.bind(this)}
           handleToggleSounds={this.handleToggleSounds.bind(this)}
         />
-        {false && (
-          <pre className="debugger">{JSON.stringify(playerStates, 0, 2)}</pre>
-        )}
+        {showDebug && <DebugPanel playerStates={playerStates} />}
       </div>
     );
   }
