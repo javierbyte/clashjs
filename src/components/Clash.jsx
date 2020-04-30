@@ -12,8 +12,8 @@ import DebugPanel from "./DebugPanel.jsx";
 
 import ClashJS from "../clashjs/ClashCore.js";
 
-import * as playerObjects from "../Players.js";
-var playerArray = _.shuffle(_.map(playerObjects, (el) => el));
+import playerObjects from "../Players.js";
+var playerArray = _.shuffle(_.map(playerObjects, (el) => el.default ? el.default : el));
 
 var killsStack = [];
 
