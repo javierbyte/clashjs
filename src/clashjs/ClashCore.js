@@ -29,7 +29,19 @@ class ClashJS {
         kills: 0,
         kdr: 0,
         wins: 0,
-        winrate: 0
+        winrate: 0,
+        turns: 0,
+        calcTime: 0,
+        actions: {
+          "move": 0,
+          "shoot": 0,
+          "turn": 0,
+          "north": 0,
+          "east": 0,
+          "south": 0,
+          "west": 0,
+          "wait": 0
+        }
       };
       return player;
     });
@@ -122,14 +134,20 @@ class ClashJS {
     });
 
     if (this._playerStates[this._currentPlayer].isAlive) {
-      this._savePlayerAction(
-        this._currentPlayer,
-        this._playerInstances[this._currentPlayer].execute(
+      const t0 = performance.now()
+      const playerAction = this._playerInstances[this._currentPlayer].execute(
           clonedStates[this._currentPlayer],
           otherPlayers,
           _.cloneDeep(this._gameEnvironment, true)
         )
+      const t1 = performance.now()
+      this._savePlayerAction(
+        this._currentPlayer,
+        playerAction
       );
+      const playerId = this._playerInstances[this._currentPlayer]._id
+      this._gameStats[playerId].calcTime += (t1 - t0)
+      this._gameStats[playerId].turns++
     }
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
@@ -186,6 +204,12 @@ class ClashJS {
   }
 
   _savePlayerAction(playerIndex, playerAction) {
+    const playerId = this._playerInstances[playerIndex]._id
+    const action = playerAction ? playerAction : 'wait'
+    this._gameStats[playerId].actions[action]++
+    if (DIRECTIONS.includes(playerAction)) {
+      this._gameStats[playerId].actions.turn++
+    }
     this._playerStates = executeMovementHelper({
       playerIndex: playerIndex,
       playerAction: playerAction,

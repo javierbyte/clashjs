@@ -16,6 +16,8 @@ class Stats extends React.Component {
                 Round {rounds}/{total}
               </th>
               <th>Wins</th>
+              <th>Rate</th>
+              <th>K/D/R</th>
             </tr>
           </thead>
           <tbody>
@@ -23,8 +25,10 @@ class Stats extends React.Component {
               return (
                 <tr key={index} className={playerStats.isAlive ? "" : "player-dead"}>
                   <td className="player-dead-emoji">💀</td>
-                  <td className="player-name">{playerStats.name}</td>
-                  <td className="stats-results">{playerStats.wins}</td>
+                  <td className='player-name'>{playerStats.name}</td>
+                <td className='stats-results'>{playerStats.wins}</td>
+                <td className='stats-results'>{playerStats.winrate}%</td>
+                <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
                 </tr>
               );
             })}
