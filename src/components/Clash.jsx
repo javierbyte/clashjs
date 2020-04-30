@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import fx from "./../lib/sound-effects";
+import { enableSounds, disableSounds, playSound, startMusic, stopMusic, streaks } from "./../lib/sound-effects";
 import Tiles from "./Tiles.jsx";
 import Ammos from "./Ammos.jsx";
 import Players from "./Players.jsx";
@@ -45,15 +45,22 @@ class Clash extends React.Component {
       currentGameIndex: 1,
       finished: false,
     };
-    fx.enableSounds();
+    this.state.sounds ? enableSounds() : disableSounds()
   }
 
   componentDidMount() {
-    window.addEventListener("keypress", (evt) => {
+    window.addEventListener("keydown", (evt) => {
+      // console.log('keydown', evt.code, evt.key)
       if (evt.key === "d") {
         this.setState((prevState) => ({
           showDebug: !prevState.showDebug,
         }));
+      }
+      if (evt.code === "Space") {
+        this.handleToggleRunning()
+      }
+      if (evt.code === "KeyS") {
+        this.handleToggleSounds()
       }
     });
   }
@@ -84,7 +91,13 @@ class Clash extends React.Component {
         sounds: !prevState.sounds,
       }),
       () => {
-        this.state.sounds ? fx.enableSounds() : fx.disableSounds();
+        if (this.state.sounds) {
+           enableSounds()
+           startMusic()
+         } else { 
+           disableSounds()
+           stopMusic()
+          }
       }
     );
   }
@@ -209,20 +222,20 @@ class Clash extends React.Component {
     let spreeMessage = "";
     let kills = this.state.kills;
     if (killsStack.length === 1) {
-      fx.playSound(fx.streak.firstBlood);
+      setTimeout(() => playSound(streaks.firstBlood), 150);
     }
 
     switch (killed.length) {
       case 2:
-        fx.playSound(fx.streak.doubleKill);
+        setTimeout(() => playSound(streaks.doubleKill), 200);
         multiKill = killer.getName() + " got a double kill!";
         break;
       case 3:
-        fx.playSound(fx.streak.tripleKill);
+        setTimeout(() => playSound(streaks.tripleKill), 200);
         multiKill = killer.getName() + " got a Triple Kill!";
         break;
       case 4:
-        fx.playSound(fx.streak.monsterKill);
+        setTimeout(() => playSound(streaks.monsterKill), 200);
         multiKill = killer.getName() + " is a MONSTER KILLER!";
         break;
       default:
@@ -235,19 +248,19 @@ class Clash extends React.Component {
 
     switch (streakCount + Math.floor(Math.random() * 3)) {
       case 3:
-        fx.playSound(fx.streak.killingSpree);
+        setTimeout(() => playSound(streaks.killingSpree), 400);
         spreeMessage = killer.getName() + " is on a killing spree!";
         break;
       case 4:
-        fx.playSound(fx.streak.dominating);
+        setTimeout(() => playSound(streaks.dominating), 400);
         spreeMessage = killer.getName() + " is dominating!";
         break;
       case 5:
-        fx.playSound(fx.streak.rampage);
+        setTimeout(() => playSound(streaks.rampage), 400);
         spreeMessage = killer.getName() + " is on a rampage of kills!";
         break;
       default:
-        fx.playSound(fx.streak.ownage);
+        setTimeout(() => playSound(streaks.ownage), 400);
         spreeMessage = `Can anyone stop ${killer.getName()}?!?`;
     }
     if (Math.random() > 0.5)

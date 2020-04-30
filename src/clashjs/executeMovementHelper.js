@@ -1,5 +1,6 @@
 var _ = require("lodash");
 var utils = require("../lib/utils.js");
+const { playSound, lasers, explosions } = require('../lib/sound-effects')
 var DIRECTIONS = ["north", "east", "south", "west"];
 
 var safeMovement = (value, size) => {
@@ -49,6 +50,7 @@ var clashCoreUtils = data => {
   }
 
   if (playerAction === "shoot" && currentPlayerState.ammo > 0) {
+    playSound(lasers[`laser${_.random(8)}`])
     currentPlayerState.ammo -= 1;
 
     let kills = [];
@@ -70,6 +72,7 @@ var clashCoreUtils = data => {
     });
 
     if (kills.length) {
+      setTimeout(() => playSound(explosions[`explode${_.random(2)}`]), 100)
       survivors = _.filter(playerStates, player => player.isAlive);
       coreCallback("KILL", {
         killer: playerInstances[playerIndex],
