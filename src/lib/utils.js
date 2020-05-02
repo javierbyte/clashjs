@@ -73,7 +73,7 @@ var isOnAsteroid = (position, asteroids) => {
   return asteroids.some(asteroid => asteroid.position[0] === playerX && asteroid.position[1] === playerY)
 }
 
-function inDangerOfAsteroid(position, asteroids) {
+var inDangerOfAsteroid = (position, asteroids) => {
   const [playerX, playerY] = position;
   return asteroids.some(asteroid => asteroid.detonateIn < 2 && asteroid.position[0] === playerX && asteroid.position[1] === playerY)
 }
