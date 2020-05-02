@@ -26,9 +26,9 @@ class Stats extends React.Component {
                 <tr key={index} className={playerStats.isAlive ? "" : "player-dead"}>
                   <td className="player-dead-emoji">💀</td>
                   <td className='player-name'>{playerStats.name}</td>
-                <td className='stats-results'>{playerStats.wins}</td>
-                <td className='stats-results'>{playerStats.winrate}%</td>
-                <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
+                  <td className='stats-results'>{playerStats.wins}</td>
+                  <td className='stats-results'>{playerStats.winrate}%</td>
+                  <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
                 </tr>
               );
             })}

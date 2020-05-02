@@ -54,12 +54,12 @@ export function disableSounds() { soundsOn = false }
 
 export async function playSound(sound) {
   if (!soundsOn) {
-    console.log('sounds off, skipping', sound.src)
+    // console.log('sounds off, skipping', sound.src)
     return
   }
   try {
     await sound.play()
-    console.log('played sound', sound.src)
+    // console.log('played sound', sound.src)
   } catch (err) {
     console.error('error playing sound', err, sound.src)
   }
@@ -70,13 +70,13 @@ export async function startMusic() {
     // console.log('playMusic', themeIndex, this.currentMusic.src)
     currentMusic.volume = musicVolume
     await currentMusic.play()
-    console.log('playing music', themeIndex, currentMusic.src)
+    // console.log('playing music', themeIndex, currentMusic.src)
     currentMusic.addEventListener('ended', (evt) => {
       // console.log('ended', this.currentMusic, evt)
       // this.currentMusic.currentTime = 0
       // console.log('reset', this.currentMusic.currentTime, this.currentMusic.ended)
       themeIndex = (themeIndex + 1) % themeLoop.length
-      console.log('new music', themeIndex)
+      // console.log('new music', themeIndex)
       currentMusic = themeLoop[themeIndex]
       setImmediate(startMusic)
     }, { once: true })
@@ -88,5 +88,5 @@ export async function startMusic() {
 
 export function stopMusic() {
   currentMusic.pause()
-  console.log('pausing music', currentMusic.src, themeIndex)
+  // console.log('paused music', currentMusic.src, themeIndex)
 }

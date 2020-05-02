@@ -1,5 +1,6 @@
 import React from "react";
 import _ from "lodash";
+import { Grid, Cell } from "styled-css-grid";
 import { enableSounds, disableSounds, playSound, startMusic, stopMusic, streaks } from "./../lib/sound-effects";
 import Tiles from "./Tiles.jsx";
 import Ammos from "./Ammos.jsx";
@@ -9,6 +10,7 @@ import Shoots from "./Shoots.jsx";
 import Notifications from "./Notifications.jsx";
 import ControlPanel from "./ControlPanel.jsx";
 import DebugPanel from "./DebugPanel.jsx";
+import StatsModal from './StatsModal'
 
 import ClashJS from "../clashjs/ClashCore.js";
 
@@ -18,7 +20,7 @@ var playerArray = _.shuffle(_.map(playerObjects, (el) => el.default ? el.default
 var killsStack = [];
 
 const DEFAULT_SPEED = 100;
-const MAX_SPEED = 50;
+const MAX_SPEED = 0;
 
 class Clash extends React.Component {
   constructor(props) {
@@ -38,12 +40,14 @@ class Clash extends React.Component {
       running: false,
       showDebug: false,
       sounds: true,
+      music: false,
       clashjs: window.ClashInstance.getState(),
       shoots: [],
       speed: DEFAULT_SPEED,
-      kills: [],
+      notifications: [],
       currentGameIndex: 1,
       finished: false,
+      showStats: false,
     };
     this.state.sounds ? enableSounds() : disableSounds()
   }
@@ -61,6 +65,9 @@ class Clash extends React.Component {
       }
       if (evt.code === "KeyS") {
         this.handleToggleSounds()
+      }
+      if (evt.code === "KeyM") {
+        this.handleToggleMusic()
       }
     });
   }
@@ -92,14 +99,47 @@ class Clash extends React.Component {
       }),
       () => {
         if (this.state.sounds) {
-           enableSounds()
-           startMusic()
-         } else { 
-           disableSounds()
-           stopMusic()
-          }
+          enableSounds()
+          startMusic()
+        } else {
+          disableSounds()
+          stopMusic()
+        }
       }
     );
+  }
+
+  handleToggleMusic() {
+    // console.log('toggle music', this.state.music)
+    this.setState(
+      (prevState) => ({
+        music: !prevState.music,
+      }),
+      () => {
+        if (this.state.music) {
+          //  enableSounds()
+          startMusic()
+        } else {
+          //  disableSounds()
+          stopMusic()
+        }
+      }
+    );
+  }
+
+  handleToggleStats() {
+    this.setState(
+      (prevState) => ({
+        showStats: !prevState.showStats,
+      })
+    );
+  }
+
+  handleChangeSpeed(newSpeed) {
+    // console.log('handleChangeSpeed', newSpeed)
+    this.setState({
+      speed: newSpeed
+    })
   }
 
   newGame() {
@@ -108,26 +148,29 @@ class Clash extends React.Component {
     if (this.nextTurnTimeout) clearTimeout(this.nextTurnTimeout);
 
     window.ClashInstance.setupGame();
-
+    // console.log('newGame setState')
     this.setState(
       (state) => {
+        // console.log('newGame setState state', state)
         return {
           clashjs: window.ClashInstance.getState(),
           speed: DEFAULT_SPEED,
-          kills: [],
+          notifications: state.notifications.concat({ date: new Date(), text: '~~~ New Game ~~~' }),
           currentGameIndex: state.currentGameIndex + 1,
         };
       },
       () => {
+        // console.log('newGame setState callback', this.nextTurnTimeout, this.state.clashjs)
         if (this.nextTurnTimeout) clearTimeout(this.nextTurnTimeout);
-        window.setTimeout(() => {
+        this.nextTurnTimeout = window.setTimeout(() => {
           this.nextTurn();
-        }, 50);
+        }, 3000);
       }
     );
   }
 
   nextTurn() {
+    // console.log('nextTurn', this.state)
     if (!this.state.running || this.state.finished) return;
 
     var currentGameIndex = this.state.currentGameIndex;
@@ -176,15 +219,24 @@ class Clash extends React.Component {
         shoots: newShoots,
       });
     }
-    if (evt === "WIN") return this.newGame();
-    if (evt === "DRAW") return this.newGame();
+    if (evt === "WIN") {
+      this.setState(state => ({
+        notifications: state.notifications.concat({ date: new Date(), text: 'WINNER!' })
+      }))
+      return this.newGame()
+    }
+    if (evt === "DRAW") {
+      this.setState(state => ({
+        notifications: state.notifications.concat({ date: new Date(), text: 'Stalemate' })
+      }))
+      return this.newGame()
+    }
     if (evt === "KILL") return this._handleKill(data);
     if (evt === "END") return this.endGame();
   }
 
   _handleKill(data) {
     let players = window.ClashInstance.getState().playerInstances;
-    let kills = this.state.kills;
     let killer = players[data.killer];
     let killed = _.map(data.killed, (index) => {
       killsStack.push(data.killer);
@@ -198,12 +250,11 @@ class Clash extends React.Component {
       _.map(killed, (player) => player.getName()).join(","),
     ].join(" ");
 
-    kills.push({ date: new Date(), text: notification });
-    this.setState({
-      kills: kills,
-    });
+    this.setState(state => ({
+      notifications: state.notifications.concat({ date: new Date(), text: notification })
+    }));
 
-    setTimeout(() => this.handleStreak(data.killer, killer, killed), 100);
+    setImmediate(() => this.handleStreak(data.killer, killer, killed));
   }
 
   endGame() {
@@ -211,8 +262,9 @@ class Clash extends React.Component {
       clashjs: window.ClashInstance.getState(),
       shoots: [],
       speed: 0,
-      kills: [],
+      // notifications: [],
       finished: true,
+      showStats: true,
     });
   }
 
@@ -220,7 +272,7 @@ class Clash extends React.Component {
     let streakCount = _.filter(killsStack, (player) => player === index).length;
     let multiKill = "";
     let spreeMessage = "";
-    let kills = this.state.kills;
+    const { notifications } = this.state;
     if (killsStack.length === 1) {
       setTimeout(() => playSound(streaks.firstBlood), 150);
     }
@@ -241,21 +293,25 @@ class Clash extends React.Component {
       default:
         break;
     }
-    kills.push({
+    notifications.push({
       date: new Date(),
       text: multiKill,
     });
-
-    switch (streakCount + Math.floor(Math.random() * 3)) {
-      case 3:
+    if (streakCount > 1) {
+      const currentStreak = this.state.clashjs.gameStats[killer.getId()].killStreak
+      // console.log('killstreak', streakCount, currentStreak, Math.max(streakCount, currentStreak || 0), killsStack)
+      this.state.clashjs.gameStats[killer.getId()].killStreak = Math.max(streakCount, currentStreak || 0)
+    }
+    switch (streakCount) {
+      case 2:
         setTimeout(() => playSound(streaks.killingSpree), 400);
         spreeMessage = killer.getName() + " is on a killing spree!";
         break;
-      case 4:
+      case 3:
         setTimeout(() => playSound(streaks.dominating), 400);
         spreeMessage = killer.getName() + " is dominating!";
         break;
-      case 5:
+      case 4:
         setTimeout(() => playSound(streaks.rampage), 400);
         spreeMessage = killer.getName() + " is on a rampage of kills!";
         break;
@@ -263,10 +319,9 @@ class Clash extends React.Component {
         setTimeout(() => playSound(streaks.ownage), 400);
         spreeMessage = `Can anyone stop ${killer.getName()}?!?`;
     }
-    if (Math.random() > 0.5)
-      kills.push({ date: new Date(), text: spreeMessage });
+    notifications.push({ date: new Date(), text: spreeMessage })
     this.setState({
-      kills: kills,
+      notifications
     });
   }
 
@@ -274,11 +329,14 @@ class Clash extends React.Component {
     var {
       clashjs,
       shoots,
-      kills,
+      notifications,
       finished,
       running,
       sounds,
+      music,
       showDebug,
+      showStats,
+      speed,
     } = this.state;
     var {
       gameEnvironment,
@@ -297,14 +355,13 @@ class Clash extends React.Component {
       gameStats[player.getId()].isAlive = playerStates[index].isAlive;
     });
 
-    const notification = [...kills];
-
     if (finished) {
+      // console.trace('finished')
       const winner = _.sortBy(
         gameStats,
         (playerStats) => playerStats.wins * -1
       )[0];
-      notification.push({
+      notifications.push({
         date: new Date(),
         text: (
           <b style={{ color: "#0e0", fontWeight: 700 }}>
@@ -312,41 +369,63 @@ class Clash extends React.Component {
           </b>
         ),
       });
-      notification.push({
+      notifications.push({
         date: new Date(),
         text: "Refresh the page to start again",
       });
     }
 
     return (
-      <div className="clash" onClick={this.handleClick.bind(this)}>
-        <Tiles gridSize={gameEnvironment.gridSize} />
-        <Shoots shoots={shoots.slice()} gridSize={gameEnvironment.gridSize} />
-        <Ammos
-          gridSize={gameEnvironment.gridSize}
-          ammoPosition={gameEnvironment.ammoPosition}
-        />
-        <Players
-          gridSize={gameEnvironment.gridSize}
-          playerInstances={playerInstances}
-          playerStates={playerStates}
-        />
-        {!!notification.length && <Notifications kills={notification} />}
-        <Stats
+      <>
+        <Grid
+          columns="1fr 100vmin 1fr"
+          areas={["control game stats"]}>
+          {/* <Cell area="header">Header</Cell> */}
+          <Cell area="game" onClick={this.handleClick.bind(this)}>
+            <div className="clash">
+              <Tiles gridSize={gameEnvironment.gridSize} />
+              <Shoots shoots={shoots.slice()} gridSize={gameEnvironment.gridSize} />
+              <Ammos
+                gridSize={gameEnvironment.gridSize}
+                ammoPosition={gameEnvironment.ammoPosition}
+              />
+              <Players
+                gridSize={gameEnvironment.gridSize}
+                playerInstances={playerInstances}
+                playerStates={playerStates}
+              />
+            </div>
+          </Cell>
+          <Cell area="control">        <ControlPanel
+            running={running}
+            sounds={sounds}
+            music={music}
+            stats={showStats}
+            speed={speed}
+            handleToggleRunning={this.handleToggleRunning.bind(this)}
+            handleToggleSounds={this.handleToggleSounds.bind(this)}
+            handleToggleMusic={this.handleToggleMusic.bind(this)}
+            handleToggleStats={this.handleToggleStats.bind(this)}
+            handleChangeSpeed={this.handleChangeSpeed.bind(this)}
+          />
+            {showDebug && <DebugPanel playerStates={playerStates} />}
+          </Cell>
+          <Cell area="stats">        {!!notifications.length && <Notifications messages={notifications} />}
+            <Stats
+              rounds={rounds}
+              total={totalRounds}
+              playerStates={playerStates}
+              stats={gameStats}
+            />
+          </Cell>
+          {/* <Cell area="footer">Footer</Cell> */}
+        </Grid>
+        <StatsModal open={showStats} onClose={() => this.setState({ showStats: false })}
           rounds={rounds}
           total={totalRounds}
           playerStates={playerStates}
-          stats={gameStats}
-        />
-
-        <ControlPanel
-          running={running}
-          sounds={sounds}
-          handleToggleRunning={this.handleToggleRunning.bind(this)}
-          handleToggleSounds={this.handleToggleSounds.bind(this)}
-        />
-        {showDebug && <DebugPanel playerStates={playerStates} />}
-      </div>
+          stats={gameStats} />
+      </>
     );
   }
 }

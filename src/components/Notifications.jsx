@@ -3,14 +3,14 @@ import _ from "lodash";
 
 class Notifications extends React.Component {
   render() {
-    var { kills } = this.props;
+    var { messages } = this.props;
     var date = new Date();
 
-    _.remove(kills, k => date - k.date > 3000);
-    kills = _.sortBy(kills, k => k.date.valueOf);
+    _.remove(messages, k => date - k.date > 4000);
+    messages = _.sortBy(messages, k => k.date.valueOf);
     return (
       <div className="notifications">
-        {_.map(kills, (k, idx) => {
+        {_.map(messages, (k, idx) => {
           return <p key={idx}>{k.text}</p>;
         })}
       </div>

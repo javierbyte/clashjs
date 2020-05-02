@@ -56,8 +56,9 @@ class ClashJS {
   }
 
   setupGame() {
+    // console.log('setupGame')
     this._gameEnvironment = {
-      gridSize: 13,
+      gridSize: 6,
       ammoPosition: []
     };
     this._rounds++;
@@ -77,6 +78,7 @@ class ClashJS {
 
     this._currentPlayer = 0;
     this._createAmmo();
+    // console.log('setupGame end', this.getState())
   }
 
   _createAmmo() {
@@ -113,7 +115,9 @@ class ClashJS {
   }
 
   nextPly() {
-    console.log('_suddenDeathCount', this._suddenDeathCount)
+    // console.log('nextply', this._currentPlayer, this.getState())
+
+    // this._suddenDeathCount > 0 && console.log('_suddenDeathCount', this._suddenDeathCount)
     if (this._suddenDeathCount > SUDDEN_DEATH_TURN * this._getAlivePlayerCount()) {
       this._evtCallback("DRAW");
       this._handleCoreAction("DRAW");
@@ -125,7 +129,7 @@ class ClashJS {
     }
 
     if (this._getAlivePlayerCount() < 5) {
-      this._suddenDeathCount+= 1/this._getAlivePlayerCount();
+      this._suddenDeathCount += 1 / this._getAlivePlayerCount();
     }
 
     var otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {
@@ -136,11 +140,12 @@ class ClashJS {
     if (this._playerStates[this._currentPlayer].isAlive) {
       const t0 = performance.now()
       const playerAction = this._playerInstances[this._currentPlayer].execute(
-          clonedStates[this._currentPlayer],
-          otherPlayers,
-          _.cloneDeep(this._gameEnvironment, true)
-        )
+        clonedStates[this._currentPlayer],
+        otherPlayers,
+        _.cloneDeep(this._gameEnvironment, true)
+      )
       const t1 = performance.now()
+      // console.log('player action', this._currentPlayer, playerAction)
       this._savePlayerAction(
         this._currentPlayer,
         playerAction
@@ -149,16 +154,16 @@ class ClashJS {
       this._gameStats[playerId].calcTime += (t1 - t0)
       this._gameStats[playerId].turns++
     }
-
+    // console.log('setting to next player')
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 
     if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.92) {
       this._createAmmo();
     }
 
-    if (Math.random() > 0.98) {
-      this._createAmmo();
-    }
+    // if (Math.random() > 0.98) {
+    //   this._createAmmo();
+    // }
 
     return this.getState();
   }
