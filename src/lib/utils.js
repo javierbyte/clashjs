@@ -66,7 +66,7 @@ var canKill = (currentPlayerState = {}, enemiesStates = []) => {
   });
 };
 
-function isOnAsteroid(position, asteroids) {
+var isOnAsteroid = (position, asteroids) => {
   // return false
   console.log('isonAsteroid', position)
   const [playerX, playerY] = position;
