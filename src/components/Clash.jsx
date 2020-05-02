@@ -259,10 +259,10 @@ class Clash extends React.Component {
     console.log("*** handleDestroy", player);
     let notification = ["An Asteroid", "destroyed", player.name].join(" ");
 
-    const { kills } = this.state;
-    kills.push({ date: new Date(), text: notification });
+    const { notifications } = this.state;
+    notifications.push({ date: new Date(), text: notification });
     this.setState({
-      kills,
+      notifications,
     });
   }
 
