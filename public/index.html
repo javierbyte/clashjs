@@ -15,12 +15,6 @@
   <link rel="stylesheet" href="https://use.typekit.net/cwy1feb.css" />
 
   <style>
-    * {
-      position: relative;
-      margin: 0;
-      padding: 0;
-    }
-
     html {
       font-size: 16px;
     }
@@ -67,6 +61,7 @@
     }
 
     .clash {
+      position: relative;
       top: calc(50vh - 50vmin);
       width: 100vmin;
       height: 100vmin;
@@ -74,8 +69,13 @@
       background: rgba(255, 255, 255, 0.03);
     }
 
+    .clash * {
+      position: relative;
+      margin: 0;
+      padding: 0;
+    }
+
     .clash-tile {
-      display: inline-block;
       float: left;
     }
 
@@ -160,9 +160,10 @@
     .notifications,
     .stats {
       font-size: 0.75rem;
-      background: rgba(0, 0, 0, 0.618);
+      background: rgba(0, 0, 0, 0.5);
       padding: 0.5rem 0.618rem;
       color: #ffffff;
+      width: 50vmin;
     }
 
     .stats {
@@ -191,7 +192,6 @@
       bottom: 0%;
       right: 0%;
       z-index: 9000;
-      width: 11rem;
     }
 
     .animation-shot {
