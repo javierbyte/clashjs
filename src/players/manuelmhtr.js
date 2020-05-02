@@ -1,12 +1,12 @@
 var utils = require('../lib/utils.js');
-var ORIENTATION = {north: 'vertical', east: 'horizontal', south: 'vertical', west: 'horizontal'};
+var ORIENTATION = { north: 'vertical', east: 'horizontal', south: 'vertical', west: 'horizontal' };
 
 var manuelmhtr = {
   info: {
     name: 'Manuelmhtr',
     stylex: 3
   },
-  ai: function(playerState, enemiesStates, gameEnvironment) {
+  ai: function (playerState, enemiesStates, gameEnvironment) {
     var response;
     var enemies = [];
     var params = {
@@ -17,8 +17,13 @@ var manuelmhtr = {
       canMove: null
     };
 
+    if (utils.isOnAsteroid(playerState.position, gameEnvironment.asteroids)) {
+      console.log('&&& manuel avoided asteroid', gameEnvironment.asteroids, playerState)
+      return 'move'
+    }
+
     // Parse enemies
-    enemiesStates.forEach(function(enemy) {
+    enemiesStates.forEach(function (enemy) {
       if (enemy.isAlive === true) {
         enemy.nearestAmmoDistance = calculateDistanceToNearestAmmo(enemy.position);
         enemies.push(enemy);
@@ -34,7 +39,7 @@ var manuelmhtr = {
 
     function calculateVulnerabilityLevel(targetPosition) {
       var vulnerabilityLevel = 0.0;
-      enemies.forEach(function(enemy) {
+      enemies.forEach(function (enemy) {
         if (utils.isVisible(enemy.position, targetPosition, enemy.direction) && enemy.ammo > 0) {
           vulnerabilityLevel = Math.max(vulnerabilityLevel, 1.0);
         } else if (isAligned(enemy.position, targetPosition) && (enemy.ammo > 0 || enemy.nearestAmmoDistance === 1)) {
@@ -46,7 +51,7 @@ var manuelmhtr = {
         // Check if other enemies are near
         var northEast = [targetPosition[0] + 1, targetPosition[1] + 1];
         var southWest = [targetPosition[0] - 1, targetPosition[1] - 1];
-        enemies.forEach(function(enemy) {
+        enemies.forEach(function (enemy) {
           if (enemy.ammo > 0) {
             if (isAligned(enemy.position, northEast) || isAligned(enemy.position, southWest)) {
               vulnerabilityLevel = Math.max(vulnerabilityLevel, 0.25);
@@ -70,7 +75,7 @@ var manuelmhtr = {
     function getNearestAmmo(position) {
       var nearestAmmo = null;
       var nearestDistance = null;
-      gameEnvironment.ammoPosition.forEach(function(ammo) {
+      gameEnvironment.ammoPosition.forEach(function (ammo) {
         var distance = utils.getDistance(position, ammo);
         if (nearestDistance === null || distance < nearestDistance) {
           nearestDistance = distance;
@@ -85,7 +90,7 @@ var manuelmhtr = {
 
     function calculateDistanceToNearestAmmo(position) {
       var nearestDistance = null;
-      gameEnvironment.ammoPosition.forEach(function(ammo) {
+      gameEnvironment.ammoPosition.forEach(function (ammo) {
         var distance = utils.getDistance(position, ammo);
         if (nearestDistance === null || distance < nearestDistance) {
           nearestDistance = distance;
@@ -97,7 +102,7 @@ var manuelmhtr = {
     function getNearestEnemy(position) {
       var nearestEnemy = null;
       var nearestDistance = null;
-      enemies.forEach(function(enemy) {
+      enemies.forEach(function (enemy) {
         var distance = calculateEnemyDistance(position, enemy);
 
         if (nearestDistance === null || distance < nearestDistance) {
@@ -123,7 +128,7 @@ var manuelmhtr = {
         var attacker;
 
         // Find attacker
-        enemies.forEach(function(enemy) {
+        enemies.forEach(function (enemy) {
           if (enemy.ammo > 0 && utils.isVisible(enemy.position, playerState.position, enemy.direction)) {
             attacker = enemy;
           }
@@ -153,22 +158,22 @@ var manuelmhtr = {
       var maxDistanceLeft = 0;
 
       var options = [{
-          direction: 'north',
-          position: [playerState.position[0] - 1, playerState.position[1]]
-        }, {
-          direction: 'east',
-          position: [playerState.position[0], playerState.position[1] + 1]
-        }, {
-          direction: 'south',
-          position: [playerState.position[0] + 1, playerState.position[1]]
-        }, {
-          direction: 'west',
-          position: [playerState.position[0], playerState.position[1] - 1]
-        }
+        direction: 'north',
+        position: [playerState.position[0] - 1, playerState.position[1]]
+      }, {
+        direction: 'east',
+        position: [playerState.position[0], playerState.position[1] + 1]
+      }, {
+        direction: 'south',
+        position: [playerState.position[0] + 1, playerState.position[1]]
+      }, {
+        direction: 'west',
+        position: [playerState.position[0], playerState.position[1] - 1]
+      }
       ];
 
       // Process options
-      options.forEach(function(option) {
+      options.forEach(function (option) {
         option.vulnerability = calculateVulnerabilityLevel(option.position);
         option.distanceLeft = calculateDistanceLeft(option.direction);
         option.canMove = canMove(playerState.position, option.direction);

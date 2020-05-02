@@ -4,6 +4,7 @@ import { Grid, Cell } from "styled-css-grid";
 import { enableSounds, disableSounds, playSound, startMusic, stopMusic, streaks } from "./../lib/sound-effects";
 import Tiles from "./Tiles.jsx";
 import Ammos from "./Ammos.jsx";
+import Asteroids from "./Asteroids.jsx";
 import Players from "./Players.jsx";
 import Stats from "./Stats.jsx";
 import Shoots from "./Shoots.jsx";
@@ -103,6 +104,24 @@ class Clash extends React.Component {
           startMusic()
         } else {
           disableSounds()
+          stopMusic()
+        }
+      }
+    );
+  }
+
+  handleToggleMusic() {
+    // console.log('toggle music', this.state.music)
+    this.setState(
+      (prevState) => ({
+        music: !prevState.music,
+      }),
+      () => {
+        if (this.state.music) {
+          //  enableSounds()
+          startMusic()
+        } else {
+          //  disableSounds()
           stopMusic()
         }
       }
@@ -232,7 +251,19 @@ class Clash extends React.Component {
       return this.newGame()
     }
     if (evt === "KILL") return this._handleKill(data);
+    if (evt === "DESTROY") return this._handleDestroy(data);
     if (evt === "END") return this.endGame();
+  }
+
+  _handleDestroy({ player }) {
+    console.log("*** handleDestroy", player);
+    let notification = ["An Asteroid", "destroyed", player.name].join(" ");
+
+    const { kills } = this.state;
+    kills.push({ date: new Date(), text: notification });
+    this.setState({
+      kills,
+    });
   }
 
   _handleKill(data) {
@@ -388,6 +419,10 @@ class Clash extends React.Component {
               <Ammos
                 gridSize={gameEnvironment.gridSize}
                 ammoPosition={gameEnvironment.ammoPosition}
+              />
+              <Asteroids
+                gridSize={gameEnvironment.gridSize}
+                asteroids={gameEnvironment.asteroids}
               />
               <Players
                 gridSize={gameEnvironment.gridSize}

@@ -9,14 +9,19 @@ var codingpains = {
     stylex: 8
   },
 
-  ai: function(player, enemies, map) {
+  ai: function (player, enemies, map) {
+    if (utils.isOnAsteroid(player.position, map.asteroids)) {
+      console.log('&&& hge-7 avoided asteroid', map.asteroids, player)
+      return 'move'
+    }
+
     var armedEnemies = _.filter(enemies, (enemy) => enemy.ammo > 0);
-    if (logic.inDanger(player, armedEnemies)) return codingpains._eluder(player, armedEnemies, map);
+    if (logic.inDanger(player, armedEnemies, map.asteroids)) return codingpains._eluder(player, armedEnemies, map);
     if (player.ammo) return codingpains._hunter(player, enemies, map);
     return codingpains._gatherer(player, enemies, map);
   },
 
-  _gatherer: function(player, enemies, map) {
+  _gatherer: function (player, enemies, map) {
     var ammoMove;
     var safestMove;
     var centerMove;
@@ -38,7 +43,7 @@ var codingpains = {
     return utils.safeRandomMove();
   },
 
-  _hunter: function(player, enemies, map) {
+  _hunter: function (player, enemies, map) {
     var turnMove;
     var ammoMove;
     var chaseMove;
@@ -65,9 +70,9 @@ var codingpains = {
     return false;
   },
 
-  _eluder: function(player, enemies, map) {
+  _eluder: function (player, enemies, map) {
     var killers = logic.getImmediateThreats(player, enemies);
-    var closeThreats = {y: [], x:[]};
+    var closeThreats = { y: [], x: [] };
     codingpains.info.mode = 'e';
     if (killers.length) {
       if (logic.canKillAll(player, killers)) {
@@ -81,7 +86,7 @@ var codingpains = {
     }
 
     if (player.ammo) return this._hunter(player, enemies, map);
-    _.forEach(enemies, function(e) {
+    _.forEach(enemies, function (e) {
       if (logic.sameY(player.position, e.position)) {
         closeThreats.y.push(e);
       }

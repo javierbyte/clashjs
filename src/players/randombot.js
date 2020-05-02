@@ -1,12 +1,16 @@
-var utils = require('../lib/utils.js');
+var utils = require("../lib/utils.js");
 
 var randombot = {
   info: {
-    name: 'random',
+    name: "random",
   },
   ai: function (playerState, enemiesStates, gameEnvironment) {
-    return utils.randomMove()
-  }
+    if (utils.isOnAsteroid(playerState.position, gameEnvironment.asteroids)) {
+      console.log('&&& random avoided asteroid', gameEnvironment.asteroids, playerState)
+      return 'move'
+    }
+    return utils.randomMove();
+  },
 };
 
 module.exports = randombot;
