@@ -5,8 +5,12 @@ import executeMovementHelper from "./executeMovementHelper.js";
 
 var DIRECTIONS = ["north", "east", "south", "west"];
 
+const GRID_SIZE = 6;
 const SUDDEN_DEATH_TURN = 100;
-const ASTEROIDS = true;
+let asteroidsOn = true;
+let cargoOn = true;
+
+let allPositions = []
 
 class ClashJS {
   constructor(playerDefinitionArray, currentStats, evtCallback) {
@@ -31,6 +35,7 @@ class ClashJS {
         kdr: 0,
         wins: 0,
         winrate: 0,
+        cargo: 0,
         turns: 0,
         calcTime: 0,
         actions: {
@@ -59,10 +64,13 @@ class ClashJS {
   setupGame() {
     // console.log('setupGame')
     this._gameEnvironment = {
-      gridSize: 6,
+      gridSize: GRID_SIZE,
       ammoPosition: [],
+      cargos: [],
       asteroids: [],
     };
+    allPositions = _.flatten(_.range(GRID_SIZE).map(x => _.range(GRID_SIZE).map(y => ([x, y]))))
+    // console.log('allPosition', allPositions)
     this._rounds++;
     this._suddenDeathCount = 0;
     this._playerInstances = _.shuffle(this._playerInstances);
@@ -85,6 +93,7 @@ class ClashJS {
 
     this._currentPlayer = 0;
     this._createAmmo();
+    this._createCargo();
     // console.log('setupGame end', this.getState())
   }
 
@@ -111,6 +120,32 @@ class ClashJS {
     }
 
     this._gameEnvironment.ammoPosition.push(newAmmoPosition);
+  }
+
+  _createCargo() {
+    if (!cargoOn) return
+    // find open spaces with no ammo and no players
+    const open = this._findOpenPositions()
+    if (!open.length) {
+      console.log("Out of places to create cargo, skipping ...");
+      return;
+    }
+    var newCargo = {
+      type: _.random(15),
+      value: _.random(1, 5),
+      position: _.sample(open)
+    };
+
+    if (
+      this._gameEnvironment.cargos.some((el) => {
+        return el[0] === newCargo.position[0] && el[1] === newCargo.position[1];
+      })
+    ) {
+      this._createCargo();
+      return;
+    }
+
+    this._gameEnvironment.cargos.push(newCargo);
   }
 
   _randomPosition() {
@@ -140,28 +175,32 @@ class ClashJS {
     const alivePlayers = this._playerStates.filter((p) => p.isAlive);
 
     if (alivePlayers.length > 3) {
-      const numAsteroids = Math.floor(
-        Math.pow(this._gameEnvironment.gridSize, 2) * 0.01
-      );
+      const numAsteroids = Math.min(_.random(Math.floor(
+        Math.pow(this._gameEnvironment.gridSize, 2) * 0.1
+      )), 4);
 
       for (let i = 0; i < numAsteroids; i++) {
         this._gameEnvironment.asteroids.push({
           position: this._randomPosition(),
-          detonateIn: Math.floor(Math.random() * (8 - 3)) + 3,
+          detonateIn: 3 + _.random(3),
           style: 7,
         });
+        console.log('*** new random asteroid')
+
       }
     } else {
       // TARGET ASTEROIDS
-      for (let i = 0; i < alivePlayers.length; i++) {
+      const numAsteroids = _.random(alivePlayers.length)
+      for (let i = 0; i < numAsteroids; i++) {
         const adjoiningPositions = this._findAdjoiningPositions(
           alivePlayers[i].position
         );
         this._gameEnvironment.asteroids.push({
           position: _.sample(adjoiningPositions),
-          detonateIn: Math.floor(Math.random() * (8 / -3)) + 3,
+          detonateIn: 3 + _.random(3),
           style: 7,
         });
+        console.log('*** new targeted asteroid')
       }
     }
 
@@ -228,16 +267,17 @@ class ClashJS {
         JSON.stringify(this._gameEnvironment.asteroids)
       );
 
-      if (ASTEROIDS && Math.random() < 0.33) {
+      if (asteroidsOn && Math.random() < 0.33) {
         this._createAsteroids2();
       }
 
       // decrement all asteroid timers
 
       this._gameEnvironment.asteroids.forEach((asteroid, index, array) => {
+        // console.log('*** decrementing detonateIn for ', asteroid.position, asteroid.detonateIn)
         asteroid.detonateIn--;
-        if (asteroid.detonateIn <= 0) {
-          asteroid.style = 3;
+        if (asteroid.detonateIn === 0) {
+          asteroid.style = _.random(10, 15);
 
           // blow the thing up
           console.log("*** detonating asteroid", asteroid);
@@ -288,7 +328,8 @@ class ClashJS {
       this._playerStates.length / 1.2 &&
       Math.random() > 0.92
     ) {
-      this._createAmmo();
+      this._createAmmo()
+      this._createCargo()
     }
 
     // if (Math.random() > 0.98) {
@@ -299,6 +340,12 @@ class ClashJS {
   }
 
   _handleCoreAction(action, data) {
+    if (action === "CARGO") {
+      console.log("*** core action CARGO", data);
+      const { player, cargo } = data;
+      let stats = this._gameStats[player.id];
+      stats.cargo += cargo.value;
+    }
     if (action === "DESTROY") {
       console.log("*** core action DESTROY", data);
       const { player } = data;
@@ -330,7 +377,7 @@ class ClashJS {
     if (action === "WIN") {
       this._gameStats[data.winner.getId()].wins++;
       _.forEach(this._gameStats, (playerStats, key) => {
-        let { wins, winrate } = playerStats;
+        let { wins } = playerStats;
         playerStats.winrate = Math.round((wins * 100) / this._rounds);
       });
 
@@ -340,7 +387,7 @@ class ClashJS {
     }
     if (action === "DRAW") {
       _.forEach(this._gameStats, (playerStats, key) => {
-        let { wins, winrate } = playerStats;
+        let { wins } = playerStats;
         playerStats.winrate = Math.round((wins * 100) / this._rounds);
       });
       if (this._rounds >= this._totalRounds) {
@@ -384,6 +431,25 @@ class ClashJS {
     return adjoining.filter(
       ([x, y]) => x >= 0 && x < gridSize && y >= 0 && y < gridSize
     );
+  }
+
+  _findOpenPositions() {
+    const ammos = this._gameEnvironment.ammoPosition
+    const playerPositions = this._playerStates.map(player => player.position)
+    const cargoPositions = this._gameEnvironment.cargos.filter(cargo => cargo.position)
+    const result = _.differenceWith(allPositions, _.concat(playerPositions, ammos, cargoPositions), _.isEqual);
+    // console.log('findOpenPositions', result.length, playerPositions.length, ammos.length, cargoPositions.length)
+    // console.log('findOpenPositions', result, playerPositions, ammos, cargoPositions)
+    return result
+  }
+
+  setAsteroidsOn(value) {
+    // console.log('setAsteroidsOn', value, asteroidsOn)
+    asteroidsOn = value
+  }
+  setCargoOn(value) {
+    // console.log('setCargoOn', value, cargoOn)
+    cargoOn = value
   }
 }
 

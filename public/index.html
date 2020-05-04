@@ -88,6 +88,16 @@
       background: url("./static/star.png") no-repeat center / 80%;
     }
 
+    .clash-cargo {
+      position: absolute;
+      /* background: url("./static/cargo.png") no-repeat center / 80%; */
+    }
+
+    .clash-asteroid {
+      position: absolute;
+      z-index: 10;
+    }
+
     .clash-ammo:hover {
       transform: rotate(360deg);
     }
@@ -129,7 +139,7 @@
 
     .clash-asteroid-7 {
       position: absolute;
-      background: url("./static/crosshairs/circle-02-whole.png") no-repeat center / 100%;
+      background: url("./static/crosshairs/circle-02-whole.png") no-repeat center / 85%;
     }
 
     .clash-asteroid-8 {
@@ -213,14 +223,9 @@
       background: rgba(0, 0, 0, 0.5);
       padding: 0.5rem 0.618rem;
       color: #ffffff;
-      width: 50vmin;
     }
 
     .stats {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
       overflow-y: scroll;
     }
 
@@ -238,10 +243,9 @@
     }
 
     .notifications {
-      position: fixed;
-      bottom: 0%;
-      right: 0%;
+      align-self: end;
       z-index: 9000;
+
     }
 
     .animation-shot {
@@ -250,18 +254,12 @@
 
     .debug-panel {
       background: rgba(0, 0, 0, 0.9);
-      line-height: 1.4;
-      padding: 1rem;
-      font-size: 0.8rem;
-      position: fixed;
-      top: 0;
-      left: 0;
-      bottom: 0;
+      line-height: 1.2;
+      padding: 0;
+      font-size: 0.6rem;
       overflow-y: scroll;
-      width: 250px;
-      bottom: 0;
+      /* max-width: 250px; */
       z-index: 7;
-      padding-top: 86px;
     }
 
     .control-panel {
@@ -269,7 +267,6 @@
       line-height: 1.4;
       padding: 1rem;
       font-size: 0.8rem;
-      position: fixed;
       top: 0;
       left: 0;
       z-index: 10;

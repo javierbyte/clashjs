@@ -4,6 +4,7 @@ import { Grid, Cell } from "styled-css-grid";
 import { enableSounds, disableSounds, playSound, startMusic, stopMusic, streaks } from "./../lib/sound-effects";
 import Tiles from "./Tiles.jsx";
 import Ammos from "./Ammos.jsx";
+import Cargo from "./Cargo.jsx";
 import Asteroids from "./Asteroids.jsx";
 import Players from "./Players.jsx";
 import Stats from "./Stats.jsx";
@@ -20,8 +21,8 @@ var playerArray = _.shuffle(_.map(playerObjects, (el) => el.default ? el.default
 
 var killsStack = [];
 
-const DEFAULT_SPEED = 100;
-const MAX_SPEED = 0;
+const DEFAULT_SPEED = 200;
+const MAX_SPEED = 50;
 
 class Clash extends React.Component {
   constructor(props) {
@@ -30,7 +31,7 @@ class Clash extends React.Component {
     window.ClashInstance = new ClashJS(
       playerArray,
       {},
-      this.handleEvent.bind(this)
+      this.handleEvent.bind(this),
     );
 
     // window.ClashInstance.target.addEventListener("DATA", evt => {
@@ -42,6 +43,8 @@ class Clash extends React.Component {
       showDebug: false,
       sounds: true,
       music: false,
+      asteroidsOn: true,
+      cargoOn: true,
       clashjs: window.ClashInstance.getState(),
       shoots: [],
       speed: DEFAULT_SPEED,
@@ -128,29 +131,42 @@ class Clash extends React.Component {
     );
   }
 
-  handleToggleMusic() {
-    // console.log('toggle music', this.state.music)
-    this.setState(
-      (prevState) => ({
-        music: !prevState.music,
-      }),
-      () => {
-        if (this.state.music) {
-          //  enableSounds()
-          startMusic()
-        } else {
-          //  disableSounds()
-          stopMusic()
-        }
-      }
-    );
-  }
-
   handleToggleStats() {
     this.setState(
       (prevState) => ({
         showStats: !prevState.showStats,
       })
+    );
+  }
+
+  handleToggleAsteroids() {
+    this.setState(
+      (prevState) => {
+        const newValue = !prevState.asteroidsOn
+        window.ClashInstance.setAsteroidsOn(newValue)
+        return {
+          asteroidsOn: newValue,
+        }
+      }
+    );
+  }
+
+  handleToggleCargo() {
+    this.setState(
+      (prevState) => {
+        const newValue = !prevState.cargoOn
+        window.ClashInstance.setCargoOn(newValue)
+        if (newValue) {
+          return {
+            cargoOn: newValue,
+          }
+        } else {
+          return {
+            cargoOn: newValue,
+            cargos: []
+          }
+        }
+      }
     );
   }
 
@@ -331,7 +347,7 @@ class Clash extends React.Component {
     if (streakCount > 1) {
       const currentStreak = this.state.clashjs.gameStats[killer.getId()].killStreak
       // console.log('killstreak', streakCount, currentStreak, Math.max(streakCount, currentStreak || 0), killsStack)
-      this.state.clashjs.gameStats[killer.getId()].killStreak = Math.max(streakCount, currentStreak || 0)
+      window.ClashInstance._gameStats[killer.getId()].killStreak = Math.max(streakCount, currentStreak || 0)
     }
     switch (streakCount) {
       case 2:
@@ -365,6 +381,8 @@ class Clash extends React.Component {
       running,
       sounds,
       music,
+      asteroidsOn,
+      cargoOn,
       showDebug,
       showStats,
       speed,
@@ -410,8 +428,10 @@ class Clash extends React.Component {
       <>
         <Grid
           columns="1fr 100vmin 1fr"
-          areas={["control game stats"]}>
-          {/* <Cell area="header">Header</Cell> */}
+          areas={[
+            "control game stats",
+            "debug   game notifications",
+          ]}>
           <Cell area="game" onClick={this.handleClick.bind(this)}>
             <div className="clash">
               <Tiles gridSize={gameEnvironment.gridSize} />
@@ -420,32 +440,42 @@ class Clash extends React.Component {
                 gridSize={gameEnvironment.gridSize}
                 ammoPosition={gameEnvironment.ammoPosition}
               />
-              <Asteroids
+              <Cargo
                 gridSize={gameEnvironment.gridSize}
-                asteroids={gameEnvironment.asteroids}
+                cargos={gameEnvironment.cargos}
               />
               <Players
                 gridSize={gameEnvironment.gridSize}
                 playerInstances={playerInstances}
                 playerStates={playerStates}
+                debug={showDebug}
+              />
+              <Asteroids
+                gridSize={gameEnvironment.gridSize}
+                asteroids={gameEnvironment.asteroids}
               />
             </div>
           </Cell>
-          <Cell area="control">        <ControlPanel
-            running={running}
-            sounds={sounds}
-            music={music}
-            stats={showStats}
-            speed={speed}
-            handleToggleRunning={this.handleToggleRunning.bind(this)}
-            handleToggleSounds={this.handleToggleSounds.bind(this)}
-            handleToggleMusic={this.handleToggleMusic.bind(this)}
-            handleToggleStats={this.handleToggleStats.bind(this)}
-            handleChangeSpeed={this.handleChangeSpeed.bind(this)}
-          />
-            {showDebug && <DebugPanel playerStates={playerStates} />}
+          <Cell area="control">
+            <ControlPanel
+              running={running}
+              sounds={sounds}
+              music={music}
+              stats={showStats}
+              speed={speed}
+              asteroids={asteroidsOn}
+              cargo={cargoOn}
+              handleToggleRunning={this.handleToggleRunning.bind(this)}
+              handleToggleSounds={this.handleToggleSounds.bind(this)}
+              handleToggleMusic={this.handleToggleMusic.bind(this)}
+              handleToggleStats={this.handleToggleStats.bind(this)}
+              handleChangeSpeed={this.handleChangeSpeed.bind(this)}
+              handleToggleAsteroids={this.handleToggleAsteroids.bind(this)}
+              handleToggleCargo={this.handleToggleCargo.bind(this)}
+            />
           </Cell>
-          <Cell area="stats">        {!!notifications.length && <Notifications messages={notifications} />}
+          <Cell area="debug">{showDebug && <DebugPanel playerStates={playerStates} />}</Cell>
+          <Cell area="stats">
             <Stats
               rounds={rounds}
               total={totalRounds}
@@ -453,7 +483,7 @@ class Clash extends React.Component {
               stats={gameStats}
             />
           </Cell>
-          {/* <Cell area="footer">Footer</Cell> */}
+          <Cell area="notifications"><Notifications messages={notifications} /></Cell>
         </Grid>
         <StatsModal open={showStats} onClose={() => this.setState({ showStats: false })}
           rounds={rounds}

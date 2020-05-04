@@ -47,6 +47,13 @@ var clashCoreUtils = data => {
         currentPlayerState.ammo += 1;
       }
     });
+    // check if the player collected cargo
+    gameEnvironment.cargos.forEach((cargo, index) => {
+      if (cargo.position[0] === currentPlayerState.position[0] && cargo.position[1] === currentPlayerState.position[1]) {
+        gameEnvironment.cargos.splice(index, 1);
+        coreCallback('CARGO', { player: currentPlayerState, cargo })
+      }
+    });
   }
 
   if (playerAction === "shoot" && currentPlayerState.ammo > 0) {

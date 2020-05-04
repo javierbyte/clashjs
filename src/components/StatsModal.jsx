@@ -22,13 +22,17 @@ export default function StatsModal({ open, onClose, rounds,
         <table>
           <thead>
             <tr>
-              <th />
+              {/* <th /> */}
               <th>
                 Round {rounds}/{total}
               </th>
               <th>Wins</th>
               <th>Rate</th>
-              <th>K/D/R</th>
+              <th>Kills</th>
+              <th>Deaths</th>
+              <th>K/D Rate</th>
+              <th>Cargo</th>
+              <th>Ammo</th>
               <th>Turns</th>
               <th>Moves</th>
               <th>Waits</th>
@@ -42,11 +46,15 @@ export default function StatsModal({ open, onClose, rounds,
               // console.log('playerStats', playerStats)
               return (
                 <tr key={index} className={playerStats.isAlive ? "" : "player-dead"}>
-                  <td className="player-dead-emoji">💀</td>
+                  {/* <td className="player-dead-emoji">💀</td> */}
                   <td className='player-name'>{playerStats.name}</td>
                   <td className='stats-results'>{playerStats.wins}</td>
                   <td className='stats-results'>{playerStats.winrate}%</td>
-                  <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
+                  <td className='stats-results'>{playerStats.kills}</td>
+                  <td className='stats-results'>{playerStats.deaths}</td>
+                  <td className='stats-results'>{playerStats.kdr.toFixed(1)}</td>
+                  <td className='stats-results'>{playerStats.cargo}</td>
+                  <td className='stats-results'>{playerStats.ammo}</td>
                   <td className='stats-results'>{playerStats.actions.turn}</td>
                   <td className='stats-results'>{playerStats.actions.move}</td>
                   <td className='stats-results'>{playerStats.actions.wait}</td>

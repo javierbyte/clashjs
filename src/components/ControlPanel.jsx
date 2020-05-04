@@ -16,6 +16,9 @@ import {
   faClipboardList,
   faPoll,
   faRocket,
+  faMeteor,
+  faBan,
+  faGem,
 } from "@fortawesome/free-solid-svg-icons";
 import { Grid, Cell } from 'styled-css-grid'
 import styled from 'styled-components'
@@ -51,11 +54,15 @@ export default function ControlPanel({
   sounds,
   music,
   speed,
+  asteroids,
+  cargo,
   handleToggleRunning,
   handleToggleSounds,
   handleToggleMusic,
   handleToggleStats,
   handleChangeSpeed,
+  handleToggleAsteroids,
+  handleToggleCargo,
 }) {
   const [showRockets, setShowRockets] = React.useState(false)
   const columns = window.innerWidth > 900 ? 10 : 5
@@ -88,6 +95,36 @@ export default function ControlPanel({
             <span className="fa-layers fa-fw">
               <FontAwesomeIcon icon={faMusic} transform="up-6 left-2 shrink-1" />
               <FontAwesomeIcon icon={faVolumeMute} transform="down-8 shrink-4" />
+            </span>
+          )}
+      </button>
+      <button
+        className="circle-button"
+        onClick={handleToggleAsteroids}
+      >
+        {asteroids ? (
+          <span className="fa-layers fa-fw">
+            <FontAwesomeIcon icon={faMeteor} transform="" />
+          </span>
+        ) : (
+            <span className="fa-layers fa-fw">
+              <FontAwesomeIcon icon={faMeteor} transform="" />
+              <FontAwesomeIcon icon={faBan} transform="grow-12" />
+            </span>
+          )}
+      </button>
+      <button
+        className="circle-button"
+        onClick={handleToggleCargo}
+      >
+        {cargo ? (
+          <span className="fa-layers fa-fw">
+            <FontAwesomeIcon icon={faGem} transform="" />
+          </span>
+        ) : (
+            <span className="fa-layers fa-fw">
+              <FontAwesomeIcon icon={faGem} transform="" />
+              <FontAwesomeIcon icon={faBan} transform="grow-12" />
             </span>
           )}
       </button>

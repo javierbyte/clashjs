@@ -28,7 +28,7 @@ class Players extends React.Component {
 
   render() {
     var { playerDirections } = this.state;
-    var { gridSize, playerStates, playerInstances } = this.props;
+    var { gridSize, playerStates, playerInstances, debug } = this.props;
 
     var tileSize = 100 / gridSize;
 
@@ -61,7 +61,12 @@ class Players extends React.Component {
               transform: "scale(1.25) rotate(" + 90 * playerDirections[playerIndex] + "deg) "
             }}
           />
-          <div className="clash-player-name">{playerInfo.name}</div>
+          {debug ? (
+            <div className="clash-player-name" style={{ color: playerData.ammo ? 'red' : 'inherit' }}>{playerInfo.name} {playerData.ammo ? `[${playerData.ammo}]` : ''}</div>
+          ) : (
+              <div className="clash-player-name">{playerInfo.name}</div>
+            )
+          }
         </div>
       );
     });

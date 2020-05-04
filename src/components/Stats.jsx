@@ -18,6 +18,7 @@ class Stats extends React.Component {
               <th>Wins</th>
               <th>Rate</th>
               <th>K/D/R</th>
+              <th>Cargo</th>
             </tr>
           </thead>
           <tbody>
@@ -29,6 +30,7 @@ class Stats extends React.Component {
                   <td className='stats-results'>{playerStats.wins}</td>
                   <td className='stats-results'>{playerStats.winrate}%</td>
                   <td className='stats-results'>{playerStats.kills}/{playerStats.deaths}/{playerStats.kdr.toFixed(1)}</td>
+                  <td className='stats-results'>{playerStats.cargo}</td>
                 </tr>
               );
             })}
