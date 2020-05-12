@@ -37,8 +37,7 @@ Read the [game definitions](#game-definitions) to learn how to create your playe
 # Game. Functional Spec.
 
 ## Introduction.
-Games and coding are fun! So I want to make a game 
-we can confront AI vs AI in javascript.
+Games and coding are fun! So I want to make a game where we can confront AI vs AI in javascript.
 
 The game is simple: we will put all the players in a battle arena, and then make them fight to death. There will be ammo in the arena so they can shoot each other. The last player alive wins!
 
