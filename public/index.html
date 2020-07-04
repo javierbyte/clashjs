@@ -56,10 +56,10 @@
 
       .instructions {
         position: fixed;
-        font-size: 0.8em;
+        font-size: 1rem;
         bottom: 0;
         left: 0;
-        padding: 1em;
+        padding: 1rem;
         color: #eee;
       }
       .instructions a {
@@ -157,6 +157,12 @@
         background: rgba(0, 0, 0, 0.618);
         padding: 0.5rem 0.618rem;
         color: #ffffff;
+      }
+
+      @media screen and (max-width: 640px) {
+        .notifications {
+          display: none;
+        }
       }
 
       .stats {
@@ -291,10 +297,11 @@
     </style>
 
     <div class="instructions">
-      <b style="font-weight: 700">CLASHJS</b>
-      <div>Javascript AI battle game.</div>
+      <h2>CLASHJS</h2>
+      <div><strong>Javascript AI battle game.</strong></div>
+      <div>Play by coding your own spaceship with javascript!</div>
       <div>
-        Learn how to play <a target="_blank" href="https://github.com/javierbyte/clashjs#game-definitions">here</a>.
+        Learn more <a target="_blank" href="https://github.com/javierbyte/clashjs">github.com/javierbyte/clashjs</a>, by <a href="https://javier.xyz">javierbyte</a>.
       </div>
     </div>
 

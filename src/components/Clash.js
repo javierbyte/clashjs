@@ -1,12 +1,12 @@
 import React from "react";
 import _ from "lodash";
 import fx from "./../lib/sound-effects";
-import Tiles from "./Tiles.jsx";
-import Ammos from "./Ammos.jsx";
-import Players from "./Players.jsx";
-import Stats from "./Stats.jsx";
-import Shoots from "./Shoots.jsx";
-import Notifications from "./Notifications.jsx";
+import Tiles from "./Tiles.js";
+import Ammos from "./Ammos.js";
+import Players from "./Players.js";
+import Stats from "./Stats.js";
+import Shoots from "./Shoots.js";
+import Notifications from "./Notifications.js";
 
 import ClashJS from "../clashjs/ClashCore.js";
 

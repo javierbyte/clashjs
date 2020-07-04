@@ -8,21 +8,27 @@ This is an experiment. The idea is to create a battle game, where the participan
 
 # How to run the demo.
 
-You'll need nodejs, tested with current LTS version `12.x`.
+You'll need nodejs [https://nodejs.org/en/download/](https://nodejs.org/en/download/), tested with current LTS version `12.x`.
 
 1. Clone the repo.
 ```
 git clone git@github.com:javierbyte/clashjs.git
 ```
 
-2.
+2. Move to the repo directory, install dependencies.
 ```bash
 cd clashjs
 npm install
+```
+
+3. Run the repo!
+```
 npm start
 ```
 
 It should open your browser with the `http://localhost:3000/` demo URL.
+
+The current configured players will start to play right away, at this point you can edit them on `src/players/<PLAYER_NAME>.js` and the browser should refresh on save.
 
 # How to participate.
 Add your player as specificed in [player definition](#player-definition) in

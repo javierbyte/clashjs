@@ -1,6 +1,6 @@
 import React from "react";
 
-import Clash from "./components/Clash.jsx";
+import Clash from "./components/Clash.js";
 
 function App() {
   return (
