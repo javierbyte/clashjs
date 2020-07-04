@@ -39,7 +39,7 @@ Read the [game definitions](#game-definitions) to learn how to create your playe
 ## Introduction.
 Games and coding are fun! So I want to make a game where we can confront AI vs AI in javascript.
 
-The game is simple: we will put all the players in a battle arena, and then make them fight to death. Where will be ammo in the arena so they can shoot each other. The last player alive wins!
+The game is simple: we will put all the players in a battle arena, and then make them fight to death. There will be ammo in the arena so they can shoot each other. The last player alive wins!
 
 ### Game Rules.
 * Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, east, south or west.
@@ -49,12 +49,12 @@ The game is simple: we will put all the players in a battle arena, and then make
   * A environment configuration option with:
     * Grid size.
     * The position of the ammo.
-* Every turn a player must execute some of the following actions:
+* Every turn a player must execute one of the following actions:
   * Move one step in its current direction. (`move`).
   * Turn into any of the four directions. (`north`, `east`, `south`, `west`).
   * Shoot. (`shoot`).
 * A player can shoot to try to destroy another player.
-* A player can collect ammo in the moment it steps over it. A new ammo may appear in any moment of the game.
+* A player can collect ammo in the moment it steps over it. New ammo may appear in any moment of the game.
 
 ## Game Definitions.
 
@@ -119,7 +119,7 @@ Let the *game state* (`gameState`) be an object with the array of all user state
 We should make an app that can take functions provided by the users, execute them, and render the game as specified in the functional spec.
 
 ## Constraints.
-* Just. The game mechanics should avoid to accidentally benefit players by its random nature. The order of execution of the AIs should not benefit any player. The position of the newly create coins should try to be as just for everyone.
+* The game mechanics should avoid accidentally benefitting players by its random nature. The order of execution of the AIs should not favor any particular player. The position of newly created coins should be fair for all players.
 * Be safe. A player code should not be able to modify anything other than itself.
 * Be resilient as possible. If a player crashes or stop responding, the show must go on.
 
@@ -132,12 +132,12 @@ We can divide the problem in 3 big steps.
 * **AI Runner**. This will take all the user provided functions and the current game state, and execute every function.
   * This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
 * **Game Core**. This will take the responses that the AI Runners sends, and apply the game logic on them.
-  * Kill killed players.
+  * Handle killed players.
   * Move and turn players.
   * Collect and count coins.
   * Generate new coins if necessary.
-  * Set the paralized turns to players that shooted.
-  * Count if too many inactive turns had passed.
+  * Set the paralized turns to players that shot.
+  * Count if too many inactive turns have passed.
   * Stop the game when it ends.
 * **Render**. This will take the game state and render it nicely.
 
@@ -163,7 +163,7 @@ http://knsv.github.io/mermaid/live_editor/
 The AI runner should execute all the functions that the players provided, with the current user state, all user states, and game enrivonment as arguments.
 
 ## Constraints.
-* Prevent the user functions to modify anything except itself.
+* Isolate the user functions.  They should not be allowed to modify any other code.
 * Catch executions errors, and simply return `null` as response to the Game Core.
 * Detect if any functions gets stuck in an infinite loop, and return `null` as response.
 
@@ -173,10 +173,10 @@ We can run the functions as WebWorkers because:
 * Runs in a sandbox. If they crash or stop responding we can detect it.
 * Bonus: We can parallelise the excecution.
 
-The game is designed to make irrelevant the order of execution of the AIs. So we are safe running all this asynchronous.
+The game is designed to make irrelevant the order of execution of the AIs. We are safe in running all this asynchronously.
 
 ## Solution.
-To prevent the functions to take so much time thinking (probably because an infinite loop), we will create an array of `null`s, where we will put the responses of the workers as they arrive. If `X` seconds passes (enough time to think for almost everything, except infinite loops, of couse) then we will pass the `null`ified response of that worker, and the Game Core will kill that player.
+To prevent the functions from taking too much time processing (probably because an infinite loop), we will create an array of `null`s, where we will put the responses of the workers as they arrive. If `X` seconds passes (enough processing time for almost everything, except infinite loops, of couse) then we will pass the `null`ified response of that worker, and the Game Core will kill that player.
 
 ![](spec_assets/airunner-blackbox.png)
 <!---
@@ -209,7 +209,7 @@ This javascript class will recive a `playerDefinition` and return a player insta
   * `getInfo`. Will return the player info.
   * `execute`. Will receive the following arguments:
     * [`playerState`](#player-state). The current player state.
-    * `enemiesStates`. An array all the other live players `playerState`s.
+    * `enemiesStates`. An array of all the other live players `playerState`s.
     * [`gameEnvironment`](#game-environment). The game environment object.
 
 ## CashJS Class.
