@@ -136,7 +136,7 @@ class Clash extends React.Component {
     });
     let notification = [
       killer.getName(),
-      "killed",
+      "eliminated",
       _.map(killed, (player) => player.getName()).join(","),
     ].join(" ");
 
@@ -182,13 +182,13 @@ class Clash extends React.Component {
 
     switch (streakCount + Math.floor(Math.random() * 3)) {
       case 3:
-        spreeMessage = killer.getName() + " is on a killing spree!";
+        spreeMessage = killer.getName() + " is on a elimination spree!";
         break;
       case 4:
         spreeMessage = killer.getName() + " is dominating!";
         break;
       case 5:
-        spreeMessage = killer.getName() + " is on a rampage of kills!";
+        spreeMessage = killer.getName() + " is on a rampage of eliminations!";
         break;
       case 6:
         spreeMessage = killer.getName() + " is Godlike!";
