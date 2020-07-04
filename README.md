@@ -1,21 +1,28 @@
-# [ClashJS](http://javierbyte.github.io/clashjs/)
+# [ClashJS.com](https://clashjs.com/)
 
-[![](spec_assets/screenshot.jpg)](http://javierbyte.github.io/clashjs/)
+[![](spec_assets/screenshot.jpg)](https://clashjs.com/)
 
-[Demo Online](http://javierbyte.github.io/clashjs/)
+[Demo Online](https://clashjs.com/)
 
 This is an experiment. The idea is to create a battle game, where the participants code their AI, and then we make them fight! You can play by adding your own AI to the game!
 
 # How to run the demo.
 
-Clone the repo and then
+You'll need nodejs, tested with current LTS version `12.x`.
 
-```sh
-npm install
-npm run dev
+1. Clone the repo.
+```
+git clone git@github.com:javierbyte/clashjs.git
 ```
 
-Then go to `http://localhost:8080`.
+2.
+```bash
+cd clashjs
+npm install
+npm start
+```
+
+It should open your browser with the `http://localhost:3000/` demo URL.
 
 # How to participate.
 Add your player as specificed in [player definition](#player-definition) in
