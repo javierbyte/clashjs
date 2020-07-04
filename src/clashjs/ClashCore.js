@@ -12,7 +12,7 @@ class ClashJS {
     // const clashjsTarget = class ClashJSTarget extends EventTarget {};
     // this.target = new clashjsTarget();
 
-    this._totalRounds = playerDefinitionArray.length * 2 + 6;
+    this._totalRounds = 5;
     this._rounds = 0;
     this._gameStats = currentStats || {};
     this._evtCallback = (msg, data) => {
@@ -21,7 +21,7 @@ class ClashJS {
     };
     this._alivePlayerCount = 0;
     this._suddenDeathCount = 0;
-    this._playerInstances = playerDefinitionArray.map(playerDefinition => {
+    this._playerInstances = playerDefinitionArray.map((playerDefinition) => {
       let player = new PlayerClass(playerDefinition);
       this._gameStats[player.getId()] = {
         name: player.getName(),
@@ -29,7 +29,6 @@ class ClashJS {
         kills: 0,
         kdr: 0,
         wins: 0,
-        winrate: 0
       };
       return player;
     });
@@ -38,28 +37,29 @@ class ClashJS {
   }
 
   _getAlivePlayerCount() {
-    return this._playerStates.reduce((result, el) => {
-      return el.isAlive ? result + 1 : result;
-    }, 0);
+    return this._playerStates.filter((player) => player.isAlive).length;
   }
 
   setupGame() {
     this._gameEnvironment = {
-      gridSize: 13,
-      ammoPosition: []
+      gridSize: 9 + Math.round(Math.random() * 3) * 2,
+      ammoPosition: [],
     };
     this._rounds++;
     this._suddenDeathCount = 0;
     this._playerInstances = _.shuffle(this._playerInstances);
     this._alivePlayerCount = this._playerInstances.length;
-    this._playerStates = this._playerInstances.map(playerInstance => {
-      let gridSize = this._gameEnvironment.gridSize;
+    this._playerStates = this._playerInstances.map((playerInstance) => {
+      const gridSize = this._gameEnvironment.gridSize;
+      const directionAngle = Math.floor(Math.random() * 4);
+
       return {
         style: playerInstance.getInfo().style,
         position: [Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)],
-        direction: DIRECTIONS[Math.floor(Math.random() * 4)],
+        direction: DIRECTIONS[directionAngle],
+        directionAngle: directionAngle,
         ammo: 0,
-        isAlive: true
+        isAlive: true,
       };
     });
 
@@ -70,11 +70,11 @@ class ClashJS {
   _createAmmo() {
     var newAmmoPosition = [
       Math.floor(Math.random() * this._gameEnvironment.gridSize),
-      Math.floor(Math.random() * this._gameEnvironment.gridSize)
+      Math.floor(Math.random() * this._gameEnvironment.gridSize),
     ];
 
     if (
-      this._gameEnvironment.ammoPosition.some(el => {
+      this._gameEnvironment.ammoPosition.some((el) => {
         return el[0] === newAmmoPosition[0] && el[1] === newAmmoPosition[1];
       })
     ) {
@@ -92,7 +92,7 @@ class ClashJS {
       rounds: this._rounds,
       totalRounds: this._totalRounds,
       playerStates: this._playerStates,
-      playerInstances: this._playerInstances
+      playerInstances: this._playerInstances,
     };
   }
 
@@ -129,7 +129,10 @@ class ClashJS {
 
     this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
 
-    if (this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 && Math.random() > 0.92) {
+    if (
+      this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 &&
+      Math.random() > 0.94
+    ) {
       this._createAmmo();
     }
 
@@ -144,7 +147,7 @@ class ClashJS {
     if (action === "KILL") {
       let { killer, killed } = data;
       this._gameStats[killer.getId()].kills++;
-      _.forEach(this._playerInstances, player => {
+      _.forEach(this._playerInstances, (player) => {
         let stats = this._gameStats[player.getId()];
         if (killed.indexOf(player) > -1) {
           this._alivePlayerCount--;
@@ -160,20 +163,12 @@ class ClashJS {
     }
     if (action === "WIN") {
       this._gameStats[data.winner.getId()].wins++;
-      _.forEach(this._gameStats, (playerStats, key) => {
-        let { wins, winrate } = playerStats;
-        playerStats.winrate = Math.round((wins * 100) / this._rounds);
-      });
 
       if (this._rounds >= this._totalRounds) {
         return this._evtCallback("END");
       }
     }
     if (action === "DRAW") {
-      _.forEach(this._gameStats, (playerStats, key) => {
-        let { wins, winrate } = playerStats;
-        playerStats.winrate = Math.round((wins * 100) / this._rounds);
-      });
       if (this._rounds >= this._totalRounds) {
         return this._evtCallback("END");
       }
@@ -188,7 +183,7 @@ class ClashJS {
       playerInstances: this._playerInstances,
       gameEnvironment: this._gameEnvironment,
       evtCallback: this._evtCallback,
-      coreCallback: this._handleCoreAction.bind(this)
+      coreCallback: this._handleCoreAction.bind(this),
     });
   }
 }

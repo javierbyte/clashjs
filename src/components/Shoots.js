@@ -4,9 +4,9 @@ import _ from "lodash";
 var DIRECTIONS = ["north", "east", "south", "west"];
 
 class Shoots extends React.Component {
-  shouldComponentUpdate(nextProps) {
-    return nextProps.shoots.length !== this.props.shoots.length;
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return nextProps.shoots.length !== this.props.shoots.length;
+  // }
 
   render() {
     var { shoots, gridSize } = this.props;

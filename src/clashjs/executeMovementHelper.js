@@ -8,12 +8,31 @@ var safeMovement = (value, size) => {
   return value;
 };
 
-var clashCoreUtils = data => {
-  var { playerIndex, playerAction, playerStates, playerInstances, gameEnvironment, evtCallback, coreCallback } = data;
+var clashCoreUtils = (data) => {
+  var {
+    playerIndex,
+    playerAction,
+    playerStates,
+    playerInstances,
+    gameEnvironment,
+    evtCallback,
+    coreCallback,
+  } = data;
   var currentPlayerState = playerStates[playerIndex];
 
   if (DIRECTIONS.indexOf(playerAction) !== -1) {
-    currentPlayerState.direction = playerAction;
+    const newDirection = DIRECTIONS.indexOf(playerAction);
+    const currentDirection = DIRECTIONS.indexOf(currentPlayerState.direction);
+
+    // alert(newDirection, currentPlayerState.direction)
+
+    let directionDifference = ((newDirection + 4) % 4) - ((currentDirection + 4) % 4);
+    if (directionDifference === 3) directionDifference = -1;
+    if (directionDifference === -3) directionDifference = 1;
+
+    playerStates[playerIndex].direction = playerAction;
+    playerStates[playerIndex].directionAngle =
+      playerStates[playerIndex].directionAngle + directionDifference;
     return playerStates;
   }
 
@@ -36,8 +55,14 @@ var clashCoreUtils = data => {
     }
 
     // prevent the player to go over the world
-    currentPlayerState.position[0] = safeMovement(currentPlayerState.position[0], gameEnvironment.gridSize);
-    currentPlayerState.position[1] = safeMovement(currentPlayerState.position[1], gameEnvironment.gridSize);
+    currentPlayerState.position[0] = safeMovement(
+      currentPlayerState.position[0],
+      gameEnvironment.gridSize
+    );
+    currentPlayerState.position[1] = safeMovement(
+      currentPlayerState.position[1],
+      gameEnvironment.gridSize
+    );
 
     // check if the player collected ammo
     gameEnvironment.ammoPosition.forEach((el, index) => {
@@ -56,13 +81,17 @@ var clashCoreUtils = data => {
     evtCallback("SHOOT", {
       shooter: playerIndex,
       origin: currentPlayerState.position,
-      direction: currentPlayerState.direction
+      direction: currentPlayerState.direction,
     });
 
     playerStates.forEach((enemyObject, enemyIndex) => {
       if (
         enemyObject.isAlive &&
-        utils.isVisible(currentPlayerState.position, enemyObject.position, currentPlayerState.direction)
+        utils.isVisible(
+          currentPlayerState.position,
+          enemyObject.position,
+          currentPlayerState.direction
+        )
       ) {
         kills.push(enemyIndex);
         enemyObject.isAlive = false;
@@ -70,14 +99,14 @@ var clashCoreUtils = data => {
     });
 
     if (kills.length) {
-      survivors = _.filter(playerStates, player => player.isAlive);
+      survivors = _.filter(playerStates, (player) => player.isAlive);
       coreCallback("KILL", {
         killer: playerInstances[playerIndex],
-        killed: _.map(kills, index => playerInstances[index])
+        killed: _.map(kills, (index) => playerInstances[index]),
       });
       evtCallback("KILL", {
         killer: playerIndex,
-        killed: kills
+        killed: kills,
       });
 
       if (!survivors.length) {
@@ -87,10 +116,10 @@ var clashCoreUtils = data => {
 
       if (survivors.length === 1) {
         coreCallback("WIN", {
-          winner: playerInstances[playerIndex]
+          winner: playerInstances[playerIndex],
         });
         evtCallback("WIN", {
-          winner: playerInstances[playerIndex]
+          winner: playerInstances[playerIndex],
         });
       }
     }

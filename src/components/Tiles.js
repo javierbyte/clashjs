@@ -1,9 +1,9 @@
 import React from "react";
 
 class Tiles extends React.Component {
-  shouldComponentUpdate() {
-    return false;
-  }
+  // shouldComponentUpdate() {
+  //   return false;
+  // }
 
   render() {
     var { gridSize } = this.props;
@@ -14,7 +14,11 @@ class Tiles extends React.Component {
     var tileRender = [];
     for (i = 0; i < gridSize * gridSize; i++) {
       tileRender.push(
-        <div style={{ height: tileSize + "vmin", width: tileSize + "vmin" }} className="clash-tile" key={i} />
+        <div
+          style={{ height: tileSize + "vmin", width: tileSize + "vmin" }}
+          className="clash-tile"
+          key={i}
+        />
       );
     }
 

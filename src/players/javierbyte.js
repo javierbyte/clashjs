@@ -1,12 +1,12 @@
-var utils = require("../lib/utils.js");
+const utils = require("../lib/utils.js");
 
-var javierbyte = {
+const javierbyte = {
   info: {
     name: "javierbyte",
-    style: 2
+    style: 2,
   },
   ai: (playerState, enemiesState, gameEnvironment) => {
-    var directionToAmmo;
+    const directionToAmmo;
 
     if (Math.random() > 0.9) return "shoot";
 
@@ -20,7 +20,7 @@ var javierbyte = {
     }
 
     return utils.randomMove();
-  }
+  },
 };
 
 module.exports = javierbyte;

@@ -177,6 +177,7 @@ var ericku_ = {
     style: 6
   },
   ai: function(player, enemies, map) {
+    if (Math.random() > 0.9) return "move";
     if (player.ammo) return hunter(player, enemies, map);
     return gatherer(player, enemies, map);
   }

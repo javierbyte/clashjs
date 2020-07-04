@@ -22,7 +22,7 @@ class Ammos extends React.Component {
       );
     });
 
-    return <div className="clash-layer animation-glow">{ammoRender}</div>;
+    return <div style={{zIndex: 1}} className="clash-layer animation-glow">{ammoRender}</div>;
   }
 }
 
