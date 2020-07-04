@@ -1,6 +1,5 @@
 import React from "react";
 import _ from "lodash";
-import fx from "./../lib/sound-effects";
 import Tiles from "./Tiles.js";
 import Ammos from "./Ammos.js";
 import Players from "./Players.js";
@@ -11,11 +10,11 @@ import Notifications from "./Notifications.js";
 import ClashJS from "../clashjs/ClashCore.js";
 
 import playerObjects from "../Players.js";
-var playerArray = _.shuffle(_.map(playerObjects, el => el));
+var playerArray = _.shuffle(_.map(playerObjects, (el) => el));
 
 var killsStack = [];
 
-const DEFAULT_SPEED = 100;
+const DEFAULT_SPEED = 200;
 const MAX_SPEED = 50;
 
 class Clash extends React.Component {
@@ -34,7 +33,7 @@ class Clash extends React.Component {
       speed: DEFAULT_SPEED,
       kills: [],
       currentGameIndex: 1,
-      finished: false
+      finished: false,
     };
   }
 
@@ -44,7 +43,7 @@ class Clash extends React.Component {
 
   handleClick() {
     this.setState({
-      speed: Math.floor(this.state.speed * 0.9)
+      speed: Math.floor(this.state.speed * 0.9),
     });
   }
 
@@ -56,12 +55,12 @@ class Clash extends React.Component {
     window.ClashInstance.setupGame();
 
     this.setState(
-      state => {
+      (state) => {
         return {
           clashjs: window.ClashInstance.getState(),
           speed: DEFAULT_SPEED,
           kills: [],
-          currentGameIndex: state.currentGameIndex + 1
+          currentGameIndex: state.currentGameIndex + 1,
         };
       },
       () => {
@@ -99,7 +98,7 @@ class Clash extends React.Component {
       this.setState(
         {
           clashjs: window.ClashInstance.getState(),
-          speed: this.state.speed > MAX_SPEED ? parseInt(this.state.speed * 0.99, 10) : MAX_SPEED
+          speed: this.state.speed > MAX_SPEED ? parseInt(this.state.speed * 0.99, 10) : MAX_SPEED,
         },
         this.nextTurn
       );
@@ -112,11 +111,11 @@ class Clash extends React.Component {
       newShoots.push({
         direction: data.direction,
         origin: data.origin.slice(),
-        time: new Date().getTime()
+        time: new Date().getTime(),
       });
 
       this.setState({
-        shoots: newShoots
+        shoots: newShoots,
       });
     }
     if (evt === "WIN") return this.newGame();
@@ -129,17 +128,21 @@ class Clash extends React.Component {
     let players = window.ClashInstance.getState().playerInstances;
     let kills = this.state.kills;
     let killer = players[data.killer];
-    let killed = _.map(data.killed, index => {
+    let killed = _.map(data.killed, (index) => {
       killsStack.push(data.killer);
       killer.kills++;
       players[index].deaths++;
       return players[index];
     });
-    let notification = [killer.getName(), "killed", _.map(killed, player => player.getName()).join(",")].join(" ");
+    let notification = [
+      killer.getName(),
+      "killed",
+      _.map(killed, (player) => player.getName()).join(","),
+    ].join(" ");
 
     kills.push({ date: new Date(), text: notification });
     this.setState({
-      kills: kills
+      kills: kills,
     });
 
     setTimeout(() => this.handleStreak(data.killer, killer, killed), 100);
@@ -151,72 +154,68 @@ class Clash extends React.Component {
       shoots: [],
       speed: 0,
       kills: [],
-      finished: true
+      finished: true,
     });
   }
 
   handleStreak(index, killer, killed) {
-    let streakCount = _.filter(killsStack, player => player === index).length;
+    let streakCount = _.filter(killsStack, (player) => player === index).length;
     let multiKill = "";
     let spreeMessage = "";
     let kills = this.state.kills;
-    if (killsStack.length === 1) {
-      setTimeout(fx.streak.firstBlood.play(), 50);
-    }
 
     switch (killed.length) {
       case 2:
-        setTimeout(fx.streak.doubleKill.play(), 100);
         multiKill = killer.getName() + " got a double kill!";
         break;
       case 3:
-        setTimeout(fx.streak.tripleKill.play(), 100);
         multiKill = killer.getName() + " got a Triple Kill!";
         break;
       case 4:
-        setTimeout(fx.streak.monsterKill.play(), 100);
         multiKill = killer.getName() + " is a MONSTER KILLER!";
         break;
     }
     kills.push({
       date: new Date(),
-      text: multiKill
+      text: multiKill,
     });
 
     switch (streakCount + Math.floor(Math.random() * 3)) {
       case 3:
-        setTimeout(fx.streak.killingSpree.play(), 300);
         spreeMessage = killer.getName() + " is on a killing spree!";
         break;
       case 4:
-        setTimeout(fx.streak.dominating.play(), 300);
         spreeMessage = killer.getName() + " is dominating!";
         break;
       case 5:
-        setTimeout(fx.streak.rampage.play(), 300);
         spreeMessage = killer.getName() + " is on a rampage of kills!";
         break;
       case 6:
-        setTimeout(fx.streak.godLike.play(), 300);
         spreeMessage = killer.getName() + " is Godlike!";
         break;
       default:
         spreeMessage = `Somebody please stop ${killer.getName()}!`;
-        setTimeout(fx.streak.ownage.play(), 300);
     }
     if (Math.random() > 0.5) kills.push({ date: new Date(), text: spreeMessage });
     this.setState({
-      kills: kills
+      kills: kills,
     });
   }
 
   render() {
     var { clashjs, shoots, kills, finished } = this.state;
 
-    var { gameEnvironment, gameStats, playerStates, playerInstances, rounds, totalRounds } = clashjs;
+    var {
+      gameEnvironment,
+      gameStats,
+      playerStates,
+      playerInstances,
+      rounds,
+      totalRounds,
+    } = clashjs;
 
     gameEnvironment = gameEnvironment || {
-      gridSize: 13
+      gridSize: 13,
     };
 
     _.forEach(playerInstances, (player, index) => {
@@ -226,10 +225,10 @@ class Clash extends React.Component {
     const notification = [...kills];
 
     if (finished) {
-      const winner = _.sortBy(gameStats, playerStats => playerStats.wins * -1)[0];
+      const winner = _.sortBy(gameStats, (playerStats) => playerStats.wins * -1)[0];
       notification.push({
         date: new Date(),
-        text: <b style={{ color: "#0e0", fontWeight: 700 }}>Congrats {winner.name}!</b>
+        text: <b style={{ color: "#0e0", fontWeight: 700 }}>Congrats {winner.name}!</b>,
       });
       notification.push({ date: new Date(), text: "Refresh the page to start again" });
     }
@@ -239,8 +238,12 @@ class Clash extends React.Component {
         <Tiles gridSize={gameEnvironment.gridSize} />
         <Shoots shoots={shoots.slice()} gridSize={gameEnvironment.gridSize} />
         <Ammos gridSize={gameEnvironment.gridSize} ammoPosition={gameEnvironment.ammoPosition} />
-        <Players gridSize={gameEnvironment.gridSize} playerInstances={playerInstances} playerStates={playerStates} />
-        {!!notification.length && <Notifications kills={notification} />}
+        <Players
+          gridSize={gameEnvironment.gridSize}
+          playerInstances={playerInstances}
+          playerStates={playerStates}
+        />
+        {!!notification.length && <Notifications notifications={notification} />}
         <Stats rounds={rounds} total={totalRounds} playerStates={playerStates} stats={gameStats} />
         {false && <pre className="debugger">{JSON.stringify(playerStates, 0, 2)}</pre>}
       </div>
