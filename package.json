@@ -13,7 +13,8 @@
     "lodash": "^4.17.15",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.1",
+    "wolfy87-eventemitter": "^5.2.9"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -24,7 +25,9 @@
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
-    "ignorePatterns": ["./src/players/*.js"],
+    "ignorePatterns": [
+      "src/players/**.js"
+    ],
     "extends": "react-app"
   },
   "browserslist": {

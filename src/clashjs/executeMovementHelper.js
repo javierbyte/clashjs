@@ -1,15 +1,15 @@
-var _ = require("lodash");
-var utils = require("../lib/utils.js");
-var DIRECTIONS = ["north", "east", "south", "west"];
+const _ = require("lodash");
+const utils = require("../lib/utils.js");
+const DIRECTIONS = ["north", "east", "south", "west"];
 
-var safeMovement = (value, size) => {
+const safeMovement = (value, size) => {
   if (value < 0) return 0;
   if (value > size - 1) return size - 1;
   return value;
 };
 
-var clashCoreUtils = (data) => {
-  var {
+const clashCoreUtils = (data) => {
+  const {
     playerIndex,
     playerAction,
     playerStates,
@@ -18,7 +18,7 @@ var clashCoreUtils = (data) => {
     evtCallback,
     coreCallback,
   } = data;
-  var currentPlayerState = playerStates[playerIndex];
+  const currentPlayerState = playerStates[playerIndex];
 
   if (DIRECTIONS.indexOf(playerAction) !== -1) {
     const newDirection = DIRECTIONS.indexOf(playerAction);
@@ -78,6 +78,7 @@ var clashCoreUtils = (data) => {
 
     let kills = [];
     let survivors = [];
+
     evtCallback("SHOOT", {
       shooter: playerIndex,
       origin: currentPlayerState.position,
@@ -105,14 +106,9 @@ var clashCoreUtils = (data) => {
         killed: _.map(kills, (index) => playerInstances[index]),
       });
       evtCallback("KILL", {
-        killer: playerIndex,
-        killed: kills,
+        killer: playerInstances[playerIndex],
+        killed: _.map(kills, (index) => playerInstances[index]),
       });
-
-      if (!survivors.length) {
-        coreCallback("DRAW");
-        evtCallback("DRAW");
-      }
 
       if (survivors.length === 1) {
         coreCallback("WIN", {
@@ -128,4 +124,4 @@ var clashCoreUtils = (data) => {
   return playerStates;
 };
 
-module.exports = clashCoreUtils;
+export default clashCoreUtils;

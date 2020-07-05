@@ -95,10 +95,10 @@ b {
   left: 0;
 }
 .clash-player-name {
-  top: -2rem;
-  width: 5rem;
+  top: -1.5rem;
+  width: 8rem;
   left: 50%;
-  margin-left: -2.5rem;
+  margin-left: -4rem;
   text-transform: uppercase;
   text-align: center;
   font-size: 0.75rem;
@@ -143,13 +143,14 @@ td.player-name {
 }
 
 .notifications,
-.stats {
+.stats,
+.debugger {
   background: rgba(255, 255, 255, 0.05);
   /*box-shadow: rgba(0, 0, 0, 0.05) 0 1px 0, rgba(0, 0, 0, 0.1) 0 8px 16px;*/
   color: #fff;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  width: 220px;
+  width: 280px;
   margin: 16px;
   border-radius: 10px;
   overflow: hidden;
@@ -225,12 +226,11 @@ td.player-name {
 }
 
 .debugger {
-  background: rgba(0, 0, 0, 0.5);
-  line-height: 1.4;
   padding: 1rem;
   font-size: 0.8rem;
+  line-height: 0.8rem;
   position: fixed;
-  bottom: 0;
+  top: 60px;
   left: 0;
 }
 

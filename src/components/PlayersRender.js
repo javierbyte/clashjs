@@ -1,38 +1,14 @@
 import React from "react";
 import _ from "lodash";
 
-const DIRECTIONS = ["north", "east", "south", "west"];
-
-function Players(props) {
+function PlayersRender(props) {
   const { gridSize, playerStates, playerInstances, speed } = props;
-
   const playerDirections = playerStates.map((el) => el.directionAngle);
-
-  // const [playerDirections, setPlayerDirections] = React.useState(
-  //   props.playerStates.map((el) => DIRECTIONS.indexOf(el.direction))
-  // );
-
-  // // every time that the player state changes we need to update the direction
-  // React.useEffect(() => {
-  //   const newPlayerDirections = playerStates.map((el) => DIRECTIONS.indexOf(el.direction));
-
-  //   setPlayerDirections(
-  //     newPlayerDirections.map((el, index) => {
-  //       let directionDifference = ((el + 4) % 4) - ((playerDirections[index] + 4) % 4);
-  //       if (directionDifference === 3) directionDifference = -1;
-  //       if (directionDifference === -3) directionDifference = 1;
-
-  //       return playerDirections[index] + directionDifference;
-  //     })
-  //   );
-  // });
-
   const tileSize = 100 / gridSize;
 
   const playerRender = _.map(playerStates, (playerData, playerIndex) => {
-    // if (!playerData.isAlive) return null;
-
-    const playerInfo = playerInstances[playerIndex].getInfo();
+    const playerUUID = playerData.id;
+    const playerInfo = playerInstances.find((player) => player.id === playerUUID).info;
 
     return (
       <div
@@ -49,7 +25,7 @@ function Players(props) {
           }vmin) scale(${playerData.isAlive ? 1.25 : 0.75})`,
         }}>
         <div
-          className="clash-player"
+          className={`clash-player -name-${playerData.name}`}
           style={{
             transition: `transform ${speed * 2 + 16}ms`,
             width: tileSize + "vmin",
@@ -66,6 +42,7 @@ function Players(props) {
           className="clash-player-name"
           style={{ textDecoration: playerData.isAlive ? "none" : "line-through" }}>
           {playerInfo.name}
+          {new Array(Math.min(playerData.ammo, 3)).fill("🚀").join("")}
         </div>
       </div>
     );
@@ -74,4 +51,4 @@ function Players(props) {
   return <div className="clash-layer">{playerRender}</div>;
 }
 
-export default Players;
+export default PlayersRender;

@@ -1,13 +1,2 @@
-import React from "react";
-
-import Clash from "./components/Clash.js";
-
-function App() {
-  return (
-    <div className="App">
-      <Clash />
-    </div>
-  );
-}
-
-export default App;
+import Clash from "./components/ClashRender.js";
+export default Clash;

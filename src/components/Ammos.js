@@ -16,13 +16,17 @@ class Ammos extends React.Component {
             top: tileSize * ammoPos[0] + "vmin",
             left: tileSize * ammoPos[1] + "vmin",
             width: tileSize + "vmin",
-            height: tileSize + "vmin"
+            height: tileSize + "vmin",
           }}
         />
       );
     });
 
-    return <div style={{zIndex: 1}} className="clash-layer animation-glow">{ammoRender}</div>;
+    return (
+      <div style={{ zIndex: 1 }} className="clash-layer animation-glow">
+        {ammoRender}
+      </div>
+    );
   }
 }
 

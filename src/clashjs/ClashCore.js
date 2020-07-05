@@ -3,154 +3,64 @@ import _ from "lodash";
 import PlayerClass from "./PlayerClass.js";
 import executeMovementHelper from "./executeMovementHelper.js";
 
-var DIRECTIONS = ["north", "east", "south", "west"];
+import EventEmitter from "wolfy87-eventemitter";
 
-const SUDDEN_DEATH_TURN = 100;
+const DIRECTIONS = ["north", "east", "south", "west"];
+const TOTAL_ROUNDS = 7;
 
-class ClashJS {
-  constructor(playerDefinitionArray, currentStats, evtCallback) {
-    // const clashjsTarget = class ClashJSTarget extends EventTarget {};
-    // this.target = new clashjsTarget();
+const ClashEmitter = new EventEmitter();
 
-    this._totalRounds = 5;
-    this._rounds = 0;
-    this._gameStats = currentStats || {};
-    this._evtCallback = (msg, data) => {
-      // this.target.dispatchEvent(new CustomEvent("DATA", { detail: { name: msg, data: data } }));
-      evtCallback(msg, data);
+let STATE = {
+  running: false,
+
+  currentPlayer: 0,
+
+  gameEnvironment: {
+    gridSize: 13,
+    ammoPosition: [],
+  },
+  suddenDeathCount: 0,
+  totalRounds: TOTAL_ROUNDS,
+  rounds: 0,
+
+  playerInstances: [],
+  playerStates: [],
+
+  playerDefinition: {},
+  gameStats: {},
+};
+
+function ClashJS(playerDefinitionArray) {
+  STATE.playerInstances = playerDefinitionArray.map((playerDefinition) => {
+    const player = new PlayerClass(playerDefinition);
+    STATE.gameStats[player.id] = {
+      id: player.id,
+      name: player.name,
+      kills: 0,
+      wins: 0,
     };
-    this._alivePlayerCount = 0;
-    this._suddenDeathCount = 0;
-    this._playerInstances = playerDefinitionArray.map((playerDefinition) => {
-      let player = new PlayerClass(playerDefinition);
-      this._gameStats[player.getId()] = {
-        name: player.getName(),
-        deaths: 0,
-        kills: 0,
-        kdr: 0,
-        wins: 0,
-      };
-      return player;
-    });
+    return player;
+  });
 
-    this.setupGame();
+  function emit(name, payload) {
+    console.info("ClashCore: Emit", { name, payload });
+    ClashEmitter.emit("CLASHJS", { name, payload });
   }
 
-  _getAlivePlayerCount() {
-    return this._playerStates.filter((player) => player.isAlive).length;
+  function handleExecuteMovementCallback(event, payload) {
+    emit(event, payload);
   }
 
-  setupGame() {
-    this._gameEnvironment = {
-      gridSize: 9 + Math.round(Math.random() * 3) * 2,
-      ammoPosition: [],
-    };
-    this._rounds++;
-    this._suddenDeathCount = 0;
-    this._playerInstances = _.shuffle(this._playerInstances);
-    this._alivePlayerCount = this._playerInstances.length;
-    this._playerStates = this._playerInstances.map((playerInstance) => {
-      const gridSize = this._gameEnvironment.gridSize;
-      const directionAngle = Math.floor(Math.random() * 4);
-
-      return {
-        style: playerInstance.getInfo().style,
-        position: [Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)],
-        direction: DIRECTIONS[directionAngle],
-        directionAngle: directionAngle,
-        ammo: 0,
-        isAlive: true,
-      };
-    });
-
-    this._currentPlayer = 0;
-    this._createAmmo();
-  }
-
-  _createAmmo() {
-    var newAmmoPosition = [
-      Math.floor(Math.random() * this._gameEnvironment.gridSize),
-      Math.floor(Math.random() * this._gameEnvironment.gridSize),
-    ];
-
-    if (
-      this._gameEnvironment.ammoPosition.some((el) => {
-        return el[0] === newAmmoPosition[0] && el[1] === newAmmoPosition[1];
-      })
-    ) {
-      this._createAmmo();
-      return;
-    }
-
-    this._gameEnvironment.ammoPosition.push(newAmmoPosition);
-  }
-
-  getState() {
-    return {
-      gameEnvironment: this._gameEnvironment,
-      gameStats: this._gameStats,
-      rounds: this._rounds,
-      totalRounds: this._totalRounds,
-      playerStates: this._playerStates,
-      playerInstances: this._playerInstances,
-    };
-  }
-
-  nextPly() {
-    if (this._suddenDeathCount > SUDDEN_DEATH_TURN * this._getAlivePlayerCount()) {
-      this._evtCallback("DRAW");
-      this._handleCoreAction("DRAW");
-    }
-    let clonedStates = _.cloneDeep(this._playerStates, true);
-
-    if (this._getAlivePlayerCount() < 2) {
-      this._suddenDeathCount += 10;
-    }
-
-    if (this._getAlivePlayerCount() < 3) {
-      this._suddenDeathCount++;
-    }
-
-    var otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {
-      if (index === this._currentPlayer) return false;
-      return currentEnemyFilter.isAlive;
-    });
-
-    if (this._playerStates[this._currentPlayer].isAlive) {
-      this._savePlayerAction(
-        this._currentPlayer,
-        this._playerInstances[this._currentPlayer].execute(
-          clonedStates[this._currentPlayer],
-          otherPlayers,
-          _.cloneDeep(this._gameEnvironment, true)
-        )
-      );
-    }
-
-    this._currentPlayer = (this._currentPlayer + 1) % this._playerInstances.length;
-
-    if (
-      this._gameEnvironment.ammoPosition.length < this._playerStates.length / 1.2 &&
-      Math.random() > 0.94
-    ) {
-      this._createAmmo();
-    }
-
-    if (Math.random() > 0.98) {
-      this._createAmmo();
-    }
-
-    return this.getState();
-  }
-
-  _handleCoreAction(action, data) {
+  function handleCoreAction(action, data) {
     if (action === "KILL") {
       let { killer, killed } = data;
-      this._gameStats[killer.getId()].kills++;
-      _.forEach(this._playerInstances, (player) => {
-        let stats = this._gameStats[player.getId()];
+
+      STATE.gameStats[killer.id].kills += killed.length;
+
+      _.forEach(STATE.playerInstances, (player) => {
+        let stats = STATE.gameStats[player.id];
         if (killed.indexOf(player) > -1) {
-          this._alivePlayerCount--;
+          STATE.alivePlayerCount--;
           stats.deaths++;
         }
         if (stats.deaths) {
@@ -159,33 +69,156 @@ class ClashJS {
           stats.kdr = stats.kills;
         }
       });
-      this._suddenDeathCount = 0;
+      STATE.suddenDeathCount = 0;
     }
     if (action === "WIN") {
-      this._gameStats[data.winner.getId()].wins++;
+      STATE.gameStats[data.winner.id].wins++;
+      STATE.suddenDeathCount = 0;
 
-      if (this._rounds >= this._totalRounds) {
-        return this._evtCallback("END");
+      if (STATE.rounds >= STATE.totalRounds) {
+        emit("GAME_OVER");
+        return;
       }
     }
     if (action === "DRAW") {
-      if (this._rounds >= this._totalRounds) {
-        return this._evtCallback("END");
+      STATE.suddenDeathCount = 0;
+
+      if (STATE.rounds >= STATE.totalRounds) {
+        emit("GAME_OVER");
+        return;
       }
     }
   }
 
-  _savePlayerAction(playerIndex, playerAction) {
-    this._playerStates = executeMovementHelper({
+  function savePlayerAction(playerIndex, playerAction) {
+    STATE.playerStates = executeMovementHelper({
       playerIndex: playerIndex,
       playerAction: playerAction,
-      playerStates: this._playerStates,
-      playerInstances: this._playerInstances,
-      gameEnvironment: this._gameEnvironment,
-      evtCallback: this._evtCallback,
-      coreCallback: this._handleCoreAction.bind(this),
+      playerStates: STATE.playerStates,
+      playerInstances: STATE.playerInstances,
+      gameEnvironment: STATE.gameEnvironment,
+      evtCallback: handleExecuteMovementCallback,
+      coreCallback: handleCoreAction,
     });
   }
+
+  function createAmmo() {
+    const newAmmoPosition = [
+      Math.floor(Math.random() * STATE.gameEnvironment.gridSize),
+      Math.floor(Math.random() * STATE.gameEnvironment.gridSize),
+    ];
+
+    if (
+      STATE.gameEnvironment.ammoPosition.some((el) => {
+        return el[0] === newAmmoPosition[0] && el[1] === newAmmoPosition[1];
+      })
+    ) {
+      createAmmo();
+      return;
+    }
+
+    STATE.gameEnvironment.ammoPosition.push(newAmmoPosition);
+  }
+
+  return {
+    newGame() {
+      STATE.gameEnvironment = {
+        gridSize: 13,
+        ammoPosition: [],
+      };
+      STATE.rounds = STATE.rounds + 1;
+      STATE.suddenDeathCount = 0;
+      STATE.playerInstances = _.shuffle(_.cloneDeep(STATE.playerInstances));
+      STATE.playerStates = STATE.playerInstances.map((playerInstance) => {
+        const gridSize = STATE.gameEnvironment.gridSize;
+        const directionAngle = Math.floor(Math.random() * 4);
+
+        return {
+          name: playerInstance.name,
+          id: playerInstance.id,
+          style: playerInstance.info.style,
+          position: [Math.floor(Math.random() * gridSize), Math.floor(Math.random() * gridSize)],
+          direction: DIRECTIONS[directionAngle],
+          directionAngle: directionAngle,
+          ammo: 0,
+          isAlive: true,
+        };
+      });
+      STATE.currentPlayer = 0;
+      STATE = { ...STATE };
+      createAmmo();
+    },
+
+    getAlivePlayerCount() {
+      return STATE.playerStates.filter((player) => player.isAlive).length;
+    },
+
+    getState() {
+      const derivedStats = STATE.gameStats;
+
+      for (const playerKey in derivedStats) {
+        const player = derivedStats[playerKey];
+        player.score = player.wins * 5 + player.kills;
+        player.isAlive = STATE.playerStates.find(
+          (playerState) => playerState.id === playerKey
+        ).isAlive;
+      }
+
+      return JSON.parse(
+        JSON.stringify({
+          gameEnvironment: STATE.gameEnvironment,
+          gameStats: derivedStats,
+          rounds: STATE.rounds,
+          totalRounds: STATE.totalRounds,
+          playerStates: STATE.playerStates,
+          playerInstances: STATE.playerInstances,
+        })
+      );
+    },
+
+    nextPly() {
+      let clonedStates = _.cloneDeep(STATE.playerStates);
+
+      if (this.getAlivePlayerCount() < 3) {
+        STATE.suddenDeathCount++;
+      }
+
+      const otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {
+        if (index === STATE.currentPlayer) return false;
+        return currentEnemyFilter.isAlive;
+      });
+
+      if (STATE.playerStates[STATE.currentPlayer].isAlive) {
+        savePlayerAction(
+          STATE.currentPlayer,
+          STATE.playerInstances[STATE.currentPlayer].execute(
+            clonedStates[STATE.currentPlayer],
+            otherPlayers,
+            _.cloneDeep(STATE.gameEnvironment)
+          )
+        );
+      }
+
+      STATE.currentPlayer = (STATE.currentPlayer + 1) % STATE.playerInstances.length;
+
+      if (
+        STATE.gameEnvironment.ammoPosition.length < STATE.playerStates.length / 1.3 &&
+        Math.random() > 0.93
+      ) {
+        createAmmo();
+      }
+
+      if (Math.random() > 0.98) {
+        createAmmo();
+      }
+
+      return this.getState();
+    },
+
+    addListener(callback) {
+      ClashEmitter.addListener("CLASHJS", callback);
+    },
+  };
 }
 
 export default ClashJS;

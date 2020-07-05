@@ -1,22 +1,24 @@
-var utils = require('../lib/utils.js');
-var DIRECTIONS = ['north', 'east', 'south', 'west'];
+var utils = require("../lib/utils.js");
+var DIRECTIONS = ["north", "east", "south", "west"];
 
-var canDie = function(player, enemies) {
-  return enemies
-    .filter((enemy) => enemy.isAlive)
-    .map((enemy) => utils.canKill(enemy, [player], enemy.direction))
-    .filter((result) => result === true).length > 0;
+var canDie = function (player, enemies) {
+  return (
+    enemies
+      .filter((enemy) => enemy.isAlive)
+      .map((enemy) => utils.canKill(enemy, [player], enemy.direction))
+      .filter((result) => result === true).length > 0
+  );
 };
 
-var getClosestAmmo = function(player, map) {
+var getClosestAmmo = function (player, map) {
   if (!map.ammoPosition.length) {
     return;
   }
   var playerPos = player.position;
   var closestAmmo = map.ammoPosition[0];
 
-  map.ammoPosition.forEach(function(pos) {
-    var isCloser = utils.getDistance(playerPos, pos) < utils.getDistance(playerPos, closestAmmo)
+  map.ammoPosition.forEach(function (pos) {
+    var isCloser = utils.getDistance(playerPos, pos) < utils.getDistance(playerPos, closestAmmo);
     if (isCloser) {
       closestAmmo = pos;
     }
@@ -25,7 +27,7 @@ var getClosestAmmo = function(player, map) {
   return closestAmmo;
 };
 
-var shouldMoveForAmmo = function(player, map) {
+var shouldMoveForAmmo = function (player, map) {
   var closest = getClosestAmmo(player, map);
   var direction;
 
@@ -39,13 +41,13 @@ var shouldMoveForAmmo = function(player, map) {
     return direction;
   }
 
-  return 'move';
+  return "move";
 };
 
-var isMovementSafe = function(action, player, enemies, map) {
+var isMovementSafe = function (action, player, enemies, map) {
   var futureState = JSON.parse(JSON.stringify(player));
 
-  if (action === 'move') {
+  if (action === "move") {
     switch (player.direction) {
       case DIRECTIONS[0]:
         if (futureState.position[0] > 0) {
@@ -74,10 +76,10 @@ var isMovementSafe = function(action, player, enemies, map) {
   return true;
 };
 
-var getSafestMove = function(player, enemies, map) {
+var getSafestMove = function (player, enemies, map) {
   var safest;
-  var isSafeHere = isMovementSafe('north', player, enemies, map);
-  var isSafeToMove = isMovementSafe('move', player, enemies, map);
+  var isSafeHere = isMovementSafe("north", player, enemies, map);
+  var isSafeToMove = isMovementSafe("move", player, enemies, map);
 
   if (isSafeHere) {
     if (player.ammo) {
@@ -85,23 +87,23 @@ var getSafestMove = function(player, enemies, map) {
     }
   }
   if (isSafeToMove) {
-    return 'move';
+    return "move";
   }
 
   return;
 };
 
-var getClosestEnemy = function(player, enemies) {
+var getClosestEnemy = function (player, enemies) {
   var clonedStates = enemies.slice(0, enemies.length);
   var closest;
 
-  clonedStates = clonedStates.filter(function(enemy) {
+  clonedStates = clonedStates.filter(function (enemy) {
     return enemy.isAlive;
   });
 
   closest = clonedStates[0];
 
-  clonedStates.forEach(function(enemy) {
+  clonedStates.forEach(function (enemy) {
     if (utils.getDistance(player, enemy) < utils.getDistance(player, closest)) {
       closest = enemy;
     }
@@ -110,7 +112,7 @@ var getClosestEnemy = function(player, enemies) {
   return closest;
 };
 
-var chaseEnemy = function(player, enemies) {
+var chaseEnemy = function (player, enemies) {
   var closestEnemy = getClosestEnemy(player, enemies);
   var direction = utils.fastGetDirection(player.position, closestEnemy.position);
 
@@ -118,18 +120,18 @@ var chaseEnemy = function(player, enemies) {
     return direction;
   }
 
-  return 'move';
+  return "move";
 };
 
-var turnToKill = function(player, enemies) {
-  var turn = player.direction === 'north' ? 'south' : 'north';
+var turnToKill = function (player, enemies) {
+  var turn = player.direction === "north" ? "south" : "north";
   var mockState = JSON.parse(JSON.stringify(player));
 
-  enemies = enemies.filter(function(enemy) {
+  enemies = enemies.filter(function (enemy) {
     return enemy.isAlive;
   });
 
-  DIRECTIONS.forEach(function(direction) {
+  DIRECTIONS.forEach(function (direction) {
     mockState.direction = direction;
 
     if (utils.canKill(mockState, enemies)) {
@@ -140,12 +142,12 @@ var turnToKill = function(player, enemies) {
   return turn;
 };
 
-var hunter = function(player, enemies, map) {
+var hunter = function (player, enemies, map) {
   var turnMove;
   var ammoMove;
   var safestMove;
 
-  if (utils.canKill(player, enemies)) return 'shoot';
+  if (utils.canKill(player, enemies)) return "shoot";
 
   turnMove = turnToKill(player, enemies);
   if (turnMove && isMovementSafe(turnMove, player, enemies, map)) return turnMove;
@@ -153,10 +155,10 @@ var hunter = function(player, enemies, map) {
   safestMove = getSafestMove(player, enemies, map);
   if (safestMove) return safestMove;
 
-  return 'stay';
+  return "stay";
 };
 
-var gatherer = function(player, enemies, map) {
+var gatherer = function (player, enemies, map) {
   var ammoMove;
   var safestMove;
 
@@ -173,14 +175,14 @@ var kills = 0;
 
 var ericku_ = {
   info: {
-    name: 'Gurren',
-    style: 6
+    name: "Gurren",
+    style: 6,
   },
-  ai: function(player, enemies, map) {
-    if (Math.random() > 0.9) return "move";
+  ai: function (player, enemies, map) {
     if (player.ammo) return hunter(player, enemies, map);
+    if (Math.random() > 0.8) return "move";
     return gatherer(player, enemies, map);
-  }
+  },
 };
 
 module.exports = ericku_;

@@ -2,11 +2,15 @@ import React from "react";
 import _ from "lodash";
 
 function Stats(props) {
-  const { stats, rounds, total } = props;
+  const { gameStats, rounds, total } = props;
 
-  const orderedPlayerStats = Object.keys(stats)
-    .map((playerId) => stats[playerId])
-    .sort((a, b) => b.wins - a.wins);
+  const orderedStats = Object.keys(gameStats)
+    .map((playerId) => {
+      {
+        return { ...gameStats[playerId], id: playerId };
+      }
+    })
+    .sort((a, b) => b.score - a.score);
 
   return (
     <div className="stats">
@@ -23,11 +27,19 @@ function Stats(props) {
           <tr>
             <th>Player</th>
             <th style={{ padding: 0 }}></th>
-            <th style={{ textAlign: "right" }}>Wins</th>
+            <th alt="Eliminations" style={{ textAlign: "right" }}>
+              E
+            </th>
+            <th alt="Wins" style={{ textAlign: "right" }}>
+              W
+            </th>
+            <th alt="Score" style={{ textAlign: "right" }}>
+              S
+            </th>
           </tr>
         </thead>
         <tbody>
-          {_.map(orderedPlayerStats, (playerStats, index) => {
+          {_.map(orderedStats, (playerStats, index) => {
             return (
               <tr key={index} className={`player-stats ${playerStats.isAlive ? "" : "-dead"}`}>
                 <td className="player-name">{playerStats.name}</td>
@@ -36,7 +48,9 @@ function Stats(props) {
                     💀
                   </span>
                 </td>
+                <td className="stats-results">{playerStats.kills}</td>
                 <td className="stats-results">{playerStats.wins}</td>
+                <td className="stats-results">{playerStats.score}</td>
               </tr>
             );
           })}

@@ -2,26 +2,15 @@ import generateId from "./../lib/string-tools";
 
 class PlayerClass {
   constructor(options) {
-    this._id = generateId.generateBase32String(8);
-    this._playerInfo = options.info;
-    this._playerAI = options.ai;
-  }
-
-  getId() {
-    return this._id;
-  }
-
-  getInfo() {
-    return this._playerInfo;
-  }
-
-  getName() {
-    return this._playerInfo.name;
+    this.id = generateId.generateBase32String(8);
+    this.info = options.info;
+    this.name = options.info.name;
+    this.ai = options.ai;
   }
 
   execute(playerState, enemyState, gameEnvironment) {
     try {
-      return this._playerAI(playerState, enemyState, gameEnvironment);
+      return this.ai(playerState, enemyState, gameEnvironment);
     } catch (e) {
       console.error("!", e);
     }
