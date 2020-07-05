@@ -52,6 +52,7 @@ b {
   left: 0;
   padding: 1rem;
   color: #eee;
+  z-index: 10000;
 }
 .instructions a {
   color: #fff;
@@ -63,6 +64,12 @@ b {
   height: 100vmin;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.03);
+}
+
+@media screen and (max-width: 400px) and (min-height: 400px) {
+  .clash {
+    top: 35vmin;
+  }
 }
 
 .clash-tile {
@@ -102,6 +109,12 @@ b {
   text-transform: uppercase;
   text-align: center;
   font-size: 0.7rem;
+}
+
+@media screen and (max-width: 640px) {
+  .clash-player-name {
+    font-size: 0.55rem;
+  }
 }
 
 .clash-shoot {

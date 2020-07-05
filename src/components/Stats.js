@@ -4,7 +4,7 @@ import _ from "lodash";
 function Stats(props) {
   const [expand, setExpand] = React.useState(false);
 
-  const isToggable = window.innerHeight < 640;
+  const isToggable = window.innerHeight < 1080;
 
   const isExpanded = expand || !isToggable;
 
