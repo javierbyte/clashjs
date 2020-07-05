@@ -66,9 +66,9 @@ b {
   background: rgba(255, 255, 255, 0.03);
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 660px) {
   .clash {
-    top: calc(50vh - 60vmin);
+    top: calc(50vh - 60vmin) !important;
   }
 }
 
