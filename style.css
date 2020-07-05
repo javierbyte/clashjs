@@ -52,6 +52,7 @@ b {
   left: 0;
   padding: 1rem;
   color: #eee;
+  z-index: 10000;
 }
 .instructions a {
   color: #fff;
