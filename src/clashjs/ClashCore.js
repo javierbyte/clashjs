@@ -7,6 +7,7 @@ import EventEmitter from "wolfy87-eventemitter";
 
 const DIRECTIONS = ["north", "east", "south", "west"];
 const TOTAL_ROUNDS = 7;
+const SUDDEN_DEATH_PLY = 200;
 
 const ClashEmitter = new EventEmitter();
 
@@ -179,8 +180,18 @@ function ClashJS(playerDefinitionArray) {
     nextPly() {
       let clonedStates = _.cloneDeep(STATE.playerStates);
 
-      if (this.getAlivePlayerCount() < 3) {
-        STATE.suddenDeathCount++;
+      STATE.suddenDeathCount++;
+
+      if (STATE.suddenDeathCount === SUDDEN_DEATH_PLY - 30) {
+        emit("PRE_DRAW");
+      }
+
+      if (STATE.suddenDeathCount > SUDDEN_DEATH_PLY) {
+        emit("DRAW");
+        if (STATE.rounds >= STATE.totalRounds) {
+          emit("GAME_OVER");
+          return;
+        }
       }
 
       const otherPlayers = clonedStates.filter((currentEnemyFilter, index) => {

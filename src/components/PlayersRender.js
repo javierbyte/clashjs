@@ -1,6 +1,14 @@
 import React from "react";
 import _ from "lodash";
 
+function getSpaceArt(info) {
+  if (_.isPlainObject(info)) {
+    return `url(static/rockets/${info.type})`;
+  }
+
+  return `url(static/rockets/rocket${info}.png)`;
+}
+
 function PlayersRender(props) {
   const { gridSize, playerStates, playerInstances, speed } = props;
   const playerDirections = playerStates.map((el) => el.directionAngle);
@@ -31,8 +39,7 @@ function PlayersRender(props) {
             width: tileSize + "vmin",
             height: tileSize + "vmin",
             filter: `grayscale(${playerData.isAlive ? "0%" : "100%"})`,
-            backgroundImage: "url(static/rockets/rocket" + (playerData.style || 0) + ".png)",
-            // transform: "scale(1.25) " + "rotate(" + 90 * playerDirections[playerIndex] + "deg) ",
+            backgroundImage: getSpaceArt(playerData.style),
             transform: `rotate(${
               90 * playerDirections[playerIndex] + (playerData.isAlive ? 0 : 45)
             }deg)`,

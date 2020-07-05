@@ -176,7 +176,7 @@ var kills = 0;
 var ericku_ = {
   info: {
     name: "Gurren",
-    style: 6,
+    style: 0,
   },
   ai: function (player, enemies, map) {
     if (player.ammo) return hunter(player, enemies, map);

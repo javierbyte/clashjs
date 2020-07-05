@@ -101,7 +101,7 @@ b {
   margin-left: -4rem;
   text-transform: uppercase;
   text-align: center;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .clash-shoot {
@@ -195,6 +195,7 @@ td.player-name {
   top: 0;
   right: 0;
   padding: 0.5rem 0;
+  z-index: 10;
 }
 
 .stats-title {
@@ -257,4 +258,10 @@ td.player-name {
   100% {
     -webkit-filter: saturate(1);
   }
+}
+
+.-clickable {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
 }

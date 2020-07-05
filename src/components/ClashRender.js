@@ -16,6 +16,7 @@ const DEBUG = document.location.search.includes("debug");
 
 const DEFAULT_SPEED = DEBUG ? 32 : 200;
 const MAX_SPEED = DEBUG ? 32 : 100;
+const EXPIRE_NOTIF_TIME = 7 * 1000;
 
 const ClashInstance = ClashJS(playerDefinitionArray);
 ClashInstance.newGame();
@@ -52,8 +53,32 @@ class Clash extends React.Component {
       }
 
       if (name === "KILL") return this.handleKill(payload);
-      if (name === "WIN") return this.newGame();
-      if (name === "DRAW") return this.newGame();
+      if (name === "WIN") {
+        const winner = _.get(payload, ["winner", "info", "name"]);
+        if (winner) {
+          this.pushNotification({
+            text: (
+              <div style={{color: "#2ecc71"}}>
+                <strong>{winner}</strong> won this one!
+              </div>
+            ),
+          });
+        }
+        this.newGame();
+        return;
+      }
+      if (name === "DRAW") {
+        this.pushNotification({
+          text: <strong style={{ color: "#f39c12" }}>We got a draw!</strong>,
+        });
+        this.newGame();
+        return;
+      }
+      if (name === "PRE_DRAW") {
+        this.pushNotification({
+          text: `They are too strong!`,
+        });
+      }
       if (name === "GAME_OVER") return this.endGame();
     });
 
@@ -155,7 +180,7 @@ class Clash extends React.Component {
         notifications: [
           ...state.notifications,
           {
-            expire: expire || new Date().getTime() + 6 * 1000,
+            expire: expire || new Date().getTime() + EXPIRE_NOTIF_TIME,
             date: new Date().getTime(),
             text: text,
             id: state.notifications.length,
