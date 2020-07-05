@@ -4,6 +4,13 @@ object-assign
 @license MIT
 */
 
+/*!
+ * EventEmitter v5.2.9 - git.io/ee
+ * Unlicense - http://unlicense.org/
+ * Oliver Caldwell - https://oli.me.uk/
+ * @preserve
+ */
+
 /**
  * @license
  * Lodash <https://lodash.com/>
