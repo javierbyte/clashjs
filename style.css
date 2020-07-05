@@ -68,7 +68,7 @@ b {
 
 @media screen and (max-width: 400px) and (min-height: 400px) {
   .clash {
-    top: 35vmin;
+    top: 30vmin;
   }
 }
 
