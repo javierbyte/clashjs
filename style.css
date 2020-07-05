@@ -105,6 +105,12 @@ b {
   font-size: 0.7rem;
 }
 
+@media screen and (max-width: 640px) {
+  .clash-player-name {
+    font-size: 0.55rem;
+  }
+}
+
 .clash-shoot {
   position: absolute;
   width: 100em;
