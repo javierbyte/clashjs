@@ -102,13 +102,13 @@ b {
   left: 0;
 }
 .clash-player-name {
-  top: -1.5rem;
+  top: -2rem;
   width: 8rem;
   left: 50%;
   margin-left: -4rem;
   text-transform: uppercase;
   text-align: center;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 @media screen and (max-width: 640px) {
