@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 600 600" style="enable-background:new 0 0 600 600;" xml:space="preserve">
+<style type="text/css">
+	.st0{display:none;fill:#FFFFFF;stroke:#000000;stroke-miterlimit:10;}
+	.st1{fill:#736F6E;}
+	.st2{fill:#4D4D4D;}
+	.st3{fill:#AEABA2;}
+	.st4{fill:#F2F2F2;}
+	.st5{fill:#F7931E;}
+</style>
+<g id="Base">
+	<g>
+		<g>
+			<path class="st0" d="M0,300h600H0z"/>
+			<g>
+				<polygon class="st1" points="300,182.7 360.3,212 368.1,264.9 381.3,270.3 362,37 411,56 507,220 468,287 515,345 359,555 
+					313,517 300,517 300,296 				"/>
+				<path class="st1" d="M324,275"/>
+			</g>
+			<g>
+				<polygon class="st2" points="360.3,212 359,555 402,497.5 				"/>
+				<polygon class="st2" points="359.6,408.2 345.5,415 345.5,463.5 359.4,456.8 				"/>
+			</g>
+			<g>
+				<polygon class="st3" points="407.5,105 429.5,108.5 487.5,217.5 427,205.5 				"/>
+				<polygon class="st3" points="362,37 385.5,46.1 447.5,435.9 402,497.5 381.3,270.3 				"/>
+			</g>
+			<g>
+				<polygon class="st4" points="303.3,275 296.7,275 287,517 313,517 				"/>
+				<polygon class="st4" points="417.9,249.8 404.8,254.3 416.9,324 429,319.7 				"/>
+			</g>
+		</g>
+	</g>
+	<g>
+		<g>
+			<path class="st0" d="M600,300H0H600z"/>
+			<g>
+				<polygon class="st1" points="300,182.7 239.7,212 231.9,264.9 218.7,270.3 238,37 189,56 93,220 132,287 85,345 241,555 
+					287,517 300,517 300,296 				"/>
+				<path class="st1" d="M276,275"/>
+			</g>
+			<g>
+				<polygon class="st2" points="239.7,212 241,555 198,497.5 				"/>
+				<polygon class="st2" points="240.4,408.2 254.5,415 254.5,463.5 240.6,456.8 				"/>
+			</g>
+			<g>
+				<polygon class="st3" points="192.5,105 170.5,108.5 112.5,217.5 173,205.5 				"/>
+				<polygon class="st3" points="238,37 214.5,46.1 152.5,435.9 198,497.5 218.7,270.3 				"/>
+			</g>
+			<g>
+				<polygon class="st4" points="296.7,275 303.3,275 313,517 287,517 				"/>
+				<polygon class="st4" points="182.1,249.8 195.3,254.3 183.1,324 171,319.7 				"/>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="Custom1">
+	<polygon id="arrow" class="st5" points="300,217.5 276,267.3 296.7,275 303.3,275 324,267.3 	"/>
+	<g id="Slides">
+		<polygon class="st5" points="238,37 172.9,463.6 198,497.5 218.2,275 		"/>
+		<polygon class="st5" points="362,37 427.1,463.6 402,497.5 381.8,275 		"/>
+	</g>
+</g>
+</svg>
