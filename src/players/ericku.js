@@ -176,7 +176,10 @@ var kills = 0;
 var ericku_ = {
   info: {
     name: "Gurren",
-    style: 0,
+    style: {
+      type: "figma.svg",
+      hue: -90
+    },
   },
   ai: function (player, enemies, map) {
     if (player.ammo) return hunter(player, enemies, map);

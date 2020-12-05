@@ -56,7 +56,7 @@ var Yuno = {
       return "move";
     }
 
-    if (Math.random() > 0.9) return "move";
+    // if (Math.random() > 0.9) return "move";
 
     return utils.safeRandomMove();
   }

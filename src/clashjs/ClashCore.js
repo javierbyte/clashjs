@@ -6,8 +6,11 @@ import executeMovementHelper from "./executeMovementHelper.js";
 import EventEmitter from "wolfy87-eventemitter";
 
 const DIRECTIONS = ["north", "east", "south", "west"];
-const TOTAL_ROUNDS = 7;
-const SUDDEN_DEATH_PLY = 200;
+const TOTAL_ROUNDS = 10;
+// const TOTAL_ROUNDS = 100;
+const SUDDEN_DEATH_PLY = 210;
+
+const MAP_SIZE = window.innerWidth > 720 ? 13 : 11;
 
 const ClashEmitter = new EventEmitter();
 
@@ -17,7 +20,7 @@ let STATE = {
   currentPlayer: 0,
 
   gameEnvironment: {
-    gridSize: 13,
+    gridSize: MAP_SIZE,
     ammoPosition: [],
   },
   suddenDeathCount: 0,
@@ -124,7 +127,7 @@ function ClashJS(playerDefinitionArray) {
   return {
     newGame() {
       STATE.gameEnvironment = {
-        gridSize: 13,
+        gridSize: MAP_SIZE,
         ammoPosition: [],
       };
       STATE.rounds = STATE.rounds + 1;
@@ -182,7 +185,7 @@ function ClashJS(playerDefinitionArray) {
 
       STATE.suddenDeathCount++;
 
-      if (STATE.suddenDeathCount === SUDDEN_DEATH_PLY - 30) {
+      if (STATE.suddenDeathCount === SUDDEN_DEATH_PLY - 35) {
         emit("PRE_DRAW");
       }
 

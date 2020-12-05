@@ -20,7 +20,7 @@ function PlayersRender(props) {
 
     return (
       <div
-        key={playerIndex}
+        key={playerUUID}
         className="clash-player-container"
         style={{
           transition: `transform ${speed * 2 + 16}ms`,
@@ -30,15 +30,19 @@ function PlayersRender(props) {
           zIndex: playerData.isAlive ? 2 : 0,
           transform: `translateY(${tileSize * playerData.position[0]}vmin) translateX(${
             tileSize * playerData.position[1]
-          }vmin) scale(${playerData.isAlive ? 1.25 : 0.75})`,
+          }vmin) scale(${playerData.isAlive ? 1 : 0.66})`,
         }}>
         <div
           className={`clash-player -name-${playerData.name}`}
           style={{
             transition: `transform ${speed * 2 + 16}ms`,
-            width: tileSize + "vmin",
-            height: tileSize + "vmin",
-            filter: `grayscale(${playerData.isAlive ? "0%" : "100%"})`,
+            width: 1.25 * tileSize + "vmin",
+            height: 1.25 * tileSize + "vmin",
+            left: -0.125 * tileSize + "vmin",
+            top: -0.125 * tileSize + "vmin",
+            filter: `grayscale(${playerData.isAlive ? "0%" : "100%"}) hue-rotate(${
+              playerData.style.hue || 0
+            }deg)`,
             backgroundImage: getSpaceArt(playerData.style),
             transform: `rotate(${
               90 * playerDirections[playerIndex] + (playerData.isAlive ? 0 : 45)

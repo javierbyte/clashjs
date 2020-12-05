@@ -16,6 +16,9 @@ const DEBUG = document.location.search.includes("debug");
 
 const DEFAULT_SPEED = DEBUG ? 32 : 200;
 const MAX_SPEED = DEBUG ? 32 : 100;
+// const DEFAULT_SPEED = 4;
+// const MAX_SPEED = 4;
+
 const EXPIRE_NOTIF_TIME = 7 * 1000;
 
 const ClashInstance = ClashJS(playerDefinitionArray);
@@ -58,7 +61,7 @@ class Clash extends React.Component {
         if (winner) {
           this.pushNotification({
             text: (
-              <div style={{color: "#2ecc71"}}>
+              <div style={{ color: "#2ecc71" }}>
                 <strong>{winner}</strong> won this one!
               </div>
             ),
@@ -114,7 +117,7 @@ class Clash extends React.Component {
     this.setState(
       {
         clashState: ClashInstance.nextPly(),
-        speed: this.state.speed > MAX_SPEED ? parseInt(this.state.speed * 0.99, 10) : MAX_SPEED,
+        speed: this.state.speed > MAX_SPEED ? parseInt(this.state.speed * 0.98, 10) : MAX_SPEED,
       },
       () => {
         const alivePlayerCount = ClashInstance.getAlivePlayerCount();
