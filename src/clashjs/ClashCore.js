@@ -7,7 +7,6 @@ import EventEmitter from "wolfy87-eventemitter";
 
 const DIRECTIONS = ["north", "east", "south", "west"];
 const TOTAL_ROUNDS = 10;
-// const TOTAL_ROUNDS = 100;
 const SUDDEN_DEATH_PLY = 210;
 
 const MAP_SIZE = window.innerWidth > 720 ? 13 : 11;
