@@ -1,6 +1,6 @@
 # [ClashJS.com](https://clashjs.com/)
 
-[![](spec_assets/screenshot.jpg)](https://clashjs.com/)
+[![](public/clashjs-com.jpg)](https://clashjs.com/)
 
 [Demo Online](https://clashjs.com/)
 
@@ -11,17 +11,20 @@ This is an experiment. The idea is to create a battle game, where the participan
 You'll need nodejs [https://nodejs.org/en/download/](https://nodejs.org/en/download/), tested with current LTS version `12.x`.
 
 1. Clone the repo.
+
 ```
 git clone git@github.com:javierbyte/clashjs.git
 ```
 
 2. Move to the repo directory, install dependencies.
+
 ```bash
 cd clashjs
 npm install
 ```
 
 3. Run the repo!
+
 ```
 npm start
 ```
@@ -31,6 +34,7 @@ It should open your browser with the `http://localhost:3000/` demo URL.
 The current configured players will start to play right away, at this point you can edit them on `src/players/<PLAYER_NAME>.js` and the browser should refresh on save.
 
 # How to participate.
+
 Add your player as specificed in [player definition](#player-definition) in
 
 ```
@@ -50,29 +54,32 @@ Read the [game definitions](#game-definitions) to learn how to create your playe
 # Game. Functional Spec.
 
 ## Introduction.
+
 Games and coding are fun! So I want to make a game where we can confront AI vs AI in javascript.
 
 The game is simple: we will put all the players in a battle arena, and then make them fight to death. There will be ammo in the arena so they can shoot each other. The last player alive wins!
 
 ### Game Rules.
-* Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, east, south or west.
-* The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
-  * The state of the player.
-  * The state of all other players.
-  * A environment configuration option with:
-    * Grid size.
-    * The position of the ammo.
-* Every turn a player must execute one of the following actions:
-  * Move one step in its current direction. (`move`).
-  * Turn into any of the four directions. (`north`, `east`, `south`, `west`).
-  * Shoot. (`shoot`).
-* A player can shoot to try to destroy another player.
-* A player can collect ammo in the moment it steps over it. New ammo may appear in any moment of the game.
+
+- Every player will have a position and direction on the grid. A player can not go over the grid limits, and can only face north, east, south or west.
+- The game will be turn based. Every turn we will excecute the AI of every player passing as arguments:
+  - The state of the player.
+  - The state of all other players.
+  - A environment configuration option with:
+    - Grid size.
+    - The position of the ammo.
+- Every turn a player must execute one of the following actions:
+  - Move one step in its current direction. (`move`).
+  - Turn into any of the four directions. (`north`, `east`, `south`, `west`).
+  - Shoot. (`shoot`).
+- A player can shoot to try to destroy another player.
+- A player can collect ammo in the moment it steps over it. New ammo may appear in any moment of the game.
 
 ## Game Definitions.
 
 ### Player Definition.
-Let the *player definition* (`playerDefinition`) be an object with the player info and its AI function.
+
+Let the _player definition_ (`playerDefinition`) be an object with the player info and its AI function.
 
 ```js
 {
@@ -88,14 +95,16 @@ Let the *player definition* (`playerDefinition`) be an object with the player in
 ```
 
 The AI function will receive [`playerState`](#player-state), `enemiesStates` (array of all the other players `playerState`s), and [`gameEnvironment`](#game-environment) as arguments, and must return one of the following strings:
-  * `move`: To move one tile in the current direction.
-  * `north`, `east`, `south` or `west`: To turn to that direction.
-  * `shoot`. To shoot if the user has enough ammo.
+
+- `move`: To move one tile in the current direction.
+- `north`, `east`, `south` or `west`: To turn to that direction.
+- `shoot`. To shoot if the user has enough ammo.
 
 Any other response, trying to move outside the arena size (`gameEnvironment.gridSize`) or trying to shoot without ammo, will result in a no-op.
 
 ### Player State.
-Let the *player state* (`playerState`) be an object with a player information like the following:
+
+Let the _player state_ (`playerState`) be an object with a player information like the following:
 
 ```js
 {
@@ -107,7 +116,8 @@ Let the *player state* (`playerState`) be an object with a player information li
 ```
 
 ### Game Environment.
-Let the *game environment* (`gameEnvironment`) be a configuration object like the following:
+
+Let the _game environment_ (`gameEnvironment`) be a configuration object like the following:
 
 ```js
 {
@@ -117,7 +127,8 @@ Let the *game environment* (`gameEnvironment`) be a configuration object like th
 ```
 
 ### Game State.
-Let the *game state* (`gameState`) be an object with the array of all user states, and the game environment.
+
+Let the _game state_ (`gameState`) be an object with the array of all user states, and the game environment.
 
 ```js
 {
@@ -129,12 +140,14 @@ Let the *game state* (`gameState`) be an object with the array of all user state
 # Game Technical Spec.
 
 ## Problem.
+
 We should make an app that can take functions provided by the users, execute them, and render the game as specified in the functional spec.
 
 ## Constraints.
-* The game mechanics should avoid accidentally benefitting players by its random nature. The order of execution of the AIs should not favor any particular player. The position of newly created coins should be fair for all players.
-* Be safe. A player code should not be able to modify anything other than itself.
-* Be resilient as possible. If a player crashes or stop responding, the show must go on.
+
+- The game mechanics should avoid accidentally benefitting players by its random nature. The order of execution of the AIs should not favor any particular player. The position of newly created coins should be fair for all players.
+- Be safe. A player code should not be able to modify anything other than itself.
+- Be resilient as possible. If a player crashes or stop responding, the show must go on.
 
 ## How this was made.
 
@@ -142,21 +155,22 @@ We should make an app that can take functions provided by the users, execute the
 
 We can divide the problem in 3 big steps.
 
-* **AI Runner**. This will take all the user provided functions and the current game state, and execute every function.
-  * This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
-* **Game Core**. This will take the responses that the AI Runners sends, and apply the game logic on them.
-  * Handle killed players.
-  * Move and turn players.
-  * Collect and count coins.
-  * Generate new coins if necessary.
-  * Set the paralized turns to players that shot.
-  * Count if too many inactive turns have passed.
-  * Stop the game when it ends.
-* **Render**. This will take the game state and render it nicely.
+- **AI Runner**. This will take all the user provided functions and the current game state, and execute every function.
+  - This will take care of catch errors on the functions, and stop non-responding functions to hang the window.
+- **Game Core**. This will take the responses that the AI Runners sends, and apply the game logic on them.
+  - Handle killed players.
+  - Move and turn players.
+  - Collect and count coins.
+  - Generate new coins if necessary.
+  - Set the paralized turns to players that shot.
+  - Count if too many inactive turns have passed.
+  - Stop the game when it ends.
+- **Render**. This will take the game state and render it nicely.
 
 They will interact as follows:
 
 ![](spec_assets/game-blackbox.png)
+
 <!---
 sequenceDiagram
 AI Runner->> Game Core: Array of objects
@@ -169,29 +183,34 @@ Game Core->>AI Runner: Game State
 http://knsv.github.io/mermaid/live_editor/
 -->
 
-
 # AI Runner. Spec.
 
 ## Problem.
+
 The AI runner should execute all the functions that the players provided, with the current user state, all user states, and game enrivonment as arguments.
 
 ## Constraints.
-* Isolate the user functions.  They should not be allowed to modify any other code.
-* Catch executions errors, and simply return `null` as response to the Game Core.
-* Detect if any functions gets stuck in an infinite loop, and return `null` as response.
+
+- Isolate the user functions. They should not be allowed to modify any other code.
+- Catch executions errors, and simply return `null` as response to the Game Core.
+- Detect if any functions gets stuck in an infinite loop, and return `null` as response.
 
 ## Hypothesis.
+
 We can run the functions as WebWorkers because:
-* They can not access the dom and modify things.
-* Runs in a sandbox. If they crash or stop responding we can detect it.
-* Bonus: We can parallelise the excecution.
+
+- They can not access the dom and modify things.
+- Runs in a sandbox. If they crash or stop responding we can detect it.
+- Bonus: We can parallelise the excecution.
 
 The game is designed to make irrelevant the order of execution of the AIs. We are safe in running all this asynchronously.
 
 ## Solution.
+
 To prevent the functions from taking too much time processing (probably because an infinite loop), we will create an array of `null`s, where we will put the responses of the workers as they arrive. If `X` seconds passes (enough processing time for almost everything, except infinite loops, of couse) then we will pass the `null`ified response of that worker, and the Game Core will kill that player.
 
 ![](spec_assets/airunner-blackbox.png)
+
 <!---
 sequenceDiagram
 Game Core->> AI Runner: Game State
@@ -215,27 +234,32 @@ http://knsv.github.io/mermaid/live_editor/
 This javascript class will recive a `playerDefinition` and return a player instance.
 
 ### Arguments:
-  * [`playerDefinition`](#player-definition).
-  * [`evtCallback`] A callback that will receive the arguments `evt` and `data`.
+
+- [`playerDefinition`](#player-definition).
+- [`evtCallback`] A callback that will receive the arguments `evt` and `data`.
 
 ### Methods:
-  * `getInfo`. Will return the player info.
-  * `execute`. Will receive the following arguments:
-    * [`playerState`](#player-state). The current player state.
-    * `enemiesStates`. An array of all the other live players `playerState`s.
-    * [`gameEnvironment`](#game-environment). The game environment object.
+
+- `getInfo`. Will return the player info.
+- `execute`. Will receive the following arguments:
+  - [`playerState`](#player-state). The current player state.
+  - `enemiesStates`. An array of all the other live players `playerState`s.
+  - [`gameEnvironment`](#game-environment). The game environment object.
 
 ## CashJS Class.
 
 This class will receive all the player definitions, generate the game states, and execute the players AIs.
 
 ### Arguments:
-  * `playerDefinitionArray`. An array of [`playerDefinition`](#player-definition) objects.
+
+- `playerDefinitionArray`. An array of [`playerDefinition`](#player-definition) objects.
 
 ### Methods:
-  * `getState`. Will return the current [`gameState`](#game-state).
-  * `nextStep`. Will execute a step for every player (all individual plys). Will return the game state.
-  * `nextPly`. Will execute the AI for the player in turn. Will return the game state.
+
+- `getState`. Will return the current [`gameState`](#game-state).
+- `nextStep`. Will execute a step for every player (all individual plys). Will return the game state.
+- `nextPly`. Will execute the AI for the player in turn. Will return the game state.
 
 # Render.
+
 React.

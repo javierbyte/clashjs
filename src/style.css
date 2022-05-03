@@ -30,7 +30,7 @@ body {
 }
 
 body {
-  background: url("./static/bg-m.jpg") no-repeat center #2c3e50;
+  background: url("../public/static/bg-m.jpg") no-repeat center #2c3e50;
   background-size: cover;
   color: #fff;
 }
@@ -82,7 +82,7 @@ b {
 
 .clash-ammo {
   position: absolute;
-  background: url("./static/star.png") no-repeat center / 80%;
+  background: url("../public/static/star.png") no-repeat center / 80%;
 }
 .clash-ammo:hover {
   transform: rotate(360deg);
@@ -206,7 +206,7 @@ td.player-name {
 .stats {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   padding: 0.5rem 0;
   z-index: 10;
 }
